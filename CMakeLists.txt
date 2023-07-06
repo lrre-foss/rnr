@@ -1,34 +1,17 @@
 cmake_minimum_required(VERSION 3.4)
 
-project(Engine)
-project(RBXNuServer)
-project(RBXNuStudio)
-project(RBXNuPlayer)
+project(player)
+project(server)
+project(studio)
 
-add_library(Engine STATIC
-    roblox/engine/RBXNu.cpp
+add_executable(player
+    src/client/player/main.cpp
 )
 
-add_executable(RBXNuServer
-    roblox/server/RBXNuServer.cpp
+add_executable(server
+    src/client/server/main.cpp
 )
 
-add_executable(RBXNuStudio 
-    roblox/studio/RBXNuStudio.cpp
-)
-
-add_executable(RBXNuPlayer
-    roblox/player/RBXNuPlayer.cpp
-)
-
-target_link_libraries(RBXNuServer
-    Engine
-)
-
-target_link_libraries(RBXNuStudio
-    Engine 
-)
-
-target_link_libraries(RBXNuPlayer
-    Engine
+add_executable(studio 
+    src/client/studio/main.cpp
 )
