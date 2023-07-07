@@ -13,12 +13,22 @@ RBX::Instance::Instance(std::string name)
 
 bool RBX::Instance::contains(RBX::Instance* child)
 {
-
+    auto child_it = std::find(m_children.begin(), m_children.end(), (boost::shared_ptr<RBX::Instance>)child);            
+    if(child_it != m_children.end())
+        return true;
+    return false;
 }
 
 bool RBX::Instance::isAncestorOf(RBX::Instance* instance)
 {
-    
+    RBX::Instance* instance_parent = instance->m_parent;
+    while(instance_parent != 0)
+    {
+        instance_parent = instance_parent->m_parent;
+        if(instance_parent == this)
+            return true;
+    }
+    return false;
 }
 
 bool RBX::Instance::askSetParent(RBX::Instance* instance)
