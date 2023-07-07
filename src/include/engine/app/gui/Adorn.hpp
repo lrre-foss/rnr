@@ -1,3 +1,5 @@
+#pragma once
+
 // TODO: add G3D
 
 namespace RBX
@@ -20,7 +22,7 @@ namespace RBX
         {
 
         };
-        
+
         virtual void prepareRenderPass() {}; // NOT IN AdornG3D
         virtual void finishRenderPass() {};  // NOT IN AdornG3D
         virtual void sparkles() {}; // NOT IN AdornG3D

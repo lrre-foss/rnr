@@ -31,14 +31,25 @@ add_library(engine STATIC
 target_include_directories(engine PUBLIC src/include ${CMAKE_BINARY_DIR})
 target_link_libraries(engine PUBLIC ${BOOST_LIBRARIES})
 
+if(COMPILE_PLAYER OR COMPILE_STUDIO)
+    project(qt_common)
+    find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
+    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets)
+    qt_standard_project_setup()
+
+    qt_add_library(qt_common STATIC
+        # tbd
+    )
+endif()
+
 if(COMPILE_PLAYER)
     create_resources(rsc/client ${CMAKE_BINARY_DIR}/player_rsc.h)
-    add_executable(player
+    qt_add_executable(player
         src/client/player/main.cpp
 
         ${CMAKE_BINARY_DIR}/player_rsc.h
     )
-    target_link_libraries(player PRIVATE engine)
+    target_link_libraries(player PRIVATE ${QT6_LIBRARIES_INCL} engine)
 endif()
 
 if(COMPILE_SERVER)
@@ -52,9 +63,6 @@ if(COMPILE_SERVER)
 endif()
 
 if(COMPILE_STUDIO)
-    find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
-    qt_standard_project_setup()
-    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets)
     create_resources(rsc/studio ${CMAKE_BINARY_DIR}/studio_rsc.h)
     qt_add_executable(studio 
         src/client/studio/StudioWindow.cpp

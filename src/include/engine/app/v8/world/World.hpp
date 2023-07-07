@@ -1,5 +1,4 @@
-#ifndef __APP_V8_WORLD_WORLD_HPP__
-#define __APP_V8_WORLD_WORLD_HPP__
+#pragma once
 
 namespace RBX
 {
@@ -14,5 +13,3 @@ namespace RBX
             void update();
     };
 }
-
-#endif

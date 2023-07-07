@@ -1,5 +1,4 @@
-#ifndef __NETWORK_GUID_HPP__
-#define __NETWORK_GUID_HPP__
+#pragma once
 
 #include <string>
 
@@ -14,5 +13,3 @@ namespace RBX
         static void compare(RBX::Guid* a, RBX::Guid* b);
     };
 }
-
-#endif

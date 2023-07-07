@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
-#include <QOpenGLWidget>
+#include <client/common/RBXNUGraphicsWidget.hpp>
 
 class StudioWindow : public QMainWindow
 {

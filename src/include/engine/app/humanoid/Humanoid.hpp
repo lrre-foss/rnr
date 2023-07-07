@@ -1,5 +1,5 @@
-#ifndef __APP_HUMANOID_HUMANOID_HPP__
-#define __APP_HUMANOID_HUMANOID_HPP__
+#pragma once
+
 #include <engine/app/v8/tree/Instance.hpp>
 
 namespace RBX
@@ -22,5 +22,3 @@ namespace RBX
             void getHead();
     };
 }
-
-#endif  

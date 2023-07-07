@@ -1,3 +1,5 @@
+#pragma once
+
 #include <engine/app/gui/Adorn.hpp>
 
 namespace RBX

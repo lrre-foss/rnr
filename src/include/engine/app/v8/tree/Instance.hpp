@@ -1,5 +1,4 @@
-#ifndef __APP_V8_TREE_INSTANCE_HPP__
-#define __APP_V8_TREE_INSTANCE_HPP__
+#pragma once
 
 #include <string>
 #include <engine/app/Name.hpp>
@@ -40,5 +39,3 @@ namespace RBX
 
     };
 }
-
-#endif

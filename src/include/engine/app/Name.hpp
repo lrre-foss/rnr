@@ -1,5 +1,4 @@
-#ifndef __APP_NAME_HPP__
-#define __APP_NAME_HPP__
+#pragma once
 
 #include <map>
 
@@ -16,5 +15,3 @@ namespace RBX
         static std::map<int, RBX::Name*>* dictionary();
     };
 }
-
-#endif
