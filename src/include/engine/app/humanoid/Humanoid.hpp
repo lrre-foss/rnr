@@ -1,5 +1,6 @@
 #ifndef __APP_HUMANOID_HUMANOID_HPP__
 #define __APP_HUMANOID_HUMANOID_HPP__
+#include <engine/app/v8/tree/Instance.hpp>
 
 namespace RBX
 {
@@ -19,7 +20,7 @@ namespace RBX
             void computeForce(float force, bool something);
             void getTorso();
             void getHead();
-    }
+    };
 }
 
 #endif  
