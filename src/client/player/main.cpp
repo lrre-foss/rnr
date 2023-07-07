@@ -1,6 +1,15 @@
 #include <stdio.h>
 
-int main()
+#include <QApplication>
+
+#include <client/player/PlayerWindow.hpp>
+
+int main(int argc, char** argv)
 {
-    printf("Hello world!");
+    QApplication app(argc, argv);
+    PlayerWindow window = PlayerWindow();
+    
+    window.show();
+
+    return app.exec();
 }
