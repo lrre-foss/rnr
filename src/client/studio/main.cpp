@@ -11,5 +11,11 @@ int main(int argc, char** argv)
     
     window.show();
 
-    return app.exec();
+    bool running = true;
+    while(running)
+    {
+        app.processEvents();
+
+        window.graphics_widget->update();
+    }
 }

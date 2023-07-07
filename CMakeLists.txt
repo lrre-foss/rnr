@@ -32,14 +32,24 @@ target_include_directories(engine PUBLIC src/include ${CMAKE_BINARY_DIR})
 target_link_libraries(engine PUBLIC ${BOOST_LIBRARIES})
 
 if(COMPILE_PLAYER OR COMPILE_STUDIO)
+    project(glad)
+    add_library(glad STATIC
+        glad/src/glad.c
+        glad/include/glad/glad.h 
+        glad/include/KHR/khrplatform.h
+    )
+    target_include_directories(glad PUBLIC glad/include)
     project(qt_common)
     find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
-    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets)
+    find_package(cglm REQUIRED CONFIG)
+    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets cglm glad)
     qt_standard_project_setup()
 
     qt_add_library(qt_common STATIC
-        # tbd
+        src/client/common/RBXNUGraphicsWidget.cpp
+        src/include/client/common/RBXNUGraphicsWidget.hpp
     )
+    target_link_libraries(qt_common PUBLIC ${QT6_LIBRARIES_INCL} engine)
 endif()
 
 if(COMPILE_PLAYER)
@@ -49,7 +59,7 @@ if(COMPILE_PLAYER)
 
         ${CMAKE_BINARY_DIR}/player_rsc.h
     )
-    target_link_libraries(player PRIVATE ${QT6_LIBRARIES_INCL} engine)
+    target_link_libraries(player PRIVATE qt_common engine)
 endif()
 
 if(COMPILE_SERVER)
@@ -71,5 +81,5 @@ if(COMPILE_STUDIO)
 
         ${CMAKE_BINARY_DIR}/studio_rsc.h
     )
-    target_link_libraries(studio PRIVATE ${QT6_LIBRARIES_INCL} engine)
+    target_link_libraries(studio PRIVATE qt_common engine)
 endif()
