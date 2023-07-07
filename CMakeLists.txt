@@ -5,7 +5,7 @@ project(player)
 project(server)
 project(studio)
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
 find_package(Boost REQUIRED)
 qt_standard_project_setup()
 
@@ -29,12 +29,15 @@ add_executable(server
 )
 
 qt_add_executable(studio 
+    src/client/studio/studiowindow.cpp
+    src/client/studio/studiowindow.hpp
     src/client/studio/main.cpp
 )
 
 target_include_directories(engine PUBLIC src/include)
 target_link_libraries(engine PUBLIC ${BOOST_LIBRARIES})
 
-target_link_libraries(player PRIVATE Qt6::Core engine)
-target_link_libraries(studio PRIVATE Qt6::Core engine)
+set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets)
+target_link_libraries(player PRIVATE ${QT6_LIBRARIES_INCL} engine)
+target_link_libraries(studio PRIVATE ${QT6_LIBRARIES_INCL} engine)
 target_link_libraries(server PRIVATE engine)

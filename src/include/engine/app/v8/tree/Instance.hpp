@@ -16,7 +16,7 @@ namespace RBX
             bool m_archivable;
         public:
             Instance();
-            Instance(char* name);
+            Instance(std::string name);
 
             bool contains(RBX::Instance* child);
             bool isAncestorOf(RBX::Instance* instance);
@@ -29,12 +29,12 @@ namespace RBX
             void createChild(boost::shared_ptr<RBX::Instance>* result, const RBX::Name *className);
             
             RBX::Instance* getParent() { return this->m_parent; };
-            std::string getName() { return this->m_name };
+            std::string getName() { return this->m_name; };
 
             void setParent(RBX::Instance* newParent);
             void setName(std::string name);
             std::vector<boost::shared_ptr<RBX::Instance>>* getChildren() { return &this->m_children; };
-            int numChildren() { return this->m_children.size() };
+            int numChildren() { return this->m_children.size(); };
 
             void onChildAdded(RBX::Instance* childAdded);
 
