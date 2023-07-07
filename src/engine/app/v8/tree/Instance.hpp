@@ -13,7 +13,7 @@ namespace RBX
             Instance();
             void setName(std::string name);
 
-    }
+    };
 }
 
 #endif
