@@ -10,14 +10,18 @@ find_package(Boost REQUIRED)
 qt_standard_project_setup()
 
 add_library(engine STATIC
+    src/engine/app/gui/Adorn.cpp
+    src/include/engine/app/gui/Adorn.hpp
     src/engine/app/humanoid/Humanoid.cpp
     src/include/engine/app/humanoid/Humanoid.hpp
-
+    src/engine/app/humanoid/Forcefield.cpp
+    src/include/engine/app/humanoid/Forcefield.hpp
     src/engine/app/v8/tree/Instance.cpp
     src/include/engine/app/v8/tree/Instance.hpp
-
     src/engine/app/Name.cpp
     src/include/engine/app/Name.hpp
+    src/engine/network/Guid.cpp
+    src/include/engine/network/Guid.hpp
 )
 
 qt_add_executable(player
