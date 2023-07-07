@@ -1,8 +1,8 @@
-#include "studiowindow.hpp"
+#include <client/studio/StudioWindow.hpp>
 
 StudioWindow::StudioWindow()
 {
-    setWindowTitle(QString("RBXNu Studio"));
+    setWindowTitle(QString("RBXNU Studio"));
     setWindowIcon(QIcon(":/content/images/icon.png"));
 }
 

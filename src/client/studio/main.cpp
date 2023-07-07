@@ -1,14 +1,15 @@
 #include <stdio.h>
 
 #include <QApplication>
-#include "studiowindow.hpp"
+
+#include <client/studio/StudioWindow.hpp>
 
 int main(int argc, char** argv)
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
     StudioWindow window = StudioWindow();
     
     window.show();
 
-    return a.exec();
+    return app.exec();
 }
