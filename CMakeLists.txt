@@ -33,8 +33,8 @@ add_executable(server
 )
 
 qt_add_executable(studio 
-    src/client/studio/studiowindow.cpp
-    src/client/studio/studiowindow.hpp
+    src/client/studio/StudioWindow.cpp
+    src/include/client/studio/StudioWindow.hpp
     src/client/studio/main.cpp
 )
 
