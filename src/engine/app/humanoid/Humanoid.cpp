@@ -2,5 +2,5 @@
 
 RBX::Humanoid::Humanoid()
 {
-
+    this->setName("Humanoid");
 }

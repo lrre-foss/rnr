@@ -6,6 +6,7 @@ project(server)
 project(studio)
 
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Boost REQUIRED)
 qt_standard_project_setup()
 
 add_library(engine STATIC
@@ -31,7 +32,8 @@ qt_add_executable(studio
     src/client/studio/main.cpp
 )
 
-target_include_directories(engine PUBLIC include)
+target_include_directories(engine PUBLIC src/include)
+target_link_libraries(engine PUBLIC ${BOOST_LIBRARIES})
 
 target_link_libraries(player PRIVATE Qt6::Core engine)
 target_link_libraries(studio PRIVATE Qt6::Core engine)
