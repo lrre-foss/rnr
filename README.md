@@ -31,6 +31,6 @@ Finally, you may run `cmake --build .` in the path of the folder you've cloned t
 # License
 RNR is licensed under two separate licenses:
 - The bulk of the code (which includes the player, studio, and server projects) are all licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.txt) license.
-- The engine that RNR runs on is licensed under the [Creative Commons Zero v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license.
+- The RNR engine is licensed under the [Creative Commons Zero v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt) license.
 
 Copies of both licenses have been bundled with RNR.
