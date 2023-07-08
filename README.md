@@ -6,7 +6,7 @@ RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look a
 Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
 
 # Goals
-There are several goals that RNR seeks to achieve, those being;
+There are several goals that RNR seeks to achieve, them being;
 - Full native x64 support on Windows and Linux
 - Efficient and powerful renderer built from scratch (with only OpenGL support for the time being)
 - Easy-to-use (simple CLI options to launch and host games, as well as a level editor with a modern UI)
