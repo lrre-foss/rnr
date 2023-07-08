@@ -1,6 +1,6 @@
 project(Engine)
 
-add_library(engine STATIC
+add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
     Header/App/V8/DataModel/ForceField.hpp
@@ -18,4 +18,4 @@ add_library(engine STATIC
     Source/Rendering/Adorn.cpp
 )
 
-target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} cglm)
+target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} cglm Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
