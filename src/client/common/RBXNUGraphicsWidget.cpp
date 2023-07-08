@@ -2,6 +2,7 @@
 
 RBXNUGraphicsWidget::RBXNUGraphicsWidget(QWidget* parent) : QOpenGLWidget(parent)
 {
+    gl_adorn = new GL::Adorn();
 }
 
 void RBXNUGraphicsWidget::initializeGL()

@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
+#include <client/common/Adorn.hpp>
 
 class RBXNUGraphicsWidget : public QOpenGLWidget
 {
@@ -12,6 +13,8 @@ public:
     RBXNUGraphicsWidget(QWidget* parent = nullptr);
 
     double delta_time;
+
+    GL::Adorn* gl_adorn;
 protected:
     virtual void paintGL();
     virtual void initializeGL();
