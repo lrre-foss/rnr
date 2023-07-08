@@ -1,5 +1,5 @@
 # RNR
-RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox while bringing in new features at the same time as well as remaining fully compatible with clients from that era.
+RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox while bringing in new features as well as remaining fully compatible with clients from that era.
 
 Interested in contributing? [Feel free to make a pull request!](https://github.com/kiseki-lol/RNR/pulls)
 
