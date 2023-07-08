@@ -1,8 +1,10 @@
 project(Player)
 
-create_resources(Resource ${CMAKE_BINARY_DIR}/PlayerResources.hpp)
+create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/PlayerResources.hpp)
 
 qt_add_executable(Player
+    ${CMAKE_BINARY_DIR}/Resources/PlayerResources.hpp
+
     Header/MainWindow.hpp
 
     Source/main.cpp

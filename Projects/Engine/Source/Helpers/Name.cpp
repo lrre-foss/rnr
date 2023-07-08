@@ -6,15 +6,15 @@ namespace RNR
 
     char* Name::c_str()
     {
-        //
+        return NULL;
     }
 
-    static void Name::compare(const RNR::Name* a, const RNR::Name* b)
+    void Name::compare(const RNR::Name* a, const RNR::Name* b)
     {
         //
     }
 
-    static void Name::declare(const char* sName, int dictionaryIndex)
+    void Name::declare(const char* sName, int dictionaryIndex)
     {
         //
     }

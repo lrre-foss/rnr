@@ -1,8 +1,10 @@
 project(Server)
 
-create_resources(Resources ${CMAKE_BINARY_DIR}/ServerResources.hpp)
+create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/ServerResources.hpp)
 
 add_executable(Server
+    ${CMAKE_BINARY_DIR}/Resources/ServerResources.hpp
+    
     Source/main.cpp
 )
 

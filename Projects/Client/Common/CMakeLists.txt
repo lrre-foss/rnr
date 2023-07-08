@@ -1,4 +1,4 @@
-add_subdirectory(${DEPENDENCIES_DIR}/GLAD Build)
+add_subdirectory(${DEPENDENCIES_DIR}/GLAD ${CMAKE_BINARY_DIR}/Dependencies/GLAD)
 
 project(Common)
 
@@ -14,5 +14,5 @@ qt_add_library(Common STATIC
     Source/GL/Widget.cpp
 )
 
-include_directories(Header)
+target_include_directories(Common PUBLIC Header)
 target_link_libraries(Common PUBLIC ${QT6_LIBRARIES_INCL} Engine)

@@ -1,5 +1,5 @@
 function(create_resources directory output)
-    file(WRITE ${output} "")
+    file(WRITE ${output} "#include <stdint.h>\n\n")
     file(GLOB bins ${directory}/*)
 
     foreach(bin ${bins})
@@ -11,9 +11,8 @@ function(create_resources directory output)
         file(READ ${bin} filedata HEX)
         string(REGEX REPLACE "([0-9a-f][0-9a-f])" "0x\\1, " filedata ${filedata})
         string(REGEX REPLACE "..$" "" filedata ${filedata})
-        
-        file(APPEND ${output} "#include <stdint.h>\n\n")
+
         file(APPEND ${output} "const uint8_t ${filename}[] = { ${filedata} };\n")
-        file(APPEND ${output} "const uint64_t ${filename}_size = sizeof(${filename});")
+        file(APPEND ${output} "const uint64_t ${filename}_size = sizeof(${filename});\n\n")
     endforeach()
 endfunction()

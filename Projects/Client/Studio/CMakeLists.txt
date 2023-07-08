@@ -1,8 +1,10 @@
 project(Studio)
 
-create_resources(Resource ${CMAKE_BINARY_DIR}/StudioResources.hpp)
+create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/StudioResources.hpp)
 
 qt_add_executable(Studio
+    ${CMAKE_BINARY_DIR}/Resources/StudioResources.hpp
+
     Header/MainWindow.hpp
 
     Source/main.cpp

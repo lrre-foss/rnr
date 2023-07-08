@@ -1,5 +1,7 @@
 project(Engine)
 
+include_directories(Engine/Header)
+
 add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
@@ -18,4 +20,5 @@ add_library(Engine STATIC
     Source/Rendering/Adorn.cpp
 )
 
+target_include_directories(Engine PUBLIC Header)
 target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} cglm Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
