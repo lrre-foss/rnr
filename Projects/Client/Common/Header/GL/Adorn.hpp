@@ -8,5 +8,5 @@ namespace GL
     {
         public:
             Adorn();
-    }
+    };
 }

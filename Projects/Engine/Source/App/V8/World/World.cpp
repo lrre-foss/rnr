@@ -19,7 +19,7 @@ namespace RNR
 
     double World::step(float timestep)
     {
-        //
+        return 0.0;
     }
 
     void World::update()

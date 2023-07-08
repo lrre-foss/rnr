@@ -1,8 +1,8 @@
-#include <App/Helpers/Strings.hpp>
+#include <Helpers/Strings.hpp>
 
 namespace RNR
 {
-    static uint8_t Strings::random_char()
+    uint8_t Strings::random_char()
     {
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -10,7 +10,7 @@ namespace RNR
         return static_cast<uint8_t>(dis(gen));
     }
 
-    static std::string Strings::random_hex(const uint64_t length)
+    std::string Strings::random_hex(const uint64_t length)
     {
         std::stringstream result;
 

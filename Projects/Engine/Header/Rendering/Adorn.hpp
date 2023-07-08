@@ -4,7 +4,7 @@
 
 #include <cglm/cglm.h>
 
-#include <App/Rendering/TextureProxyBase.hpp>
+#include <Rendering/TextureProxyBase.hpp>
 
 namespace RNR
 {

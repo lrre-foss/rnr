@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <App/Helpers/Strings.hpp>
+#include <Helpers/Strings.hpp>
 
 namespace RNR
 {

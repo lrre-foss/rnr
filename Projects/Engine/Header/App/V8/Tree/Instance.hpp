@@ -5,7 +5,7 @@
 
 #include <boost/shared_ptr.hpp>
 
-#include <App/Helpers/Name.hpp>
+#include <Helpers/Name.hpp>
 
 namespace RNR
 {

@@ -2,12 +2,12 @@
 
 namespace RNR
 {
-    void ForceField::ForceField()
+    ForceField::ForceField()
     {
         //
     }
 
-    void ForceField::~ForceField()
+    ForceField::~ForceField()
     {
         //
     }

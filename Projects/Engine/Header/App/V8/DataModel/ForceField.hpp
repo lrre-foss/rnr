@@ -1,5 +1,8 @@
 #pragma once
 
+#include <boost/shared_ptr.hpp>
+
+#include <App/V8/Tree/Instance.hpp>
 #include <Rendering/Adorn.hpp>
 
 namespace RNR
@@ -11,5 +14,5 @@ namespace RNR
             ~ForceField();
 
             void renderForceField(boost::shared_ptr<RNR::Instance>* descendant, RNR::Adorn* adorn, int cycle);
-    }
+    };
 }
