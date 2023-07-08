@@ -1,16 +1,16 @@
 #include <engine/network/Guid.hpp>
 
-RBX::Guid::Guid()
+RNR::Guid::Guid()
 {
 
 }
 
-void RBX::Guid::compare(RBX::Guid* a, RBX::Guid* b)
+void RNR::Guid::compare(RNR::Guid* a, RNR::Guid* b)
 {
 
 }
 
-void RBX::Guid::generateGUID(std::string* result)
+void RNR::Guid::generateGUID(std::string* result)
 {
 
 }

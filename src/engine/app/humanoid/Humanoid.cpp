@@ -1,6 +1,6 @@
 #include <engine/app/humanoid/Humanoid.hpp>
 
-RBX::Humanoid::Humanoid()
+RNR::Humanoid::Humanoid()
 {
     this->setName("Humanoid");
 }

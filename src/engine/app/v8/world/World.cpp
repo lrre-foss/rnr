@@ -1,21 +1,21 @@
 #include <engine/app/v8/world/World.hpp>
 
-RBX::World::World()
+RNR::World::World()
 {
 
 }
 
-void RBX::World::preStep()
+void RNR::World::preStep()
 {
 
 }
 
-double RBX::World::step(float timestep)
+double RNR::World::step(float timestep)
 {
 
 }
 
-void RBX::World::update()
+void RNR::World::update()
 {
     
 }

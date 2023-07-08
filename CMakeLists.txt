@@ -7,9 +7,9 @@ project(player)
 project(server)
 project(studio)
 
-option(COMPILE_PLAYER "Compile the RBXNU Player" ON)
-option(COMPILE_SERVER "Compile the RBXNU Server" ON)
-option(COMPILE_STUDIO "Compile the RBXNU Studio" ON)
+option(COMPILE_PLAYER "Compile the RNR Player" ON)
+option(COMPILE_SERVER "Compile the RNR Server" ON)
+option(COMPILE_STUDIO "Compile the RNR Studio" ON)
 
 find_package(Boost REQUIRED)
 find_package(cglm REQUIRED CONFIG)
@@ -47,8 +47,8 @@ if(COMPILE_PLAYER OR COMPILE_STUDIO)
     qt_standard_project_setup()
 
     qt_add_library(qt_common STATIC
-        src/client/common/RBXNUGraphicsWidget.cpp
-        src/include/client/common/RBXNUGraphicsWidget.hpp
+        src/client/common/RNRGraphicsWidget.cpp
+        src/include/client/common/RNRGraphicsWidget.hpp
         src/client/common/Adorn.cpp
         src/include/client/common/Adorn.hpp
     )

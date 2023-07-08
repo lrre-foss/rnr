@@ -2,7 +2,7 @@
 
 #include <QMainWindow>
 #include <QTreeWidget>
-#include <client/common/RBXNUGraphicsWidget.hpp>
+#include <client/common/RNRGraphicsWidget.hpp>
 #include <QTimer>
 
 class StudioWindow : public QMainWindow
@@ -12,7 +12,7 @@ class StudioWindow : public QMainWindow
     public:
         StudioWindow();
 
-        RBXNUGraphicsWidget* graphics_widget;
+        RNRGraphicsWidget* graphics_widget;
         QTreeWidget* datamodel_tree;
     protected:
         void closeEvent(QCloseEvent* event);

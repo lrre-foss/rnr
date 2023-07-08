@@ -1,27 +1,27 @@
 #include <engine/app/v8/tree/Instance.hpp>
 #include <stdexcept>
 
-RBX::Instance::Instance()
+RNR::Instance::Instance()
 {
 
 }
 
-RBX::Instance::Instance(std::string name)
+RNR::Instance::Instance(std::string name)
 {
 
 }
 
-bool RBX::Instance::contains(RBX::Instance* child)
+bool RNR::Instance::contains(RNR::Instance* child)
 {
-    auto child_it = std::find(m_children.begin(), m_children.end(), (boost::shared_ptr<RBX::Instance>)child);            
+    auto child_it = std::find(m_children.begin(), m_children.end(), (boost::shared_ptr<RNR::Instance>)child);            
     if(child_it != m_children.end())
         return true;
     return false;
 }
 
-bool RBX::Instance::isAncestorOf(RBX::Instance* instance)
+bool RNR::Instance::isAncestorOf(RNR::Instance* instance)
 {
-    RBX::Instance* instance_parent = instance->m_parent;
+    RNR::Instance* instance_parent = instance->m_parent;
     while(instance_parent != 0)
     {
         instance_parent = instance_parent->m_parent;
@@ -31,22 +31,22 @@ bool RBX::Instance::isAncestorOf(RBX::Instance* instance)
     return false;
 }
 
-bool RBX::Instance::askSetParent(RBX::Instance* instance)
+bool RNR::Instance::askSetParent(RNR::Instance* instance)
 {
     return true;
 }
 
-bool RBX::Instance::canSetParent(RBX::Instance* instance)
+bool RNR::Instance::canSetParent(RNR::Instance* instance)
 {
     return !instance || instance->canAddChild(this);
 }
 
-bool RBX::Instance::askAddChild(RBX::Instance* instance)
+bool RNR::Instance::askAddChild(RNR::Instance* instance)
 {
     return true;
 }
 
-bool RBX::Instance::canAddChild(RBX::Instance* instance)
+bool RNR::Instance::canAddChild(RNR::Instance* instance)
 {
     if(instance->contains(this) || instance->m_parent == this)
         return false;
@@ -55,7 +55,7 @@ bool RBX::Instance::canAddChild(RBX::Instance* instance)
     return instance->askSetParent(this);
 }
 
-void RBX::Instance::setName(std::string name)
+void RNR::Instance::setName(std::string name)
 {
     if(name != this->m_name)
     {
@@ -64,7 +64,7 @@ void RBX::Instance::setName(std::string name)
     }
 }
 
-void RBX::Instance::setParent(RBX::Instance* newParent)
+void RNR::Instance::setParent(RNR::Instance* newParent)
 {
     if(newParent != m_parent)
     {
@@ -82,8 +82,8 @@ void RBX::Instance::setParent(RBX::Instance* newParent)
 
         if(m_parent)
         {
-            std::vector<boost::shared_ptr<RBX::Instance>>* children = m_parent->getChildren();
-            auto child_it = std::find(children->begin(), children->end(), (boost::shared_ptr<RBX::Instance>)this);            
+            std::vector<boost::shared_ptr<RNR::Instance>>* children = m_parent->getChildren();
+            auto child_it = std::find(children->begin(), children->end(), (boost::shared_ptr<RNR::Instance>)this);            
             if(child_it != children->end())
                 children->erase(child_it);
             if(m_parent->numChildren() == 0)
@@ -93,12 +93,12 @@ void RBX::Instance::setParent(RBX::Instance* newParent)
         }
 
         m_parent = newParent;
-        m_parent->m_children.push_back((boost::shared_ptr<RBX::Instance>)this);
+        m_parent->m_children.push_back((boost::shared_ptr<RNR::Instance>)this);
         newParent->onChildAdded(this);
     }
 }
 
-void RBX::Instance::onChildAdded(RBX::Instance* childAdded)
+void RNR::Instance::onChildAdded(RNR::Instance* childAdded)
 {
 
 }

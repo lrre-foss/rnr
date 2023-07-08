@@ -6,7 +6,7 @@
 
 // TODO: add G3D
 
-namespace RBX
+namespace RNR
 {
     // 2d rendering api
     class Adorn

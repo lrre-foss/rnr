@@ -2,7 +2,7 @@
 
 #include <engine/app/v8/tree/Instance.hpp>
 
-namespace RBX
+namespace RNR
 {
     class Humanoid : Instance
     {

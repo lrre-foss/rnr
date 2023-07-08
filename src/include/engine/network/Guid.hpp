@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace RBX
+namespace RNR
 {
     class Guid
     {
@@ -10,6 +10,6 @@ namespace RBX
         Guid();
 
         static void generateGUID(std::string *result);
-        static void compare(RBX::Guid* a, RBX::Guid* b);
+        static void compare(RNR::Guid* a, RNR::Guid* b);
     };
 }

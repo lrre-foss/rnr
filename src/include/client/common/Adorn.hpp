@@ -6,7 +6,7 @@
 namespace GL
 {
     // 2d rendering api
-    class Adorn : public RBX::Adorn
+    class Adorn : public RNR::Adorn
     {
     public:
         Adorn();

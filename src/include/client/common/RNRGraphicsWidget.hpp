@@ -5,12 +5,12 @@
 #include <QElapsedTimer>
 #include <client/common/Adorn.hpp>
 
-class RBXNUGraphicsWidget : public QOpenGLWidget
+class RNRGraphicsWidget : public QOpenGLWidget
 {
     Q_OBJECT
 
 public:
-    RBXNUGraphicsWidget(QWidget* parent = nullptr);
+    RNRGraphicsWidget(QWidget* parent = nullptr);
 
     double delta_time;
 

@@ -2,7 +2,7 @@
 
 #include <engine/app/gui/Adorn.hpp>
 
-namespace RBX
+namespace RNR
 {
-    void renderForceField(boost::shared_ptr<RBX::Instance> *descendant, RBX::Adorn *adorn, int cycle);
+    void renderForceField(boost::shared_ptr<RNR::Instance> *descendant, RNR::Adorn *adorn, int cycle);
 }

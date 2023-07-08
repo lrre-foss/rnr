@@ -4,7 +4,7 @@
 
 StudioWindow::StudioWindow()
 {
-    setWindowTitle(QString("RBXNU Studio"));
+    setWindowTitle(QString("RNR Studio"));
 
     QPixmap icon_pixmap = QPixmap();
     icon_pixmap.loadFromData(icon_png, icon_png_size);
@@ -12,7 +12,7 @@ StudioWindow::StudioWindow()
     QWidget *content_widget = new QWidget();
     QGridLayout* grid = new QGridLayout();
 
-    this->graphics_widget = new RBXNUGraphicsWidget();
+    this->graphics_widget = new RNRGraphicsWidget();
 
     grid->addWidget(this->graphics_widget, 0, 0, 1, 1);
 
