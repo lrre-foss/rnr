@@ -1,7 +1,9 @@
 # RNR
+[![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
+
 RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with extra features while remaining fully compatible with clients from that era.
 
-Interested in contributing? [Feel free to make a pull request!](https://github.com/kiseki-lol/RNR/pulls)
+Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
 
 # Goals
 There are several goals that RNR seeks to achieve, those being;
@@ -11,7 +13,7 @@ There are several goals that RNR seeks to achieve, those being;
 - Fully compatible with Roblox versions up to 0.3.744.0 (dated April 2008) in areas such as hosting, joining, levels, etc.
 - Incorporates all the various facets of the Roblox engine, plus a little bit extra (e.g. a network replication whitelist, fancy shader support, etc.)
 - Made with clean-room reverse engineering
-- Uses Roblox's [Luau](https://github.com/roblox/luau) as its scripting language while remaining fully compatible with classic Roblox scripts written using Lua 5.1
+- Uses Roblox's [Luau](https://github.com/roblox/luau) as its scripting language while remaining fully compatible with classic Roblox scripts written using Lua 5.1 at the same time
 - As free and open-source as is possible (with client code being licensed under the GPL and the engine itself released into the public domain, void of any copyright)
 - Patching all the security vulnerabilities and fixing bugs/inefficiencies that legacy Roblox clients had
 - Quick build times
