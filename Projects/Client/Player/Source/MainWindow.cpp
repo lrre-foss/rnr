@@ -1,4 +1,5 @@
 #include <MainWindow.hpp>
+#include "Resources/PlayerResources.hpp"
 
 MainWindow::MainWindow()
 {

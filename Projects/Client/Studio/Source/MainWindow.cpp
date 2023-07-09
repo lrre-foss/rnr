@@ -1,5 +1,6 @@
 #include <MainWindow.hpp>
 #include <QGridLayout>
+
 #include "Resources/StudioResources.hpp"
 
 MainWindow::MainWindow()
