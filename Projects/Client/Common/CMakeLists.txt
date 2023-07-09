@@ -2,6 +2,7 @@ add_subdirectory(${DEPENDENCIES_DIR}/GLAD ${CMAKE_BINARY_DIR}/Dependencies/GLAD)
 
 project(Common)
 
+set(CMAKE_AUTOMOC ON)
 set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets GLAD)
 
 qt_standard_project_setup()

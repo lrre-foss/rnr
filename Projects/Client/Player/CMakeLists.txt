@@ -2,6 +2,8 @@ project(Player)
 
 create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/PlayerResources.hpp)
 
+set(CMAKE_AUTOMOC ON)
+
 qt_add_executable(Player
     ${CMAKE_BINARY_DIR}/Resources/PlayerResources.hpp
 

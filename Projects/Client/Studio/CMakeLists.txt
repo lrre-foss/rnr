@@ -2,6 +2,8 @@ project(Studio)
 
 create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/StudioResources.hpp)
 
+set(CMAKE_AUTOMOC ON)
+
 qt_add_executable(Studio
     ${CMAKE_BINARY_DIR}/Resources/StudioResources.hpp
 
