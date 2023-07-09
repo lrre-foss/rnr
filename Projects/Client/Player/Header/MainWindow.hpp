@@ -11,4 +11,4 @@ class MainWindow : public QMainWindow
 
     protected:
         void closeEvent(QCloseEvent* event);
-}
+};

@@ -1,8 +1,9 @@
 #pragma once
 
+#include <glad/glad.h>
+
 #include <QOpenGLWidget>
 #include <QElapsedTimer>
-#include <glad/glad.h>
 
 #include <GL/Adorn.hpp>
 

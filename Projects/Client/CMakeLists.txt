@@ -1,3 +1,5 @@
+include_directories(${CMAKE_BINARY_DIR})
+
 if(COMPILE_PLAYER OR COMPILE_STUDIO)
     find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
     add_subdirectory(Common)

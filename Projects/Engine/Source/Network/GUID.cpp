@@ -1,4 +1,4 @@
-#include <Network/Guid.hpp>
+#include <Network/GUID.hpp>
 
 namespace RNR
 {

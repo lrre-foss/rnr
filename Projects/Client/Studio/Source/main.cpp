@@ -21,6 +21,6 @@ int main(int argc, char** argv)
     while (running)
     {
         app.processEvents();
-        window.graphics_widget->update();
+        window.widget->update();
     }
 }
