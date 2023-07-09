@@ -1,7 +1,7 @@
 # RNR
 [![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
 
-RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own engine at the time, referencing disassemblies and decompilations of old client binaries.
+RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own engine at the time, referencing disassemblies of legacy client binaries.
 
 Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
 
