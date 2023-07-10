@@ -13,6 +13,11 @@ qt_add_executable(Player
     Source/MainWindow.cpp
 )
 
+add_custom_command(TARGET Player POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:Player> $<TARGET_RUNTIME_DLLS:Player>
+    COMMAND_EXPAND_LISTS
+)
+
 target_include_directories(Player PRIVATE Header)
 target_link_libraries(Player PRIVATE Common Engine)
 
