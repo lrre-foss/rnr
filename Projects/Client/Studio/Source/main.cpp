@@ -18,18 +18,18 @@ int main(int argc, char** argv)
     MainWindow window = MainWindow();
 
     window.show();
-    window.widget->initializeOgre();
+    window.ogreWidget->initializeOgre();
 
     RNR::World* world = new RNR::World();
     window.updateTree(world->getDatamodel());
 
     while (window.isVisible())
     {
-        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f", window.widget->delta, window.widget->render_time));
+        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f", window.ogreWidget->delta, window.ogreWidget->render_time));
         app.processEvents();
-        window.widget->render();
+        window.ogreWidget->render();
         world->preStep();
-        world->step(window.widget->delta);
+        world->step(window.ogreWidget->delta);
         world->update();
     }
 }

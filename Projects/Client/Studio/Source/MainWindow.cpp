@@ -25,8 +25,8 @@ MainWindow::MainWindow()
 
     createToolbar();
 
-    this->widget = new GL::Widget(ogreRoot);
-    grid->addWidget(this->widget, 2, 0, 1, 2);
+    this->ogreWidget = new RNR::OgreWidget(ogreRoot);
+    grid->addWidget(this->ogreWidget, 2, 0, 1, 2);
     
     explorer = new QTreeWidget();
     grid->addWidget(explorer, 2, 2, 1, 1);

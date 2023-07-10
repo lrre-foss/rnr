@@ -8,7 +8,7 @@
 #include <QToolBar>
 #include <QMenuBar>
 
-#include <GL/Widget.hpp>
+#include <OgreWidget.hpp>
 
 class MainWindow : public QMainWindow
 {
@@ -18,13 +18,14 @@ class MainWindow : public QMainWindow
         MainWindow();
 
         Ogre::Root* ogreRoot;
-        GL::Widget* widget;
+        RNR::OgreWidget* ogreWidget;
         QTreeWidget* explorer;
         QToolBar* toolbar;
         QMenuBar* menubar;
 
         void createToolbar();
         void updateTree(RNR::Instance* root_instance);
+
     protected:
         void recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance);
         void closeEvent(QCloseEvent* event);

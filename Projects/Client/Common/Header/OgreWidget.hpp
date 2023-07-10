@@ -11,14 +11,14 @@
 
 #include <GL/Adorn.hpp>
 
-namespace GL
+namespace RNR
 {
-    class Widget : public QWidget
+    class OgreWidget : public QWidget
     {
         Q_OBJECT
 
         public:
-            Widget(Ogre::Root *root, QWidget* parent = nullptr);
+            OgreWidget(Ogre::Root *root, QWidget* parent = nullptr);
 
             double delta;
             double render_time;
@@ -42,6 +42,7 @@ namespace GL
             virtual void mouseMoveEvent(QMouseEvent *event);
             virtual void closeEvent(QCloseEvent* event);
             virtual QPaintEngine* paintEngine() const;
+            
         private:
             QElapsedTimer timer;
     };

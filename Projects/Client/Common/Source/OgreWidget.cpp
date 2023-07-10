@@ -1,4 +1,4 @@
-#include <GL/Widget.hpp>
+#include <OgreWidget.hpp>
 #include <QApplication>
 
 #ifdef __unix__
@@ -7,9 +7,9 @@
 #endif
 
 // credits to https://github.com/Ekman/Qt-Ogre-Widget
-namespace GL
+namespace RNR
 {
-    Widget::Widget(Ogre::Root *root, QWidget *parent) : QWidget(parent)
+    OgreWidget::OgreWidget(Ogre::Root *root, QWidget *parent) : QWidget(parent)
     {
         this->ogreRoot = root;
         this->setMinimumSize(640, 480);
@@ -22,7 +22,7 @@ namespace GL
         this->setFocusPolicy(Qt::StrongFocus);
     }
 
-    void Widget::initializeOgre()
+    void OgreWidget::initializeOgre()
     {
         Ogre::NameValuePairList options = this->getRenderOptions();
 
@@ -64,7 +64,7 @@ namespace GL
         this->render_time = 0.0;
     }
 
-    void Widget::render()
+    void OgreWidget::render()
     {
         this->delta = ogreRoot->getTimer()->getMicroseconds() / 1000000.0;
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
@@ -75,7 +75,7 @@ namespace GL
         ogreRoot->renderOneFrame(this->delta);
     }
 
-    Ogre::NameValuePairList Widget::getRenderOptions()
+    Ogre::NameValuePairList OgreWidget::getRenderOptions()
     {
         Ogre::NameValuePairList options;
 
@@ -88,7 +88,7 @@ namespace GL
         return options;
     }
 
-    Ogre::String Widget::getWindowHandle()
+    Ogre::String OgreWidget::getWindowHandle()
     {
         Ogre::String windowHandle;
         windowHandle = Ogre::StringConverter::toString((unsigned long)winId());
@@ -96,7 +96,7 @@ namespace GL
         return windowHandle;
     }
 
-    void Widget::resizeEvent(QResizeEvent *rEvent)
+    void OgreWidget::resizeEvent(QResizeEvent *rEvent)
     {
         QWidget::resizeEvent(rEvent);
         if(ogreWindow)
@@ -106,20 +106,21 @@ namespace GL
         }
     }
 
-    void Widget::paintEvent(QPaintEvent *pEvent)
+    void OgreWidget::paintEvent(QPaintEvent *pEvent)
+    {
+        //
+    }
+
+    void OgreWidget::mouseMoveEvent(QMouseEvent *mEvent)
     {
     }
 
-    void Widget::mouseMoveEvent(QMouseEvent *mEvent)
-    {
-    }
-
-    void Widget::closeEvent(QCloseEvent* event)
+    void OgreWidget::closeEvent(QCloseEvent* event)
     {
         ogreWindow->destroy();
     }
 
-    QPaintEngine *Widget::paintEngine() const
+    QPaintEngine* OgreWidget::paintEngine() const
     {
         return 0;
     }
