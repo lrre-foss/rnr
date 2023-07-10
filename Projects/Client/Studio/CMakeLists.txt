@@ -15,3 +15,8 @@ qt_add_executable(Studio
 
 target_include_directories(Studio PRIVATE Header)
 target_link_libraries(Studio PRIVATE Common Engine)
+
+set_target_properties(Studio PROPERTIES
+    WIN32_EXECUTABLE ON
+    MACOSX_BUNDLE ON
+)
