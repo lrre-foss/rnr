@@ -91,7 +91,7 @@ namespace GL
     Ogre::String Widget::getWindowHandle()
     {
         Ogre::String windowHandle;
-        windowHandle = Ogre::StringConverter::toString((unsigned long)window()->winId());
+        windowHandle = Ogre::StringConverter::toString((unsigned long)winId());
         printf("Widget::getWindowHandle(): %s\n", windowHandle.c_str());
         return windowHandle;
     }
