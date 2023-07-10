@@ -14,5 +14,6 @@ set(CMAKE_AUTOMOC ON) # Enable Qt's automatic meta-object compiler
 
 find_package(Boost REQUIRED)
 find_package(cglm REQUIRED CONFIG)
+find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 
 add_subdirectory(Projects)

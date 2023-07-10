@@ -1,6 +1,5 @@
 project(Engine)
 
-include_directories(Engine/Header)
 
 add_library(Engine STATIC
     Header/Helpers/Name.hpp
@@ -20,5 +19,8 @@ add_library(Engine STATIC
     Source/Rendering/Adorn.cpp
 )
 
-target_include_directories(Engine PUBLIC Header)
-target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} cglm Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
+target_include_directories(Engine PUBLIC ${BOOST_INCLUDE_DIRS} Header/)
+target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} OgreBites cglm Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
+
+file(COPY ${OGRE_CONFIG_DIR}/plugins.cfg ${OGRE_CONFIG_DIR}/resources.cfg
+     DESTINATION ${CMAKE_BINARY_DIR})

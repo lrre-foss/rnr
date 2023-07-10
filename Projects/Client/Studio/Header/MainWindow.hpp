@@ -13,9 +13,9 @@ class MainWindow : public QMainWindow
     public:
         MainWindow();
 
+        Ogre::Root* ogreRoot;
         GL::Widget* widget;
         QTreeWidget* explorer;
-
     protected:
         void closeEvent(QCloseEvent* event);
 };
