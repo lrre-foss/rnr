@@ -8,6 +8,7 @@
 #include <QElapsedTimer>
 #include <QResizeEvent>
 #include <OGRE/Ogre.h>
+#include <OGRE/RTShaderSystem/OgreShaderGenerator.h>
 
 #include <GL/Adorn.hpp>
 
@@ -29,6 +30,7 @@ namespace RNR
             Ogre::RenderWindow* ogreWindow;
             Ogre::SceneManager* ogreSceneManager;
             Ogre::Camera* ogreCamera;
+            Ogre::RTShader::ShaderGenerator* ogreShaderGen;
 
             void render();
             void initializeOgre();

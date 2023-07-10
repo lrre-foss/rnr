@@ -1,6 +1,9 @@
 #include <OgreWidget.hpp>
 #include <QApplication>
 
+#include <OGRE/Bites/OgreSGTechniqueResolverListener.h>
+#include <OGRE/OgreDefaultDebugDrawer.h>
+
 #ifdef __unix__
 #include <qpa/qplatformnativeinterface.h>
 #include <X11/Xlib.h>
@@ -26,7 +29,7 @@ namespace RNR
     {
         Ogre::NameValuePairList options = this->getRenderOptions();
 
-        printf("Widget::initializeOgre: initializing render window\n");
+        printf("OgreWidget::initializeOgre: initializing render window\n");
         ogreWindow = ogreRoot->createRenderWindow("GLWidget-RenderWindow", width(), height(), false, &options);
         ogreWindow->setActive(true);
         ogreWindow->setVisible(true);
@@ -34,16 +37,26 @@ namespace RNR
 
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content/OgreInternal", "FileSystem", Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME, true);
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/OgreInternal", "FileSystem", Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME, true);
 
         Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
         Ogre::MaterialManager::getSingletonPtr()->load("sky", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        Ogre::MaterialManager::getSingletonPtr()->load("materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
         ogreSceneManager = ogreRoot->createSceneManager();
         ogreSceneManager->setSkyBox(true, "sky/null_plainsky512", 5.f);
         ogreSceneManager->setAmbientLight(Ogre::ColourValue::White);
 
-        //Ogre::RTShader::ShaderGenerator* shadergen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
-        //shadergen->addSceneManager(ogreSceneManager);
+        if(Ogre::RTShader::ShaderGenerator::initialize())
+        {
+            ogreShaderGen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+            ogreShaderGen->addSceneManager(ogreSceneManager);
+            OgreBites::SGTechniqueResolverListener* schemeNotFoundHandler = new OgreBites::SGTechniqueResolverListener(ogreShaderGen);
+            Ogre::MaterialManager::getSingleton().addListener(schemeNotFoundHandler);
+        }
+        else
+            printf("OgreWidget::initializeOgre: unable to initialize ShaderGenerator\n");
 
         Ogre::Light* light = ogreSceneManager->createLight("MainLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
@@ -70,8 +83,8 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        ogreCamera->getParentSceneNode()->lookAt(Ogre::Vector3(sinf(render_time)*5.f, cosf(render_time)*5.f, 0.f), Ogre::Node::TS_PARENT);
-
+        ogreCamera->getParentSceneNode()->lookAt(Ogre::Vector3(sinf(this->render_time)*10.f,0,cosf(this->render_time)*10.f), Ogre::Node::TS_PARENT);
+        
         ogreRoot->renderOneFrame(this->delta);
     }
 
@@ -92,7 +105,7 @@ namespace RNR
     {
         Ogre::String windowHandle;
         windowHandle = Ogre::StringConverter::toString((unsigned long)winId());
-        printf("Widget::getWindowHandle(): %s\n", windowHandle.c_str());
+        printf("OgreWidget::getWindowHandle(): %s\n", windowHandle.c_str());
         return windowHandle;
     }
 

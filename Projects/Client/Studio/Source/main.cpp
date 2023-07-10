@@ -21,6 +21,10 @@ int main(int argc, char** argv)
     window.ogreWidget->initializeOgre();
 
     RNR::World* world = new RNR::World();
+    Ogre::SceneNode* workspace_node = window.ogreWidget->ogreSceneManager->createSceneNode("Workspace");
+    workspace_node->attachObject(world->getWorkspace());
+    workspace_node->setVisible(true);
+    printf("main: workspace = %p (%p)\n",workspace_node, world->getWorkspace());
     window.updateTree(world->getDatamodel());
 
     while (window.isVisible())

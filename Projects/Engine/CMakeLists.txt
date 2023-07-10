@@ -6,8 +6,12 @@ add_library(Engine STATIC
     Header/Helpers/Strings.hpp
     Header/App/Humanoid/Humanoid.hpp
     Header/App/V8/DataModel/ForceField.hpp
+    Header/App/V8/DataModel/BasePart.hpp
     Header/App/V8/Tree/Instance.hpp
+    Header/App/V8/Tree/PVInstance.hpp
     Header/App/V8/World/World.hpp
+    Header/App/V8/World/Workspace.hpp
+    Header/App/CoordinateFrame.hpp
     Header/Network/GUID.hpp
     Header/Rendering/Adorn.hpp
 
@@ -15,8 +19,12 @@ add_library(Engine STATIC
     Source/Helpers/Strings.cpp
     Source/App/Humanoid/Humanoid.cpp
     Source/App/V8/DataModel/ForceField.cpp
+    Source/App/V8/DataModel/BasePart.cpp
     Source/App/V8/Tree/Instance.cpp
+    Source/App/V8/Tree/PVInstance.cpp    
+    Source/App/CoordinateFrame.cpp
     Source/App/V8/World/World.cpp
+    Source/App/V8/World/Workspace.cpp
     Source/Network/GUID.cpp
     Source/Rendering/Adorn.cpp
 )

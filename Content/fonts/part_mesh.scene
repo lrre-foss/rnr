@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- exporter: blender2ogre 0.8.3 -->
+<!-- export_time: Mon, 10 Jul 2023 21:20:16 +0000 -->
+<scene author="caesium" formatVersion="1.1" >
+  <nodes >
+    <node name="FormFactor_Brick" >
+      <position x="0.000000" y="0.000000" z="0.000000" />
+      <rotation qw="1.000000" qx="0.000000" qy="0.000000" qz="0.000000" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <entity meshFile="Cube.mesh" name="FormFactor_Brick" >
+        <userData />
+      </entity>
+    </node>
+    <node name="Camera" >
+      <position x="7.358891" y="-6.925791" z="4.958309" />
+      <rotation qw="0.780483" qx="0.483536" qy="0.208704" qz="0.336872" />
+      <scale x="1.000000" y="1.000000" z="1.000000" />
+      <camera fov="0.356186" name="Camera" projectionType="perspective" >
+        <clipping far="100.000000" near="0.100000" />
+      </camera>
+    </node>
+  </nodes>
+  <externals >
+    <item type="material" >
+      <file name="Material.material" />
+    </item>
+  </externals>
+  <environment >
+    <colourBackground b="0.050876" g="0.050876" r="0.050876" />
+  </environment>
+</scene>

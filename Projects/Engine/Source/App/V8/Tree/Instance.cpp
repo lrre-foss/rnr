@@ -8,22 +8,21 @@ namespace RNR
         setName("Instance");
     }
 
-    Instance::Instance(std::string name)
+    Instance::~Instance()
     {
-        m_parent = 0;
-        setName(name);
+        setParent(NULL);
     }
 
-    bool Instance::contains(RNR::Instance* child)
+    bool Instance::contains(Instance* child)
     {
         auto child_it = std::find(m_children.begin(), m_children.end(), child);            
 
         return child_it != m_children.end();
     }
 
-    bool RNR::Instance::isAncestorOf(RNR::Instance* instance)
+    bool Instance::isAncestorOf(Instance* instance)
     {
-        RNR::Instance* instance_parent = instance->m_parent;
+        Instance* instance_parent = instance->m_parent;
         while (instance_parent != 0)
         {
             instance_parent = instance_parent->m_parent;
@@ -35,22 +34,22 @@ namespace RNR
         return false;
     }
 
-    bool RNR::Instance::askSetParent(RNR::Instance* instance)
+    bool Instance::askSetParent(Instance* instance)
     {
         return true;
     }
 
-    bool RNR::Instance::canSetParent(RNR::Instance* instance)
+    bool Instance::canSetParent(Instance* instance)
     {
         return !instance || instance->canAddChild(this);
     }
 
-    bool RNR::Instance::askAddChild(RNR::Instance* instance)
+    bool Instance::askAddChild(Instance* instance)
     {
         return true;
     }
 
-    bool RNR::Instance::canAddChild(RNR::Instance* instance)
+    bool Instance::canAddChild(Instance* instance)
     {
         if (instance->contains(this) || instance->m_parent == this)
             return false;
@@ -61,7 +60,7 @@ namespace RNR
         return instance->askSetParent(this);
     }
 
-    void RNR::Instance::setName(std::string name)
+    void Instance::setName(std::string name)
     {
         if (name != this->m_name)
         {
@@ -70,7 +69,7 @@ namespace RNR
         }
     }
 
-    void RNR::Instance::setParent(RNR::Instance* newParent)
+    void Instance::setParent(Instance* newParent)
     {
         if (newParent != m_parent)
         {
@@ -88,7 +87,7 @@ namespace RNR
 
             if (m_parent)
             {
-                std::vector<RNR::Instance*>* children = m_parent->getChildren();
+                std::vector<Instance*>* children = m_parent->getChildren();
                 auto child_it = std::find(children->begin(), children->end(), this);
 
                 if (child_it != children->end())
@@ -101,12 +100,15 @@ namespace RNR
             }
 
             m_parent = newParent;
-            m_parent->m_children.push_back(this);
-            newParent->onChildAdded(this);
+            if(m_parent)
+            {
+                m_parent->m_children.push_back(this);
+                newParent->onChildAdded(this);
+            }
         }
     }
 
-    void RNR::Instance::onChildAdded(RNR::Instance* childAdded)
+    void Instance::onChildAdded(Instance* childAdded)
     {
         //
     }

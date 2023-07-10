@@ -2,6 +2,8 @@
 #include <QGridLayout>
 #include <QTreeView>
 #include <QVariant>
+#include <OGRE/Bites/OgreBitesConfigDialog.h>
+
 
 #include "Resources/StudioResources.hpp"
 
@@ -14,7 +16,8 @@ MainWindow::MainWindow()
     QGridLayout* grid = new QGridLayout();
 
     ogreRoot = new Ogre::Root();
-    ogreRoot->showConfigDialog(NULL);
+    Ogre::ConfigDialog* config = OgreBites::getNativeConfigDialog();
+    ogreRoot->showConfigDialog(config);
     ogreRoot->initialise(false);
     
     menubar = new QMenuBar();

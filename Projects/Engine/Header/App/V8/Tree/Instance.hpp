@@ -19,7 +19,6 @@ namespace RNR
         
         public:
             Instance();
-            Instance(std::string name);
             ~Instance();
             
             bool contains(RNR::Instance* child);
