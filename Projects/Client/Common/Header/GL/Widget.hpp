@@ -40,6 +40,7 @@ namespace GL
             virtual void paintEvent(QPaintEvent* pEvent);
             virtual void resizeEvent(QResizeEvent* rEvent);
             virtual void mouseMoveEvent(QMouseEvent *event);
+            virtual void closeEvent(QCloseEvent* event);
             virtual QPaintEngine* paintEngine() const;
         private:
             QElapsedTimer timer;

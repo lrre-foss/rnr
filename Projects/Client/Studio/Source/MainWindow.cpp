@@ -1,6 +1,7 @@
 #include <MainWindow.hpp>
 #include <QGridLayout>
 #include <QTreeView>
+#include <QVariant>
 
 #include "Resources/StudioResources.hpp"
 
@@ -17,10 +18,10 @@ MainWindow::MainWindow()
     ogreRoot->initialise(false);
     
     menubar = new QMenuBar();
-    grid->addWidget(menubar, 0, 0, 1, 1);
+    grid->addWidget(menubar, 0, 0, 1, 2);
 
     toolbar = new QToolBar();
-    grid->addWidget(toolbar, 1, 0, 1, 1);
+    grid->addWidget(toolbar, 1, 0, 1, 2);
 
     createToolbar();
 
@@ -35,10 +36,34 @@ MainWindow::MainWindow()
     grid->setContentsMargins(0, 0, 0, 0);
     grid->setSpacing(0);
 
-
     setWindowTitle(QString("RNR Studio"));
     setWindowIcon(QIcon(pixmap));
     setCentralWidget(content_widget);
+}
+
+void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance)
+{
+    for(auto& child : *instance->getChildren())
+    {
+        QTreeWidgetItem* instance_w = new QTreeWidgetItem();
+        instance_w->setText(0, QString(child->getName().c_str()));
+        instance_w->setData(0, Qt::UserRole, QVariant::fromValue(child));
+        recurseTreeAddInstance(instance_w, child);
+        parent->addChild(instance_w);
+    }
+}
+
+void MainWindow::updateTree(RNR::Instance* root_instance)
+{
+    for(auto& child : *root_instance->getChildren())
+    {
+        QTreeWidgetItem* parent = new QTreeWidgetItem();
+        parent->setData(0, Qt::UserRole, QVariant::fromValue(child));
+        parent->setText(0, QString(child->getName().c_str()));
+
+        recurseTreeAddInstance(parent, child);
+        explorer->addTopLevelItem(parent);
+    }
 }
 
 void MainWindow::createToolbar()

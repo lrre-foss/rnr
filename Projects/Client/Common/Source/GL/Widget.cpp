@@ -114,6 +114,11 @@ namespace GL
     {
     }
 
+    void Widget::closeEvent(QCloseEvent* event)
+    {
+        ogreWindow->destroy();
+    }
+
     QPaintEngine *Widget::paintEngine() const
     {
         return 0;

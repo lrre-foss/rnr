@@ -4,17 +4,19 @@ namespace RNR
 {
     Instance::Instance()
     {
-        //
+        m_parent = 0;
+        setName("Instance");
     }
 
     Instance::Instance(std::string name)
     {
-        //
+        m_parent = 0;
+        setName(name);
     }
 
     bool Instance::contains(RNR::Instance* child)
     {
-        auto child_it = std::find(m_children.begin(), m_children.end(), (boost::shared_ptr<RNR::Instance>)child);            
+        auto child_it = std::find(m_children.begin(), m_children.end(), child);            
 
         return child_it != m_children.end();
     }
@@ -86,8 +88,8 @@ namespace RNR
 
             if (m_parent)
             {
-                std::vector<boost::shared_ptr<RNR::Instance>>* children = m_parent->getChildren();
-                auto child_it = std::find(children->begin(), children->end(), (boost::shared_ptr<RNR::Instance>)this);
+                std::vector<RNR::Instance*>* children = m_parent->getChildren();
+                auto child_it = std::find(children->begin(), children->end(), this);
 
                 if (child_it != children->end())
                     children->erase(child_it);
@@ -99,7 +101,7 @@ namespace RNR
             }
 
             m_parent = newParent;
-            m_parent->m_children.push_back((boost::shared_ptr<RNR::Instance>)this);
+            m_parent->m_children.push_back(this);
             newParent->onChildAdded(this);
         }
     }
