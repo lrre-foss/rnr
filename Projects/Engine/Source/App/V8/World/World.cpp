@@ -3,8 +3,12 @@
 
 namespace RNR
 {
-    World::World()
+    World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager)
     {
+        Instance::setWorld(this);
+
+        m_ogreRoot = ogre;
+        m_ogreSceneManager = ogreSceneManager;
         m_datamodel = new Instance();
         m_datamodel->setName("DataModel");
         m_workspace = new Workspace();

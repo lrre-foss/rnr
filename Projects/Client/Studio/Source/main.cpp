@@ -20,8 +20,8 @@ int main(int argc, char** argv)
     window.show();
     window.ogreWidget->initializeOgre();
 
-    RNR::World* world = new RNR::World();
-    Ogre::SceneNode* workspace_node = window.ogreWidget->ogreSceneManager->createSceneNode("Workspace");
+    RNR::World* world = new RNR::World(window.ogreWidget->ogreRoot, window.ogreWidget->ogreSceneManager);
+    Ogre::SceneNode* workspace_node = window.ogreWidget->ogreSceneManager->getRootSceneNode()->createChildSceneNode();
     workspace_node->attachObject(world->getWorkspace());
     workspace_node->setVisible(true);
     printf("main: workspace = %p (%p)\n",workspace_node, world->getWorkspace());

@@ -6,11 +6,12 @@ namespace RNR
     Workspace::Workspace() : Instance(), Ogre::MovableObject()
     {
         setName("Workspace");
+        m_type = Ogre::String("Entity");
+        m_bbox = Ogre::AxisAlignedBox(-1000,-1000,-1000, 1000,1000,1000);
     }
 
     void Workspace::_updateRenderQueue(Ogre::RenderQueue* queue)
     {
-        printf("!!!!!!!!!!!!!!!!!!!!1 _updateRenderQueue\n");
         std::vector<Instance*>* children = getChildren();
         for(auto& child : *children)
         {
@@ -21,22 +22,24 @@ namespace RNR
     void Workspace::renderQueueAddInstance(Ogre::RenderQueue* queue, Instance* instance)
     {
         std::vector<Instance*>* children = instance->getChildren();
+        BasePart* rend = dynamic_cast<BasePart*>(instance);        
+        queue->addRenderable(rend);
+
         for(auto& child : *children)
         {
             renderQueueAddInstance(queue, child);
         } 
-        BasePart* rend = dynamic_cast<BasePart*>(instance);        
-        queue->addRenderable(rend);
     }
 
     const Ogre::String& Workspace::getMovableType(void) const
     {
-        return Ogre::String("Entity");
+        printf("Workspace::getMovableType\n");
+        return m_type;
     }
 
     const Ogre::AxisAlignedBox& Workspace::getBoundingBox(void) const
     {
-        return Ogre::AxisAlignedBox(Ogre::Vector3(-1000,-1000,-1000),Ogre::Vector3(1000,1000,1000));
+        return m_bbox;
     }
 
     Ogre::Real Workspace::getBoundingRadius(void) const

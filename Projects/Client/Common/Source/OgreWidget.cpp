@@ -46,7 +46,7 @@ namespace RNR
 
         ogreSceneManager = ogreRoot->createSceneManager();
         ogreSceneManager->setSkyBox(true, "sky/null_plainsky512", 5.f);
-        ogreSceneManager->setAmbientLight(Ogre::ColourValue::White);
+        ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.5f,0.5f,0.5f));
 
         if(Ogre::RTShader::ShaderGenerator::initialize())
         {
@@ -58,10 +58,15 @@ namespace RNR
         else
             printf("OgreWidget::initializeOgre: unable to initialize ShaderGenerator\n");
 
-        Ogre::Light* light = ogreSceneManager->createLight("MainLight");
+        Ogre::Light* light = ogreSceneManager->createLight("SunLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         lightNode->setPosition(0, 10, 15);
+        lightNode->setDirection(-0.25, -0.5, -0.5);
         lightNode->attachObject(light);
+
+        light->setDiffuseColour(0.9, 0.9, 1.0);
+        light->setSpecularColour(1.0, 1.0, 1.0);
+        light->setType(Ogre::Light::LT_DIRECTIONAL);
 
         Ogre::SceneNode* camNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 5);
@@ -83,7 +88,8 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        ogreCamera->getParentSceneNode()->lookAt(Ogre::Vector3(sinf(this->render_time)*10.f,0,cosf(this->render_time)*10.f), Ogre::Node::TS_PARENT);
+        ogreCamera->getParentSceneNode()->setPosition(Ogre::Vector3(sinf(this->render_time)*10,5.f,cosf(this->render_time)*10));
+        ogreCamera->getParentSceneNode()->lookAt(Ogre::Vector3(0,0,0), Ogre::Node::TS_PARENT);
         
         ogreRoot->renderOneFrame(this->delta);
     }

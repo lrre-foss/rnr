@@ -9,9 +9,15 @@
 
 namespace RNR
 {
+    class World;
+
     class Instance
     {
+        protected:
+            static World* world;
+
         private:
+
             std::string m_name;
             RNR::Instance* m_parent;
             std::vector<RNR::Instance*> m_children;
@@ -23,6 +29,8 @@ namespace RNR
             
             bool contains(RNR::Instance* child);
             bool isAncestorOf(RNR::Instance* instance);
+
+            static void setWorld(World* world) { Instance::world = world; }
 
             virtual bool askSetParent(RNR::Instance* instance); // derive this
             bool canSetParent(RNR::Instance* instance);

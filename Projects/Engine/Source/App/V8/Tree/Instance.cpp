@@ -2,6 +2,8 @@
 
 namespace RNR
 {
+    World* Instance::world = 0;
+
     Instance::Instance()
     {
         m_parent = 0;

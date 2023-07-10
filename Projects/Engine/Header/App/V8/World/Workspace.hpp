@@ -18,6 +18,9 @@ namespace RNR
         virtual Ogre::Real getBoundingRadius(void) const;
         virtual void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
     private:
+        Ogre::AxisAlignedBox m_bbox;
+        Ogre::String m_type;
+        
         void renderQueueAddInstance(Ogre::RenderQueue* queue, Instance* instance);
     };
 }
