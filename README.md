@@ -1,18 +1,16 @@
 # RNR
 [![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
 
-RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own engine at the time, referencing disassemblies of legacy client binaries.
+RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
 
 Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
 
 # Goals
 There are several goals that RNR seeks to accomplish, them being;
 - Full native x64 support on Windows and Linux
-- Efficient and powerful renderer built from scratch (with only OpenGL support for the time being)
 - Easy-to-use (simple CLI options to launch and host games, as well as a level editor with a modern UI)
 - Fully compatible with Roblox versions up to 0.3.744.0 (dated April 2008) in areas such as hosting, joining, levels, etc.
 - Incorporates all the various facets of the Roblox engine, plus a little bit extra (e.g. a network replication whitelist, fancy shader support, etc.)
-- Quick build times
 - Made using clean-room reverse engineering
 - Uses Roblox's [Luau](https://luau-lang.org/) as its scripting language while remaining fully compatible with classic Roblox scripts written using Lua 5.1
 - As free and open-source as possible (with client code licensed under the GPL and the engine itself being released into the public domain, void of any copyright)
@@ -22,6 +20,7 @@ There are several goals that RNR seeks to accomplish, them being;
 RNR uses [CMake](https://cmake.org/) as its build system and [GCC](https://gcc.gnu.org/) as its compiler. To build RNR, you must first have the following packages installed:
 - [Boost](https://www.boost.org/)
 - [CGLM](https://github.com/recp/cglm)
+- [Ogre](https://github.com/OGRECave/ogre)
 - [Qt 6](https://www.qt.io/product/qt6) (if building the player or studio projects)
 
 For Windows:
