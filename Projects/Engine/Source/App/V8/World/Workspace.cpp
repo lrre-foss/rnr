@@ -1,54 +1,36 @@
 #include <App/V8/World/Workspace.hpp>
+#include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/BasePart.hpp>
 
 namespace RNR
 {
-    Workspace::Workspace() : Instance(), Ogre::MovableObject()
+    Workspace::Workspace() : Instance()
     {
         setName("Workspace");
-        m_type = Ogre::String("Entity");
-        m_bbox = Ogre::AxisAlignedBox(-1000,-1000,-1000, 1000,1000,1000);
+        m_instMan = world->getOgreSceneManager()->createInstanceManager("workspacePartInstanceManager", "fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
+        m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();
     }
 
-    void Workspace::_updateRenderQueue(Ogre::RenderQueue* queue)
+    void Workspace::build()
     {
-        std::vector<Instance*>* children = getChildren();
-        for(auto& child : *children)
+        for(auto& child : *getChildren())
+            buildChild(child);        
+    }
+
+    void Workspace::buildChild(Instance* child)
+    {
+        for(auto& child2 : *child->getChildren())
+            buildChild(child2);
+        BasePart* child_part = (BasePart*)child;
+        Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)child->getObject();
+        if(!child_ent)
         {
-            renderQueueAddInstance(queue, child);
+            child_ent = m_instMan->createInstancedEntity("fonts/Material");        
+            child_ent->setUserAny(child);
+            child->setObject(child_ent);
         }
-    }
-
-    void Workspace::renderQueueAddInstance(Ogre::RenderQueue* queue, Instance* instance)
-    {
-        std::vector<Instance*>* children = instance->getChildren();
-        BasePart* rend = dynamic_cast<BasePart*>(instance);        
-        queue->addRenderable(rend);
-
-        for(auto& child : *children)
-        {
-            renderQueueAddInstance(queue, child);
-        } 
-    }
-
-    const Ogre::String& Workspace::getMovableType(void) const
-    {
-        printf("Workspace::getMovableType\n");
-        return m_type;
-    }
-
-    const Ogre::AxisAlignedBox& Workspace::getBoundingBox(void) const
-    {
-        return m_bbox;
-    }
-
-    Ogre::Real Workspace::getBoundingRadius(void) const
-    {
-        return 100;
-    }
-
-    void Workspace::visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables)
-    {
+        child_ent->setPosition(child_part->getCFrame().getPosition());
+        child_ent->setOrientation(Ogre::Quaternion(child_part->getCFrame().getRotation()));
 
     }
 }

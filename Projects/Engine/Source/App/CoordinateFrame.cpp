@@ -2,7 +2,7 @@
 
 namespace RNR
 {
-    CoordinateFrame::CoordinateFrame() : m_position(0.f,0.f,0.f), m_rotation()
+    CoordinateFrame::CoordinateFrame() : m_position(0.f,0.f,0.f), m_scale(1.f,1.f,1.f), m_rotation()
     {
         m_rotation.FromEulerAnglesXYZ(Ogre::Radian(0.f), Ogre::Radian(0.f), Ogre::Radian(0.f));        
     }
@@ -10,7 +10,7 @@ namespace RNR
     Ogre::Matrix4 CoordinateFrame::getMatrix()
     {
         Ogre::Matrix4 res = Ogre::Matrix4();
-        res.makeTransform(m_position, Ogre::Vector3(1.f,1.f,1.f), Ogre::Quaternion(m_rotation));
+        res.makeTransform(m_position, m_scale, Ogre::Quaternion(m_rotation));
         return res;
     }
 

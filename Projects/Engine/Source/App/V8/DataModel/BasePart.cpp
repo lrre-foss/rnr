@@ -13,10 +13,10 @@ namespace RNR
         m_nearbyLights = Ogre::LightList();
         m_nearbyLights.insert(m_nearbyLights.begin(), world->getOgreSceneManager()->getLight("SunLight"));
 
-        m_material = Ogre::MaterialManager::getSingletonPtr()->create("part", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
         if(m_partMesh == 0)
             m_partMesh = Ogre::Root::getSingletonPtr()->getMeshManager()->load("fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        m_material = m_partMesh->getSubMesh(0)->getMaterial();
     }
 
     void BasePart::updateMatrix()
@@ -27,8 +27,7 @@ namespace RNR
 
     const Ogre::MaterialPtr& BasePart::getMaterial() const
     {
-        Ogre::SubMesh* submesh = m_partMesh->getSubMesh(0);
-        return submesh->getMaterial();
+        return m_material;
     }
 
     void BasePart::getRenderOperation(Ogre::RenderOperation& op)

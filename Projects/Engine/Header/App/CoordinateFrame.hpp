@@ -6,6 +6,7 @@ namespace RNR
     class CoordinateFrame
     {
         Ogre::Vector3 m_position;
+        Ogre::Vector3 m_scale;
         Ogre::Matrix3 m_rotation;
 public:
         CoordinateFrame();

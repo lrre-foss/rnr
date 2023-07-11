@@ -3,6 +3,7 @@
 #include <stdexcept>
 #include <string>
 
+#include <OGRE/Ogre.h>
 #include <boost/shared_ptr.hpp>
 
 #include <Helpers/Name.hpp>
@@ -18,6 +19,8 @@ namespace RNR
 
         private:
 
+            Ogre::SceneNode* m_node;
+            Ogre::MovableObject* m_object;
             std::string m_name;
             RNR::Instance* m_parent;
             std::vector<RNR::Instance*> m_children;
@@ -44,6 +47,10 @@ namespace RNR
 
             void setParent(RNR::Instance* newParent);
             void setName(std::string name);
+            void setNode(Ogre::SceneNode* node) { m_node = node; };
+            Ogre::SceneNode* getNode() { return m_node; };
+            void setObject(Ogre::MovableObject* object) { m_object = object; };
+            Ogre::MovableObject* getObject() { return m_object; };
             std::vector<RNR::Instance*>* getChildren() { return &this->m_children; };
             int numChildren() { return this->m_children.size(); };
 

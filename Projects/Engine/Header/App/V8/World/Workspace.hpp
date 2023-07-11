@@ -5,22 +5,16 @@
 
 namespace RNR
 {
-    // this acts as both an Instance to fit in the RNR graph, and as an Ogre MovableObject to fit in the Ogre graph
-    // all instances that are Renderable are stored in the children of this
-    class Workspace : public Instance, public Ogre::MovableObject
+    class Workspace : public Instance
     {
     public:
         Workspace();
 
-        virtual void _updateRenderQueue(Ogre::RenderQueue* queue);
-        virtual const Ogre::String& getMovableType(void) const;
-        virtual const Ogre::AxisAlignedBox& getBoundingBox(void) const;
-        virtual Ogre::Real getBoundingRadius(void) const;
-        virtual void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
+        void build();
     private:
-        Ogre::AxisAlignedBox m_bbox;
-        Ogre::String m_type;
-        
-        void renderQueueAddInstance(Ogre::RenderQueue* queue, Instance* instance);
+        Ogre::InstanceManager* m_instMan;
+        Ogre::SceneNode* m_worldspawn;
+
+        void buildChild(Instance* child);        
     };
 }

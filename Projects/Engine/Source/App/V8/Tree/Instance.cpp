@@ -6,6 +6,8 @@ namespace RNR
 
     Instance::Instance()
     {
+        m_node = 0;
+        m_object = 0;
         m_parent = 0;
         setName("Instance");
     }

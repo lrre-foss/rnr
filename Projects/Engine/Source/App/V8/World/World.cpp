@@ -18,6 +18,8 @@ namespace RNR
         BasePart* test2 = new BasePart();
         test->setParent(m_datamodel);
         test2->setParent(m_workspace);
+
+        m_workspace->build();
     }
 
     World::~World()
