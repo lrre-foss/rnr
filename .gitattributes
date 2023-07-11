@@ -1,2 +1,2 @@
 # Ignore GLAD generated API files
-glad.* linguist-vendored
+glad.* linguist-generated
