@@ -1,5 +1,3 @@
-project(Studio)
-
 create_resources(Resource ${CMAKE_BINARY_DIR}/Resources/StudioResources.hpp)
 
 set(CMAKE_AUTOMOC ON)

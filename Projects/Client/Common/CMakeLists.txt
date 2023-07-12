@@ -1,5 +1,3 @@
-project(Common)
-
 qt_standard_project_setup()
 qt_add_library(Common STATIC
     Header/GL/Adorn.hpp

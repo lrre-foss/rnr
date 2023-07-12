@@ -1,6 +1,3 @@
-project(Engine)
-
-
 add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
