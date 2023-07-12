@@ -5,14 +5,14 @@ namespace RNR
 {
     Ogre::MeshPtr BasePart::m_partMesh = 0;
 
-    BasePart::BasePart() : m_matrix(), PVInstance(), Ogre::Renderable()
+    BasePart::BasePart() : m_matrix(), PVInstance(), Ogre::Renderable(), m_size(2.f, STUD_HEIGHT, 4.f)
     {
         setName("Part");
 
         updateMatrix();
         m_nearbyLights = Ogre::LightList();
         m_nearbyLights.insert(m_nearbyLights.begin(), world->getOgreSceneManager()->getLight("SunLight"));
-
+        m_color = Ogre::Vector4(0.63, 0.64, 0.63, 1.0);
 
         if(m_partMesh == 0)
             m_partMesh = Ogre::Root::getSingletonPtr()->getMeshManager()->load("fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -21,7 +21,7 @@ namespace RNR
 
     void BasePart::updateMatrix()
     {
-        m_matrix = m_cframe.getMatrix();
+        m_matrix = m_cframe.getMatrix(); 
         m_position = m_cframe.getPosition();
     }
 

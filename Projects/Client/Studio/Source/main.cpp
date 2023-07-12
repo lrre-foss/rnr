@@ -22,6 +22,7 @@ int main(int argc, char** argv)
 
     RNR::World* world = new RNR::World(window.ogreWidget->ogreRoot, window.ogreWidget->ogreSceneManager);
     window.updateTree(world->getDatamodel());
+    window.ogreWidget->world = world;
 
     while (window.isVisible())
     {

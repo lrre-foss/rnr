@@ -17,7 +17,17 @@ namespace RNR
         Instance* test = new Instance();
         BasePart* test2 = new BasePart();
         test->setParent(m_datamodel);
+        test2->setSize(Ogre::Vector3(64,STUD_HEIGHT,64));
+        test2->setName("Baseplate");
         test2->setParent(m_workspace);
+        
+        for(int i = 1; i < 36; i++)
+        {
+            test2 = new BasePart();
+            test2->getCFrame().setPosition(Ogre::Vector3(i*2,i*STUD_HEIGHT,i*2));
+            test2->setSize(Ogre::Vector3(4,STUD_HEIGHT,4));
+            test2->setParent(m_workspace);
+        }
 
         m_workspace->build();
     }

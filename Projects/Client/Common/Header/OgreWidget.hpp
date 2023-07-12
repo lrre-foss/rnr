@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <QWidget>
 #include <QOpenGLWidget>
 #include <QOpenGLContext>
@@ -9,6 +7,8 @@
 #include <QResizeEvent>
 #include <OGRE/Ogre.h>
 #include <OGRE/RTShaderSystem/OgreShaderGenerator.h>
+#include <App/V8/Tree/Instance.hpp>
+#include <App/V8/World/World.hpp>>
 
 #include <GL/Adorn.hpp>
 
@@ -25,14 +25,16 @@ namespace RNR
             double render_time;
 
             Adorn* adorn;
-            
+
+            RNR::World* world;            
             Ogre::Root* ogreRoot;
             Ogre::RenderWindow* ogreWindow;
             Ogre::SceneManager* ogreSceneManager;
             Ogre::Camera* ogreCamera;
+            Ogre::Viewport* ogreViewport;
             Ogre::RTShader::ShaderGenerator* ogreShaderGen;
 
-            void render();
+            void render(); 
             void initializeOgre();
 
             Ogre::NameValuePairList getRenderOptions();

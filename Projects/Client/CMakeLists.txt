@@ -6,7 +6,7 @@ if(COMPILE_PLAYER OR COMPILE_STUDIO)
         include(/usr/share/cmake/Modules/FindX11.cmake)
     endif()
     find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets OpenGLWidgets)
-    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets Qt6::GuiPrivate GLAD ${X11_X11_LIB})
+    set(QT6_LIBRARIES_INCL Qt6::Core Qt6::Gui Qt6::Widgets Qt6::OpenGLWidgets Qt6::GuiPrivate ${X11_X11_LIB})
     add_subdirectory(Common)
     
     if(COMPILE_PLAYER)

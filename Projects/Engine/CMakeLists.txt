@@ -9,6 +9,7 @@ add_library(Engine STATIC
     Header/App/V8/DataModel/BasePart.hpp
     Header/App/V8/Tree/Instance.hpp
     Header/App/V8/Tree/PVInstance.hpp
+    Header/App/V8/Tree/Model.hpp
     Header/App/V8/World/World.hpp
     Header/App/V8/World/Workspace.hpp
     Header/App/CoordinateFrame.hpp
@@ -22,6 +23,7 @@ add_library(Engine STATIC
     Source/App/V8/DataModel/BasePart.cpp
     Source/App/V8/Tree/Instance.cpp
     Source/App/V8/Tree/PVInstance.cpp    
+    Source/App/V8/Tree/Model.cpp    
     Source/App/CoordinateFrame.cpp
     Source/App/V8/World/World.cpp
     Source/App/V8/World/Workspace.cpp

@@ -1,5 +1,3 @@
-add_subdirectory(${DEPENDENCIES_DIR}/GLAD ${CMAKE_BINARY_DIR}/Dependencies/GLAD)
-
 project(Common)
 
 qt_standard_project_setup()

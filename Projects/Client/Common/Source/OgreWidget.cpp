@@ -34,39 +34,15 @@ namespace RNR
         ogreWindow->setActive(true);
         ogreWindow->setVisible(true);
         ogreWindow->setAutoUpdated(true);
+        
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/Ogre/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/Ogre/RTShaderLib/GLSL/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content/OgreInternal", "FileSystem", Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME, true);
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/OgreInternal", "FileSystem", Ogre::ResourceGroupManager::INTERNAL_RESOURCE_GROUP_NAME, true);
-
-        Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
-        Ogre::MaterialManager::getSingletonPtr()->load("sky", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        Ogre::MaterialManager::getSingletonPtr()->load("materials", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        //Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/OgrePrivate/RTShaderLib/GLSL/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME); // rtshader path
+        //Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
 
         ogreSceneManager = ogreRoot->createSceneManager();
-        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512", 5.f);
-        ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.5f,0.5f,0.5f));
-
-        if(Ogre::RTShader::ShaderGenerator::initialize())
-        {
-            ogreShaderGen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
-            ogreShaderGen->addSceneManager(ogreSceneManager);
-            OgreBites::SGTechniqueResolverListener* schemeNotFoundHandler = new OgreBites::SGTechniqueResolverListener(ogreShaderGen);
-            Ogre::MaterialManager::getSingleton().addListener(schemeNotFoundHandler);
-        }
-        else
-            printf("OgreWidget::initializeOgre: unable to initialize ShaderGenerator\n");
-
-        Ogre::Light* light = ogreSceneManager->createLight("SunLight");
-        Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
-        lightNode->setPosition(0, 10, 15);
-        lightNode->setDirection(-0.25, -0.5, -0.5);
-        lightNode->attachObject(light);
-
-        light->setDiffuseColour(0.9, 0.9, 1.0);
-        light->setSpecularColour(1.0, 1.0, 1.0);
-        light->setType(Ogre::Light::LT_DIRECTIONAL);
+        ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.f,0.f,0.f));
 
         Ogre::SceneNode* camNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 5);
@@ -74,22 +50,62 @@ namespace RNR
 
         ogreCamera = ogreSceneManager->createCamera("myCam");
         ogreCamera->setNearClipDistance(0.1); // specific to this sample
-        ogreCamera->setFarClipDistance(1000.f);
+        ogreCamera->setFarClipDistance(5000.f);
         ogreCamera->setAutoAspectRatio(true);
+        ogreCamera->setFOVy(Ogre::Degree(60.f));
         camNode->attachObject(ogreCamera);
 
-        ogreWindow->addViewport(ogreCamera);
+        ogreViewport = ogreWindow->addViewport(ogreCamera);
+
+        if(Ogre::RTShader::ShaderGenerator::initialize())
+        {
+            ogreShaderGen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+            ogreShaderGen->setShaderCachePath("ShaderCache/");
+            ogreShaderGen->addSceneManager(ogreSceneManager);
+
+            OgreBites::SGTechniqueResolverListener* technique_resolver = new OgreBites::SGTechniqueResolverListener(ogreShaderGen);
+            Ogre::MaterialManager::getSingleton().addListener(technique_resolver);
+
+            printf("OgreWidget::initializeOgre: initialized ShaderGenerator successfully\n");   
+        }
+        else
+            printf("OgreWidget::initializeOgre: unable to initialize ShaderGenerator\n");
+
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/RNR/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);        
+        Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
+
+        Ogre::Light* light = ogreSceneManager->createLight("SunLight");
+        Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
+        lightNode->setPosition(0, 10, 15);
+        lightNode->setDirection(-0.25, -0.5, -0.5);
+        lightNode->attachObject(light);
+
+        light->setCastShadows(true);
+        light->setDiffuseColour(0.9, 0.9, 1.0);
+        light->setSpecularColour(1.0, 1.0, 1.0);
+        light->setType(Ogre::Light::LT_DIRECTIONAL);
+
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+        ogreSceneManager->setShadowFarDistance(500.f);
+
+        Ogre::MaterialManager::getSingletonPtr()->reloadAll();
+        Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512");
+
         this->render_time = 0.0;
     }
 
     void OgreWidget::render()
     {
+        if(!world)
+            return;
+
         this->delta = ogreRoot->getTimer()->getMicroseconds() / 1000000.0;
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        ogreCamera->getParentSceneNode()->setPosition(Ogre::Vector3(sinf(this->render_time)*10,5.f,cosf(this->render_time)*10));
-        ogreCamera->getParentSceneNode()->lookAt(Ogre::Vector3(0,0,0), Ogre::Node::TS_PARENT);
+        ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::FAR_LEFT_TOP));
+        ogreCamera->getParentSceneNode()->lookAt(world->getWorkspace()->getBoundingBox().getCenter(), Ogre::Node::TS_WORLD, Ogre::Vector3::NEGATIVE_UNIT_Z);
         
         ogreRoot->renderOneFrame(this->delta);
     }
