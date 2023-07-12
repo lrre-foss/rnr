@@ -12,4 +12,4 @@ _deps
 build
 Disassembly
 .vscode
-Ogre.log
+*.log
