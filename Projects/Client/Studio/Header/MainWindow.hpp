@@ -7,8 +7,14 @@
 #include <QTimer>
 #include <QToolBar>
 #include <QMenuBar>
+#include <QGridLayout>
+#include <QTreeView>
+#include <QVariant>
 
+#include <OGRE/Bites/OgreBitesConfigDialog.h>
 #include <OgreWidget.hpp>
+
+#include "Resource/Studio.hpp"
 
 class MainWindow : public QMainWindow
 {

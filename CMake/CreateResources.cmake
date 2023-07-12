@@ -1,6 +1,6 @@
 function(create_resources directory output)
     file(WRITE ${output} "#include <stdint.h>\n\n")
-    file(GLOB bins ${directory}/*)
+    file(GLOB bins "${directory}/*.png") # Add other file types if necessary
 
     foreach(bin ${bins})
         string(REGEX MATCH "([^/]+)$" filename ${bin})
