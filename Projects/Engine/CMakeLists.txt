@@ -37,14 +37,6 @@ add_library(Engine STATIC
 target_include_directories(Engine PUBLIC ${BOOST_INCLUDE_DIRS} Header/)
 target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
 
-if(WIN32 OR MINGW)
-    file(COPY ${CMAKE_SOURCE_DIR}/Content/win32_plugins.cfg DESTINATION ${CMAKE_BINARY_DIR})
-    file(RENAME ${CMAKE_BINARY_DIR}/win32_plugins.cfg ${CMAKE_BINARY_DIR}/plugins.cfg)
-elseif(UNIX)
-    file(COPY ${CMAKE_SOURCE_DIR}/Content/linux_plugins.cfg DESTINATION ${CMAKE_BINARY_DIR})
-    file(RENAME ${CMAKE_BINARY_DIR}/linux_plugins.cfg ${CMAKE_BINARY_DIR}/plugins.cfg)
-endif()
-
 file(COPY ${CMAKE_SOURCE_DIR}/Content/RNR/ DESTINATION ${CMAKE_BINARY_DIR}/content)
 file(COPY ${OGRE_MEDIA_DIR}/Main/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 file(COPY ${OGRE_MEDIA_DIR}/RTShaderLib/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
