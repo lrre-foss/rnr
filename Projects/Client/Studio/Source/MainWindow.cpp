@@ -1,11 +1,4 @@
 #include <MainWindow.hpp>
-#include <QGridLayout>
-#include <QTreeView>
-#include <QVariant>
-#include <OGRE/Bites/OgreBitesConfigDialog.h>
-
-
-#include "Resources/StudioResources.hpp"
 
 MainWindow::MainWindow()
 {

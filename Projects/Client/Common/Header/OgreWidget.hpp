@@ -8,7 +8,7 @@
 #include <OGRE/Ogre.h>
 #include <OGRE/RTShaderSystem/OgreShaderGenerator.h>
 #include <App/V8/Tree/Instance.hpp>
-#include <App/V8/World/World.hpp>>
+#include <App/V8/World/World.hpp>
 
 #include <GL/Adorn.hpp>
 

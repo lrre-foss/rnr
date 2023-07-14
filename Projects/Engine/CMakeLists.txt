@@ -1,6 +1,3 @@
-project(Engine)
-
-
 add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
@@ -38,7 +35,7 @@ add_library(Engine STATIC
 )
 
 target_include_directories(Engine PUBLIC ${BOOST_INCLUDE_DIRS} Header/)
-target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} OgreBites cglm Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
+target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
 
 if(WIN32 OR MINGW)
     file(COPY ${CMAKE_SOURCE_DIR}/Content/win32_plugins.cfg DESTINATION ${CMAKE_BINARY_DIR})

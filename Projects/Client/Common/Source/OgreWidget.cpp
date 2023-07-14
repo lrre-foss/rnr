@@ -114,6 +114,7 @@ namespace RNR
         Ogre::NameValuePairList options;
 
         options["externalWindowHandle"] = getWindowHandle();
+        options["FSAA"] = "4";
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
         options["macAPI"] = "cocoa";
         options["macAPICocoaUseNSView"] = "true";
