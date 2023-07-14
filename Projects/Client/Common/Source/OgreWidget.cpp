@@ -35,8 +35,7 @@ namespace RNR
         ogreWindow->setVisible(true);
         ogreWindow->setAutoUpdated(true);
         
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/Ogre/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/Ogre/RTShaderLib/GLSL/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("shaders", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
         //Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/OgrePrivate/RTShaderLib/GLSL/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME); // rtshader path
         //Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
@@ -71,7 +70,7 @@ namespace RNR
         else
             printf("OgreWidget::initializeOgre: unable to initialize ShaderGenerator\n");
 
-        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("../Content/RNR/", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);        
+        Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);        
         Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
 
         Ogre::Light* light = ogreSceneManager->createLight("SunLight");
@@ -104,7 +103,7 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::FAR_LEFT_TOP));
+        ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::FAR_LEFT_TOP)*2);
         ogreCamera->getParentSceneNode()->lookAt(world->getWorkspace()->getBoundingBox().getCenter(), Ogre::Node::TS_WORLD, Ogre::Vector3::NEGATIVE_UNIT_Z);
         
         ogreRoot->renderOneFrame(this->delta);

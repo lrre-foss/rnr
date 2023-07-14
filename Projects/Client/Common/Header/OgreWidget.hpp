@@ -27,13 +27,14 @@ namespace RNR
             Adorn* adorn;
 
             RNR::World* world;            
+            RNR::Instance* selectedInstance;
             Ogre::Root* ogreRoot;
             Ogre::RenderWindow* ogreWindow;
             Ogre::SceneManager* ogreSceneManager;
             Ogre::Camera* ogreCamera;
             Ogre::Viewport* ogreViewport;
             Ogre::RTShader::ShaderGenerator* ogreShaderGen;
-
+            
             void render(); 
             void initializeOgre();
 

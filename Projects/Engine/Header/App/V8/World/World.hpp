@@ -1,7 +1,7 @@
 #pragma once
 
 #include <App/V8/Tree/Instance.hpp>
-#include <App/V8/World/Workspace.hpp>
+#include <App/V8/DataModel/Workspace.hpp>
 #include <OGRE/Ogre.h>
 
 namespace RNR

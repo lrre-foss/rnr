@@ -95,11 +95,14 @@ namespace RNR
                 auto child_it = std::find(children->begin(), children->end(), this);
 
                 if (child_it != children->end())
-                    children->erase(child_it);
-                
-                if (m_parent->numChildren() == 0)
                 {
-                    // signal onlastchildremoved
+                    children->erase(child_it);
+                    m_parent->onChildRemoved(this);
+                
+                    if (m_parent->numChildren() == 0)
+                    {
+                        // signal onlastchildremoved
+                    }
                 }
             }
 
@@ -115,5 +118,11 @@ namespace RNR
     void Instance::onChildAdded(Instance* childAdded)
     {
         //
+    }
+
+
+    void Instance::onChildRemoved(RNR::Instance* childRemoved)
+    {
+        
     }
 }

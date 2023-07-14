@@ -1,4 +1,4 @@
-#include <App/V8/World/Workspace.hpp>
+#include <App/V8/DataModel/Workspace.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/BasePart.hpp>
 
@@ -12,24 +12,15 @@ namespace RNR
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();
     }
 
-    void Workspace::build()
+    void Workspace::onChildAdded(Instance* childAdded)
     {
-        Model::build();
-        for(auto& child : *getChildren())
-            buildChild(child);        
-    }
-
-    void Workspace::buildChild(Instance* child)
-    {
-        for(auto& child2 : *child->getChildren())
-            buildChild(child2);
-        BasePart* child_part = (BasePart*)child;
-        Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)child->getObject();
+        BasePart* child_part = (BasePart*)childAdded;
+        Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childAdded->getObject();
         if(!child_ent)
         {
             child_ent = m_instMan->createInstancedEntity("materials/partinstanced");        
             assert(child_ent != NULL);
-            child->setObject(child_ent);
+            childAdded->setObject(child_ent);
             m_objects.push_back(child_ent);
         }
         child_ent->setPosition(child_part->getCFrame().getPosition());
@@ -46,8 +37,22 @@ namespace RNR
         child_ent->setCastShadows(true);
     }
 
-    void Workspace::clean()
+    void Workspace::onChildRemoved(Instance* childRemoved)
     {
+        Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childRemoved->getObject();
+        if(child_ent)
+        {
+            BasePart* child_part = (BasePart*)childRemoved;
+            child_ent->_getOwner()->removeInstancedEntity(child_ent);
+            child_part->setObject(NULL);            
 
+            auto child_it = std::find(m_objects.begin(), m_objects.end(), child_ent);
+            if (child_it != m_objects.end())
+            {
+                m_objects.erase(child_it);
+            }
+
+            delete child_ent;
+        }
     }
 }

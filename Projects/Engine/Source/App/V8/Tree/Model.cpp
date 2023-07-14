@@ -20,8 +20,8 @@ namespace RNR
         for(auto& child2 : *child->getChildren())
             childAddBoundingBox(child2);
         BasePart* child_pv = (BasePart*)child;
-        Ogre::Vector3 half_size = child_pv->getSize() / 2.0;
-        m_boundingbox.merge(child_pv->getPosition() + half_size);
-        m_boundingbox.merge(child_pv->getPosition() - half_size);
+        Ogre::Vector3 size = child_pv->getSize() / 2.0;
+        m_boundingbox.merge(child_pv->getPosition() + size);
+        m_boundingbox.merge(child_pv->getPosition() - size);
     }
 }

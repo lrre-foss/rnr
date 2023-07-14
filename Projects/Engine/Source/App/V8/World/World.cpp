@@ -1,5 +1,6 @@
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/BasePart.hpp>
+#include <App/GUI/SelectionBox.hpp>
 
 namespace RNR
 {
@@ -16,11 +17,12 @@ namespace RNR
 
         Instance* test = new Instance();
         BasePart* test2 = new BasePart();
+        SelectionBox* test3 = new SelectionBox();
         test->setParent(m_datamodel);
         test2->setSize(Ogre::Vector3(64,STUD_HEIGHT,64));
         test2->setName("Baseplate");
         test2->setParent(m_workspace);
-        
+
         for(int i = 1; i < 36; i++)
         {
             test2 = new BasePart();
@@ -30,6 +32,9 @@ namespace RNR
         }
 
         m_workspace->build();
+        
+        test3->setAdornee(m_workspace);
+        test3->setParent(m_workspace);
     }
 
     World::~World()

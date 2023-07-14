@@ -54,6 +54,7 @@ namespace RNR
             std::vector<RNR::Instance*>* getChildren() { return &this->m_children; };
             int numChildren() { return this->m_children.size(); };
 
-            void onChildAdded(RNR::Instance* childAdded);
+            virtual void onChildAdded(RNR::Instance* childAdded);
+            virtual void onChildRemoved(RNR::Instance* childRemoved);
     };
 }

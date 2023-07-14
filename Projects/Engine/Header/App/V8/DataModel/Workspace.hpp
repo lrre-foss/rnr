@@ -12,13 +12,11 @@ namespace RNR
     public:
         Workspace();
 
-        virtual void build();
-        void clean();
+        virtual void onChildAdded(RNR::Instance* childAdded);
+        virtual void onChildRemoved(RNR::Instance* childRemoved);
     private:
         std::vector<Ogre::InstancedEntity*> m_objects;
         Ogre::InstanceManager* m_instMan;
         Ogre::SceneNode* m_worldspawn;
-
-        void buildChild(Instance* child);        
     };
 }
