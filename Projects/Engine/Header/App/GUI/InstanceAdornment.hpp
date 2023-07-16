@@ -13,5 +13,6 @@ namespace RNR
         InstanceAdornment();
         void setAdornee(Instance* adornee) { setAdorneeEvent(adornee); m_adornee = adornee; }
         Instance* getAdornee() { return m_adornee; }
+        virtual std::string getClassName() { return "InstanceAdornment"; }
     };
 }

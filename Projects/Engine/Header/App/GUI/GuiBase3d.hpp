@@ -21,5 +21,6 @@ namespace RNR
         Ogre::Vector3 getColor() { return m_color; }
         void setTransparency(float transparency) { m_transparency = transparency; }
         float getTransparency() { return m_transparency; }
+        virtual std::string getClassName() { return "GuiBase3d"; }
     };
 }

@@ -1,11 +1,12 @@
-#include <App/V8/DataModel/BasePart.hpp>
+#include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/World/World.hpp>
+#include <Helpers/XML.hpp>
 
 namespace RNR
 {
-    Ogre::MeshPtr BasePart::m_partMesh = 0;
+    Ogre::MeshPtr PartInstance::m_partMesh = 0;
 
-    BasePart::BasePart() : m_matrix(), PVInstance(), Ogre::Renderable(), m_size(2.f, STUD_HEIGHT, 4.f)
+    PartInstance::PartInstance() : m_matrix(), PVInstance(), Ogre::Renderable(), m_size(2.f, STUD_HEIGHT, 4.f)
     {
         setName("Part");
 
@@ -19,18 +20,18 @@ namespace RNR
         m_material = m_partMesh->getSubMesh(0)->getMaterial();
     }
 
-    void BasePart::updateMatrix()
+    void PartInstance::updateMatrix()
     {
         m_matrix = m_cframe.getMatrix(); 
         m_position = m_cframe.getPosition();
     }
 
-    const Ogre::MaterialPtr& BasePart::getMaterial() const
+    const Ogre::MaterialPtr& PartInstance::getMaterial() const
     {
         return m_material;
     }
 
-    void BasePart::getRenderOperation(Ogre::RenderOperation& op)
+    void PartInstance::getRenderOperation(Ogre::RenderOperation& op)
     {
         Ogre::SubMesh* submesh = m_partMesh->getSubMesh(0);
         if(submesh)
@@ -49,19 +50,29 @@ namespace RNR
             printf("BasePart::getRenderOperation: couldnt get submesh\n");
     }
 
-    Ogre::Real BasePart::getSquaredViewDepth(const Ogre::Camera* cam) const
+    Ogre::Real PartInstance::getSquaredViewDepth(const Ogre::Camera* cam) const
     {
         Ogre::Vector3 diff = m_position - cam->getDerivedPosition();
         return diff.squaredLength();
     }
 
-    const Ogre::LightList& BasePart::getLights() const
+    const Ogre::LightList& PartInstance::getLights() const
     {
         return m_nearbyLights;
     }
 
-    void BasePart::getWorldTransforms(Ogre::Matrix4* xform) const
+    void PartInstance::getWorldTransforms(Ogre::Matrix4* xform) const
     {
         *xform = m_matrix;
+    }
+
+    void PartInstance::deserializeProperty(char* prop_name, pugi::xml_node node)
+    {
+        if(prop_name == std::string("size"))
+        {
+            setSize(XML::getVector3(node));
+        }
+        else
+            PVInstance::deserializeProperty(prop_name, node);
     }
 }

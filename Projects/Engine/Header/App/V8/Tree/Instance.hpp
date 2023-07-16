@@ -7,6 +7,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <Helpers/Name.hpp>
+#include <pugixml.hpp>
 
 namespace RNR
 {
@@ -16,6 +17,7 @@ namespace RNR
     {
         protected:
             static World* world;
+            virtual void deserializeProperty(char* prop_name, pugi::xml_node prop) {};
 
         private:
 
@@ -30,6 +32,8 @@ namespace RNR
             Instance();
             ~Instance();
             
+            void deserializeXmlProperty(pugi::xml_node prop);
+
             bool contains(RNR::Instance* child);
             bool isAncestorOf(RNR::Instance* instance);
 
@@ -44,6 +48,7 @@ namespace RNR
             
             RNR::Instance* getParent() { return this->m_parent; };
             std::string getName() { return this->m_name; };
+            virtual std::string getClassName() { return "Instance"; }
 
             void setParent(RNR::Instance* newParent);
             void setName(std::string name);

@@ -1,6 +1,7 @@
 #include <App/V8/World/World.hpp>
-#include <App/V8/DataModel/BasePart.hpp>
+#include <App/V8/DataModel/PartInstance.hpp>
 #include <App/GUI/SelectionBox.hpp>
+#include <pugixml.hpp>
 
 namespace RNR
 {
@@ -14,32 +15,72 @@ namespace RNR
         m_datamodel->setName("DataModel");
         m_workspace = new Workspace();
         m_workspace->setParent(m_datamodel);
-
-        Instance* test = new Instance();
-        BasePart* test2 = new BasePart();
-        SelectionBox* test3 = new SelectionBox();
-        test->setParent(m_datamodel);
-        test2->setSize(Ogre::Vector3(64,STUD_HEIGHT,64));
-        test2->setName("Baseplate");
-        test2->setParent(m_workspace);
-
-        for(int i = 1; i < 36; i++)
-        {
-            test2 = new BasePart();
-            test2->getCFrame().setPosition(Ogre::Vector3(i*2,i*STUD_HEIGHT,i*2));
-            test2->setSize(Ogre::Vector3(4,STUD_HEIGHT,4));
-            test2->setParent(m_workspace);
-        }
-
-        m_workspace->build();
-        
-        test3->setAdornee(m_workspace);
-        test3->setParent(m_workspace);
     }
 
     World::~World()
     {
         //
+    }
+
+    void World::xmlAddItem(pugi::xml_node node, Instance* parent)
+    {
+        bool skip = false;
+        Instance* instance;
+        pugi::xml_attribute class_attr = node.attribute("class");
+        printf("World::xmlAddItem: adding class %s\n", class_attr.as_string());
+
+        if(class_attr.as_string() == std::string("Part"))
+        {
+            instance = new PartInstance();
+        }
+        else if(class_attr.as_string() == std::string("Workspace"))
+        {
+            instance = m_workspace;
+        } 
+        else if(class_attr.as_string() == std::string("Model")) // FIXME: Workspace has onChildAdded but not onDescendantAdded so adding parts to models wont let them render. Eventually this must be fixed
+        {
+            instance = parent;
+            skip = true;
+        } 
+        else
+        {
+            printf("World::xmlAddItem: adding unknown class\n");
+            instance = new Instance();
+        }
+
+        if(!skip)
+        {
+            pugi::xml_node props = node.child("Properties");
+            for(pugi::xml_node prop : props.children())
+                instance->deserializeXmlProperty(prop);
+            instance->setParent(parent);
+        }
+
+        for(pugi::xml_node item = node.child("Item"); item; item = item.next_sibling("Item"))
+        {
+            xmlAddItem(item, instance);
+        }
+    }
+
+    void World::load(char* path)
+    {
+        pugi::xml_document rbxl_doc;
+        pugi::xml_parse_result result = rbxl_doc.load_file(path);
+        if(result)
+        {
+            printf("World::load: XML parsed without errors\n");
+
+            pugi::xml_node root = rbxl_doc.child("roblox");
+            for(pugi::xml_node item = root.child("Item"); item; item = item.next_sibling("Item"))
+            {
+                xmlAddItem(item, m_datamodel);
+            }
+        }
+        else
+        {
+            printf("World::load: XML parsed with errors, description '%s', offset %i\n", result.description(), result.offset);
+        }
+        m_workspace->build();
     }
 
     void World::preStep()

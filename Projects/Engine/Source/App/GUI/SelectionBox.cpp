@@ -1,7 +1,7 @@
 #include <App/GUI/SelectionBox.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/V8/Tree/PVInstance.hpp>
-#include <App/V8/DataModel/BasePart.hpp>
+#include <App/V8/DataModel/PartInstance.hpp>
 #include <OGRE/Ogre.h>
 
 namespace RNR
@@ -11,14 +11,14 @@ namespace RNR
         Instance* old_adornee = getAdornee();
         if(instance)
         {
-            BasePart* adornee_basepart = dynamic_cast<BasePart*>(instance);
+            PartInstance* adornee_basepart = dynamic_cast<PartInstance*>(instance);
             if(adornee_basepart)
             {
                 getNode()->setScale(adornee_basepart->getSize());
                 getNode()->setPosition(adornee_basepart->getPosition());
                 getNode()->setVisible(true);
             }
-            Model* adornee_model = dynamic_cast<Model*>(instance);
+            ModelInstance* adornee_model = dynamic_cast<ModelInstance*>(instance);
             if(adornee_model)
             {
                 getNode()->setScale(adornee_model->getBoundingBox().getSize());

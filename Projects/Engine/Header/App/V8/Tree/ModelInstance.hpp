@@ -3,13 +3,14 @@
 
 namespace RNR
 {
-    class Model : public PVInstance
+    class ModelInstance : public PVInstance
     {
     public:
-        Model();
+        ModelInstance();
 
         virtual void build();
         Ogre::AxisAlignedBox getBoundingBox() { return m_boundingbox; }
+        virtual std::string getClassName() { return "Model"; }
     private:
         Ogre::AxisAlignedBox m_boundingbox;
         

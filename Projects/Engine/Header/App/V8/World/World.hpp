@@ -3,6 +3,7 @@
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/DataModel/Workspace.hpp>
 #include <OGRE/Ogre.h>
+#include <pugixml.hpp>
 
 namespace RNR
 {
@@ -14,9 +15,12 @@ namespace RNR
             Ogre::Root* m_ogreRoot;
             Ogre::SceneManager* m_ogreSceneManager;
 
+            void xmlAddItem(pugi::xml_node node, Instance* parent);
         public:
             World(Ogre::Root* ogre, Ogre::SceneManager* ogreScene);
             ~World();
+
+            void load(char* path);
 
             void preStep();
             double step(float timestep);

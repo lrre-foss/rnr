@@ -17,6 +17,15 @@ namespace RNR
         setParent(NULL);
     }
 
+    void Instance::deserializeXmlProperty(pugi::xml_node prop)
+    {
+        pugi::xml_attribute prop_name = prop.attribute("name");
+        if(prop_name.as_string() == std::string("Name"))
+            setName(prop.text().as_string());
+        else
+            deserializeProperty((char*)prop_name.as_string(), prop);
+    }
+
     bool Instance::contains(Instance* child)
     {
         auto child_it = std::find(m_children.begin(), m_children.end(), child);            

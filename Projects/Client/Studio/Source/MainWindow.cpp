@@ -1,4 +1,6 @@
 #include <MainWindow.hpp>
+#include <QFile>
+#include <QFileDialog>
 
 MainWindow::MainWindow()
 {
@@ -37,11 +39,26 @@ MainWindow::MainWindow()
     setCentralWidget(content_widget);
 }
 
+void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance)
+{
+    QString icon_path;
+    icon_path = "content/textures/studio/icons/";
+    icon_path += instance->getClassName();
+    icon_path += ".png";
+    QIcon icon;
+    if(QFile::exists(icon_path))
+        icon = QIcon(icon_path);
+    else
+        icon = QIcon("content/textures/studio/icons/Instance.png");
+    item->setIcon(0, icon);
+}
+
 void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance)
 {
     for(auto& child : *instance->getChildren())
     {
         QTreeWidgetItem* instance_w = new QTreeWidgetItem();
+        widgetItemPrepare(instance_w, child);
         instance_w->setText(0, QString(child->getName().c_str()));
         instance_w->setData(0, Qt::UserRole, QVariant::fromValue(child));
         recurseTreeAddInstance(instance_w, child);
@@ -57,14 +74,21 @@ void MainWindow::updateTree(RNR::Instance* root_instance)
         parent->setData(0, Qt::UserRole, QVariant::fromValue(child));
         parent->setText(0, QString(child->getName().c_str()));
 
+        widgetItemPrepare(parent, child);
         recurseTreeAddInstance(parent, child);
         explorer->addTopLevelItem(parent);
     }
 }
 
+void MainWindow::loadDatamodel()
+{
+    this->ogreWidget->world->load(QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("RBXLs (*.rbxl)")).toLocal8Bit().data());
+}
+
 void MainWindow::createToolbar()
 {
     QMenu* file_menu = menubar->addMenu("File");
+    QAction* load_action = file_menu->addAction("Load", this, SLOT(loadDatamodel()));
     QMenu* help_menu = menubar->addMenu("Help");
     help_menu->addAction("About...");
 }
