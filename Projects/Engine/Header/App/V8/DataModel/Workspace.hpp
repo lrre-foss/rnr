@@ -10,6 +10,8 @@
 
 namespace RNR
 {
+    class Camera;
+
     class Workspace : public ModelInstance
     {
     public:
