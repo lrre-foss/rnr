@@ -1,41 +1,23 @@
-//---------------------------------------------------------------------------
-//These materials/shaders are part of the NEW InstanceManager implementation
-//Written by Matias N. Goldberg ("dark_sylinc")
-//---------------------------------------------------------------------------
-
-material materials/part_shadow_caster
-{
-	technique
-	{
-		pass
-		{
-			rtshader_system
-			{
-				lighting_stage gbuffer depth
-				transform_stage instanced
-			}
-		}
-	}
-}
-
 material materials/partinstanced
 {
-	receive_shadows on 
+    receive_shadows on 
 
-	technique
-	{
-		shadow_caster_material materials/part_shadow_caster
+    technique
+    {
+        pass
+        {
+            specular	1 1 1 1 12.5	
+            lighting on
 
-		pass
-		{
-			specular	1 1 1 1 12.5	
-			lighting on
-
-			rtshader_system
+            texture_unit
             {
-				transform_stage instanced
+                colour_op_ex source1 src_manual src_current 1.0 0.5 0.5
+            }
+
+            rtshader_system
+            {
                 lighting_stage per_pixel
-			}
-		}
-	}
+            }
+        }
+    }
 }

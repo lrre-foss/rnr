@@ -72,6 +72,14 @@ namespace RNR
         {
             setSize(XML::getVector3(node));
         }
+        else if(prop_name == std::string("BrickColor"))
+        {
+            setBrickColor(node.text().as_int());
+            if(!BrickColor::valid(getBrickColor()))
+            {
+                printf("PartInstance::deserializeProperty: BrickColor not valid number (%i)\n", getBrickColor());
+            }
+        }
         else
             PVInstance::deserializeProperty(prop_name, node);
     }

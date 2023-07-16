@@ -10,7 +10,9 @@ namespace RNR
         setName("Workspace");
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
         m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
+        m_geom->setCastShadows(true);
         m_partEntity = world->getOgreSceneManager()->createEntity("fonts/Cube.mesh");
+        m_partEntity->setCastShadows(true);
     }
 
     void Workspace::onChildAdded(Instance* childAdded)
@@ -22,10 +24,14 @@ namespace RNR
     {
         PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
         if(child_part)
-            m_geom->addEntity(m_partEntity, 
+        {
+            m_partEntity->setMaterial(BrickColor::material(child_part->getBrickColor()));
+            m_geom->addEntity(m_partEntity,
                                     child_part->getCFrame().getPosition(), 
                                     Ogre::Quaternion(child_part->getCFrame().getRotation()), 
                                     child_part->getSize());
+
+        }
         for(auto& child : *instance->getChildren())
             buildGeomInstance(child);
     }

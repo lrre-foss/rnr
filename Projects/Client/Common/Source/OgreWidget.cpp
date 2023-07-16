@@ -41,7 +41,7 @@ namespace RNR
         //Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
 
         ogreSceneManager = ogreRoot->createSceneManager();
-        ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.f,0.f,0.f));
+        ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.2f,0.2f,0.2f));
 
         Ogre::SceneNode* camNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 5);

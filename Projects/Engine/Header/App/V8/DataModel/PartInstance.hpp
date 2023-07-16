@@ -1,5 +1,6 @@
 #pragma once
 #include <App/V8/Tree/PVInstance.hpp>
+#include <App/BrickColor.hpp>
 #include <OGRE/Ogre.h>
 
 #define STUD_HEIGHT 1.18
@@ -9,6 +10,7 @@ namespace RNR
     class PartInstance : public PVInstance, public Ogre::Renderable
     {
     protected:
+        int m_brickColor;
         Ogre::MaterialPtr m_material;
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
@@ -27,6 +29,8 @@ namespace RNR
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }
 
+        void setBrickColor(int brickcolor) { m_brickColor = brickcolor; }
+        int getBrickColor() { return m_brickColor; }
         virtual const Ogre::MaterialPtr& getMaterial() const;
         virtual void getRenderOperation(Ogre::RenderOperation& op);
         virtual Ogre::Real getSquaredViewDepth(const Ogre::Camera* cam) const;
