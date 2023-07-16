@@ -17,6 +17,7 @@ namespace RNR
             Camera();
             ~Camera();
 
+            virtual std::string getClassName() { return "Camera"; }
             CoordinateFrame& getCFrame() { return m_cframe; };
             void setCFrame(CoordinateFrame cframe) { m_cframe = cframe; };
             bool zoom(float distance);
