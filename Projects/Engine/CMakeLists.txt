@@ -5,6 +5,7 @@ add_library(Engine STATIC
     Header/App/GUI/InstanceAdornment.hpp
     Header/App/GUI/SelectionBox.hpp
     Header/App/Humanoid/Humanoid.hpp
+    Header/App/V8/DataModel/Camera.hpp
     Header/App/V8/DataModel/ForceField.hpp
     Header/App/V8/DataModel/BasePart.hpp
     Header/App/V8/DataModel/Workspace.hpp
@@ -22,6 +23,7 @@ add_library(Engine STATIC
     Source/App/GUI/InstanceAdornment.cpp
     Source/App/GUI/SelectionBox.cpp
     Source/App/Humanoid/Humanoid.cpp
+    Source/App/V8/DataModel/Camera.cpp
     Source/App/V8/DataModel/ForceField.cpp
     Source/App/V8/DataModel/BasePart.cpp
     Source/App/V8/DataModel/Workspace.cpp
