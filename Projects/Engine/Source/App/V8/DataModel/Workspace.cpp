@@ -73,7 +73,7 @@ namespace RNR
     {
         if (newCamera != currentCamera.get())
         {
-            currentCamera = boost::shared_ptr<Camera>(newCamera);
+            currentCamera = std::shared_ptr<Camera>(newCamera);
 
             // TODO: raise propertyChanged and currentCameraChangedSignal
         }

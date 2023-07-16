@@ -4,7 +4,6 @@
 #include <App/V8/Tree/ModelInstance.hpp>
 
 #include <OGRE/Ogre.h>
-#include <boost/shared_ptr.hpp>
 
 #include <vector>
 
@@ -29,6 +28,6 @@ namespace RNR
         Ogre::InstanceManager* m_instMan;
         Ogre::SceneNode* m_worldspawn;
 
-        boost::shared_ptr<Camera> currentCamera; 
+        std::shared_ptr<Camera> currentCamera;
     };
 }
