@@ -1,6 +1,8 @@
 include_directories(${CMAKE_BINARY_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
+option(FORCE_ENABLE_VSYNC ON)
+
 if(COMPILE_PLAYER OR COMPILE_STUDIO)
     if(LINUX)
         include(/usr/share/cmake/Modules/FindX11.cmake)

@@ -11,7 +11,12 @@ int main(int argc, char** argv)
 {
     QSurfaceFormat format;
     format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+
+#ifdef FORCE_ENABLE_VSYNC
+    format.setSwapInterval(1);
+#else
     format.setSwapInterval(0);
+#endif
 
     QSurfaceFormat::setDefaultFormat(format);
     QApplication app(argc, argv);
