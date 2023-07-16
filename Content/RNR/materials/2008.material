@@ -1,0 +1,137 @@
+material sparkle/sparkleMatl
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend add
+
+			texture_unit
+			{
+				texture sparkle.png
+				colour_op modulate
+			}
+		}
+	}
+}
+
+sparkle/sparkle1
+{
+	quota	40
+	material	sparkle/sparkleMatl
+	particle_width	1
+	particle_height	1
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Point
+	{
+		angle	180
+		colour	0.3 0.3 0.3 .6
+		colour_range_start	0.25 0.25 0.25 1
+		colour_range_end	0.5 0.5 0.5 1
+		direction	0 -1 0
+		emission_rate	160
+		position	0 0 0
+		velocity_min	5
+		velocity_max	10
+		duration	.2
+		time_to_live	1
+	}
+
+	affector Rotator
+	{
+		rotation_speed_range_end 360
+		rotation_range_start 0
+		rotation_range_end   360
+	}
+
+}
+
+material explosion/explosionMatl
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend add
+
+			texture_unit
+			{
+				texture explosion.png
+				colour_op modulate
+			}
+		}
+	}
+}
+
+explosion/explosion1
+{
+	quota	400
+	material	explosion/explosionMatl
+	particle_width	5
+	particle_height	5
+	cull_each	false
+	renderer	billboard
+	sorted	false
+	local_space	false
+	iteration_interval	0
+	nonvisible_update_timeout	0
+	billboard_type	point
+	billboard_origin	center
+	billboard_rotation_type	vertex
+	common_up_vector	0 1 0
+	point_rendering	false
+	accurate_facing	false
+
+	emitter Point
+	{
+		angle	180
+		colour	0.3 0.3 0.3 .6
+		colour_range_start	0.25 0.25 0.25 1
+		colour_range_end	0.5 0.5 0.5 1
+		direction	0 -1 0
+		emission_rate	20000
+		position	0 0 0
+		velocity	30
+		velocity_min	20
+		velocity_max	30
+		time_to_live	0.3
+		time_to_live_min	0.25
+		time_to_live_max	0.35
+		duration	1.2
+		duration_min	1.2
+		duration_max	1.2
+		repeat_delay	10000
+		repeat_delay_min	10000
+		repeat_delay_max	10000
+	}
+
+	affector DeflectorPlane
+	{
+		plane_point	0 0 0
+		plane_normal	0 1 0
+		bounce	0
+	}
+
+	affector DirectionRandomiser
+	{
+		randomness	0
+		scope	1
+		keep_velocity	false
+	}
+}

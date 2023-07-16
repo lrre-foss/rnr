@@ -39,10 +39,9 @@ namespace RNR
         {
             instance = m_workspace;
         } 
-        else if(class_attr.as_string() == std::string("Model")) // FIXME: Workspace has onChildAdded but not onDescendantAdded so adding parts to models wont let them render. Eventually this must be fixed
+        else if(class_attr.as_string() == std::string("Model")) 
         {
-            instance = parent;
-            skip = true;
+            instance = new ModelInstance();
         } 
         else
         {
@@ -97,6 +96,6 @@ namespace RNR
 
     void World::update()
     {
-        m_workspace->buildLegacyGeom();
+        m_workspace->buildGeom();
     }
 }

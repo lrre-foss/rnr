@@ -20,18 +20,15 @@ namespace RNR
         virtual void onChildAdded(RNR::Instance* childAdded);
         virtual void onChildRemoved(RNR::Instance* childRemoved);
 
-        void buildLegacyGeom();
+        void buildGeom();
         
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 
     private:
         void buildGeomInstance(Instance* instance);
 
-        bool m_instancingEnabled;
-        bool m_legacyDirty;
-        std::vector<Ogre::InstancedEntity*> m_objects;
-        Ogre::StaticGeometry* m_legacyGeom; // use in case of InstanceManager either not working or not being supported
-        Ogre::InstanceManager* m_instMan;
+        bool m_geomDirty;
+        Ogre::StaticGeometry* m_geom; 
         Ogre::SceneNode* m_worldspawn;
         Ogre::Entity* m_partEntity;
 

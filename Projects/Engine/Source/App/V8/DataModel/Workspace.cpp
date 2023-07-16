@@ -7,55 +7,22 @@ namespace RNR
 {
     Workspace::Workspace() : ModelInstance()
     {
-        m_instancingEnabled = false;
         setName("Workspace");
-        m_instMan = world->getOgreSceneManager()->createInstanceManager("workspacePartInstanceManager", "fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
-        m_instMan->setNumCustomParams(2);        
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
-        m_legacyGeom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
+        m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
         m_partEntity = world->getOgreSceneManager()->createEntity("fonts/Cube.mesh");
     }
 
     void Workspace::onChildAdded(Instance* childAdded)
     {
-        PartInstance* child_part = dynamic_cast<PartInstance*>(childAdded);
-        if(child_part)
-        {
-            if(m_instancingEnabled)
-            {
-                Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childAdded->getObject();
-                if(!child_ent)
-                {
-                    child_ent = m_instMan->createInstancedEntity("materials/partinstanced");        
-                    assert(child_ent != NULL);
-                    childAdded->setObject(child_ent);
-                    m_objects.push_back(child_ent);
-                }
-                child_ent->setPosition(child_part->getCFrame().getPosition());
-                child_ent->setOrientation(Ogre::Quaternion(child_part->getCFrame().getRotation()));        
-                Ogre::Vector3 size = child_part->getSize();
-                child_ent->setScale(size);
-                child_ent->setCustomParam(0, Ogre::Vector4(
-                    size.x,
-                    size.y,
-                    size.z,
-                    0.0f
-                ));
-                child_ent->setCustomParam(1, child_part->getColor());
-                child_ent->setCastShadows(true);
-            }
-            else
-            {
-                m_legacyDirty = true;
-            }
-        }
+        m_geomDirty = true;
     }
 
     void Workspace::buildGeomInstance(Instance* instance)
     {
         PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
         if(child_part)
-            m_legacyGeom->addEntity(m_partEntity, 
+            m_geom->addEntity(m_partEntity, 
                                     child_part->getCFrame().getPosition(), 
                                     Ogre::Quaternion(child_part->getCFrame().getRotation()), 
                                     child_part->getSize());
@@ -63,44 +30,20 @@ namespace RNR
             buildGeomInstance(child);
     }
 
-    void Workspace::buildLegacyGeom()
+    void Workspace::buildGeom()
     {
-        if(!m_legacyDirty)
+        if(!m_geomDirty)
             return;
-        m_legacyGeom->reset();
+        m_geom->reset();
         for(auto& child : *getChildren())
             buildGeomInstance(child);
-        m_legacyGeom->build();
-        m_legacyDirty = false;
+        m_geom->build();
+        m_geomDirty = false;
     }
 
     void Workspace::onChildRemoved(Instance* childRemoved)
     {
-        PartInstance* child_part = dynamic_cast<PartInstance*>(childRemoved);
-        if(m_instancingEnabled)
-        {
-            Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childRemoved->getObject();
-            if(child_ent)
-            {
-                if(child_part)
-                {
-                    child_ent->_getOwner()->removeInstancedEntity(child_ent);
-                    child_part->setObject(NULL);            
-
-                    auto child_it = std::find(m_objects.begin(), m_objects.end(), child_ent);
-                    if (child_it != m_objects.end())
-                    {
-                        m_objects.erase(child_it);
-                    }
-                }
-
-                delete child_ent;
-            }
-        }
-        else
-        {
-            
-        }
+        m_geomDirty = true;
     }
 
     Camera* Workspace::getCurrentCamera() const
