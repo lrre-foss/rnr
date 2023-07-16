@@ -69,6 +69,7 @@ void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* 
     for(auto& child : *instance->getChildren())
     {
         QTreeWidgetItem* instance_w = new QTreeWidgetItem();
+
         widgetItemPrepare(instance_w, child);
         instance_w->setText(0, QString(child->getName().c_str()));
         instance_w->setData(0, Qt::UserRole, QVariant::fromValue(child));

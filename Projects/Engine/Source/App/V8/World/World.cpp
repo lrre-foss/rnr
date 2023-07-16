@@ -16,6 +16,8 @@ namespace RNR
         m_workspace = new Workspace();
         m_workspace->setParent(m_datamodel);
 
+        m_tmb = new TopMenuBar();
+
         load("/home/caesium/Downloads/Telegram Desktop/Destroy-History-1.rbxl");
     }
 
@@ -38,21 +40,28 @@ namespace RNR
         {
             instance = m_workspace;
         } 
+        else if(class_attr.as_string() == std::string("Camera"))
+        {
+            instance = new Camera();
+        } 
         else if(class_attr.as_string() == std::string("Model")) 
         {
             instance = new ModelInstance();
         } 
         else
         {
-            printf("World::xmlAddItem: adding unknown class\n");
             instance = new Instance();
         }
 
         if(!skip)
         {
-            pugi::xml_node props = node.child("Properties");
-            for(pugi::xml_node prop : props.children())
-                instance->deserializeXmlProperty(prop);
+            pugi::xml_attribute referent = node.attribute("referent");
+            if(!referent.empty())
+                m_refs[referent.as_string()] = instance;
+            WorldUndeserialized s;
+            s.instance = instance;
+            s.node = node;
+            m_undeserialized.push(s);
             instance->setParent(parent);
         }
 
@@ -69,6 +78,8 @@ namespace RNR
 
     void World::load(char* path)
     {
+        m_refs.clear();
+        
         pugi::xml_document rbxl_doc;
         pugi::xml_parse_result result = rbxl_doc.load_file(path);
         if(result)
@@ -79,6 +90,23 @@ namespace RNR
             for(pugi::xml_node item = root.child("Item"); item; item = item.next_sibling("Item"))
             {
                 xmlAddItem(item, m_datamodel);
+            }
+            while(!m_undeserialized.empty())
+            {
+                WorldUndeserialized s = m_undeserialized.top();
+                m_undeserialized.pop();
+
+                pugi::xml_node props = s.node.child("Properties");
+                for(pugi::xml_node prop : props.children())
+                {
+                    s.instance->deserializeXmlProperty(prop);
+                }
+
+                if(s.instance->getClassName() == "Model")
+                {
+                    ModelInstance* m = (ModelInstance*)s.instance;
+                    m->build();
+                }
             }
         }
         else

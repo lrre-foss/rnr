@@ -25,6 +25,7 @@ namespace RNR
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 
     private:
+        virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
         void buildGeomInstance(Instance* instance);
 
         bool m_geomDirty;

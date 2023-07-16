@@ -3,6 +3,9 @@
 
 #include <OGRE/Bites/OgreSGTechniqueResolverListener.h>
 #include <OGRE/OgreDefaultDebugDrawer.h>
+#include <OGRE/Overlay/OgreOverlaySystem.h>
+#include <OGRE/Overlay/OgreOverlayManager.h>
+#include <OGRE/Overlay/OgreFontManager.h>
 
 #ifdef __unix__
 #include <qpa/qplatformnativeinterface.h>
@@ -31,10 +34,13 @@ namespace RNR
         Ogre::NameValuePairList options = this->getRenderOptions();
 
         printf("OgreWidget::initializeOgre: initializing render window\n");
+        Ogre::OverlaySystem* ogreOverlay = new Ogre::OverlaySystem();
+
         ogreWindow = ogreRoot->createRenderWindow("GLWidget-RenderWindow", width(), height(), false, &options);
         ogreWindow->setActive(true);
         ogreWindow->setVisible(true);
         ogreWindow->setAutoUpdated(true);
+        
         
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("shaders", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
@@ -43,6 +49,7 @@ namespace RNR
 
         ogreSceneManager = ogreRoot->createSceneManager();
         ogreSceneManager->setAmbientLight(Ogre::ColourValue(0.2f,0.2f,0.2f));
+        ogreSceneManager->addRenderQueueListener(ogreOverlay);
 
         Ogre::SceneNode* camNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         camNode->setPosition(0, 0, 5);
@@ -74,6 +81,12 @@ namespace RNR
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);        
         Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
 
+        Ogre::FontPtr pFont = Ogre::FontManager::getSingletonPtr()->create("ComicSans", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        pFont->setType(Ogre::FT_TRUETYPE);
+        pFont->setSource("fonts/comic.ttf");
+        pFont->setTrueTypeSize(16);
+        pFont->load();
+        
         ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
         ogreSceneManager->setShadowFarDistance(500.f);
 
@@ -104,15 +117,11 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        RNR::ModelInstance* sel_model = dynamic_cast<RNR::ModelInstance*>(selectedInstance);
-        if(sel_model)
+        if(world->getWorkspace()->getCurrentCamera())
         {
-            Ogre::AxisAlignedBox boundingBox = sel_model->getBoundingBox();
-            if(!boundingBox.isNull() && !boundingBox.isInfinite())
-            {
-                ogreCamera->getParentSceneNode()->setPosition(boundingBox.getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP) * 1.1);
-                ogreCamera->getParentSceneNode()->lookAt(boundingBox.getCenter(), Ogre::Node::TS_WORLD);
-            }
+            Camera* cam = world->getWorkspace()->getCurrentCamera();
+            ogreCamera->getParentSceneNode()->setPosition(cam->getCFrame().getPosition());
+            ogreCamera->getParentSceneNode()->setOrientation(Ogre::Quaternion(cam->getCFrame().getRotation()));
         }
         
         ogreRoot->renderOneFrame(this->delta);

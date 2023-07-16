@@ -25,7 +25,10 @@ namespace RNR
         PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
         if(child_part)
         {
+#define DONT_USE_BRICKCOLOR_MATERIAL
+#ifndef DONT_USE_BRICKCOLOR_MATERIAL
             m_partEntity->setMaterial(BrickColor::material(child_part->getBrickColor()));
+#endif
             m_geom->addEntity(m_partEntity,
                                     child_part->getCFrame().getPosition(), 
                                     Ogre::Quaternion(child_part->getCFrame().getRotation()), 
@@ -64,6 +67,18 @@ namespace RNR
             currentCamera = std::shared_ptr<Camera>(newCamera);
 
             // TODO: raise propertyChanged and currentCameraChangedSignal
+        }
+    }
+
+    void Workspace::deserializeProperty(char* prop_name, pugi::xml_node node)
+    {
+        if(prop_name == std::string("CurrentCamera"))
+        {
+            Instance* new_cam = world->getRef(node.text().as_string());
+            if(new_cam)
+                setCurrentCamera((Camera*)new_cam);
+            else
+                printf("Workspace::deserializeProperty: camera ref invalid (%s)\n", node.text().as_string());
         }
     }
 }
