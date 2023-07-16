@@ -15,6 +15,8 @@ namespace RNR
         m_datamodel->setName("DataModel");
         m_workspace = new Workspace();
         m_workspace->setParent(m_datamodel);
+
+        load("/home/caesium/Downloads/Telegram Desktop/Destroy-History-1.rbxl");
     }
 
     World::~World()
@@ -95,6 +97,6 @@ namespace RNR
 
     void World::update()
     {
-        //
+        m_workspace->buildLegacyGeom();
     }
 }

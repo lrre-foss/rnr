@@ -7,11 +7,13 @@ namespace RNR
 {
     Workspace::Workspace() : ModelInstance()
     {
-        m_instancingEnabled = true;
+        m_instancingEnabled = false;
         setName("Workspace");
         m_instMan = world->getOgreSceneManager()->createInstanceManager("workspacePartInstanceManager", "fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
         m_instMan->setNumCustomParams(2);        
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
+        m_legacyGeom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
+        m_partEntity = world->getOgreSceneManager()->createEntity("fonts/Cube.mesh");
     }
 
     void Workspace::onChildAdded(Instance* childAdded)
@@ -19,27 +21,44 @@ namespace RNR
         PartInstance* child_part = dynamic_cast<PartInstance*>(childAdded);
         if(child_part)
         {
-            Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childAdded->getObject();
-            if(!child_ent)
+            if(m_instancingEnabled)
             {
-                child_ent = m_instMan->createInstancedEntity("materials/partinstanced");        
-                assert(child_ent != NULL);
-                childAdded->setObject(child_ent);
-                m_objects.push_back(child_ent);
+                Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childAdded->getObject();
+                if(!child_ent)
+                {
+                    child_ent = m_instMan->createInstancedEntity("materials/partinstanced");        
+                    assert(child_ent != NULL);
+                    childAdded->setObject(child_ent);
+                    m_objects.push_back(child_ent);
+                }
+                child_ent->setPosition(child_part->getCFrame().getPosition());
+                child_ent->setOrientation(Ogre::Quaternion(child_part->getCFrame().getRotation()));        
+                Ogre::Vector3 size = child_part->getSize();
+                child_ent->setScale(size);
+                child_ent->setCustomParam(0, Ogre::Vector4(
+                    size.x,
+                    size.y,
+                    size.z,
+                    0.0f
+                ));
+                child_ent->setCustomParam(1, child_part->getColor());
+                child_ent->setCastShadows(true);
             }
-            child_ent->setPosition(child_part->getCFrame().getPosition());
-            child_ent->setOrientation(Ogre::Quaternion(child_part->getCFrame().getRotation()));        
-            Ogre::Vector3 size = child_part->getSize();
-            child_ent->setScale(size);
-            child_ent->setCustomParam(0, Ogre::Vector4(
-                size.x,
-                size.y,
-                size.z,
-                0.0f
-            ));
-            child_ent->setCustomParam(1, child_part->getColor());
-            child_ent->setCastShadows(true);
+            else
+            {
+                m_legacyGeom->addEntity(m_partEntity, 
+                                        child_part->getCFrame().getPosition(), 
+                                        Ogre::Quaternion(child_part->getCFrame().getRotation()), 
+                                        child_part->getSize());
+                m_legacyDirty = true;
+            }
         }
+    }
+
+    void Workspace::buildLegacyGeom()
+    {
+        m_legacyGeom->build();
+        m_legacyDirty = false;
     }
 
     void Workspace::onChildRemoved(Instance* childRemoved)
