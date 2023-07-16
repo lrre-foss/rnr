@@ -2,7 +2,10 @@
 
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/Tree/Model.hpp>
+
 #include <OGRE/Ogre.h>
+#include <boost/shared_ptr.hpp>
+
 #include <vector>
 
 namespace RNR
@@ -14,9 +17,14 @@ namespace RNR
 
         virtual void onChildAdded(RNR::Instance* childAdded);
         virtual void onChildRemoved(RNR::Instance* childRemoved);
+        
+        Camera* getCurrentCamera() const;
+	    void setCurrentCamera(Camera *value); 
     private:
         std::vector<Ogre::InstancedEntity*> m_objects;
         Ogre::InstanceManager* m_instMan;
         Ogre::SceneNode* m_worldspawn;
+
+        boost::shared_ptr<Camera> currentCamera; 
     };
 }

@@ -1,6 +1,7 @@
 #include <App/V8/DataModel/Workspace.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/BasePart.hpp>
+#include <App/V8/DataModel/Camera.hpp>
 
 namespace RNR
 {
@@ -53,6 +54,21 @@ namespace RNR
             }
 
             delete child_ent;
+        }
+    }
+
+    Camera* Workspace::getCurrentCamera() const
+    {
+        return currentCamera.get();
+    }
+
+    void Workspace::setCurrentCamera(Camera *newCamera)
+    {
+        if (newCamera != currentCamera.get())
+        {
+            currentCamera = boost::shared_ptr<Camera>(newCamera);
+
+            // TODO: raise propertyChanged and currentCameraChangedSignal
         }
     }
 }
