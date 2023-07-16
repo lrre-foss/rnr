@@ -6,8 +6,9 @@
 
 namespace RNR
 {
-    class BasePart : public PVInstance, public Ogre::Renderable
+    class PartInstance : public PVInstance, public Ogre::Renderable
     {
+    protected:
         Ogre::MaterialPtr m_material;
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
@@ -15,11 +16,13 @@ namespace RNR
         Ogre::Vector3 m_size;
         Ogre::Vector4 m_color;
         static Ogre::MeshPtr m_partMesh;
+        virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
     public:
-        BasePart();
+        PartInstance();
 
         void updateMatrix();
 
+        virtual std::string getClassName() { return "PartInstance"; }
         void setSize(Ogre::Vector3 size) { m_size = size; }
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }

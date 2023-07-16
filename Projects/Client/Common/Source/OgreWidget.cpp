@@ -73,6 +73,9 @@ namespace RNR
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("content", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);        
         Ogre::ResourceGroupManager::getSingletonPtr()->initialiseAllResourceGroups();
 
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+        ogreSceneManager->setShadowFarDistance(500.f);
+
         Ogre::Light* light = ogreSceneManager->createLight("SunLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         lightNode->setPosition(0, 10, 15);
@@ -83,9 +86,6 @@ namespace RNR
         light->setDiffuseColour(0.9, 0.9, 1.0);
         light->setSpecularColour(1.0, 1.0, 1.0);
         light->setType(Ogre::Light::LT_DIRECTIONAL);
-
-        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
-        ogreSceneManager->setShadowFarDistance(500.f);
 
         Ogre::MaterialManager::getSingletonPtr()->reloadAll();
         Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -103,8 +103,11 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::FAR_LEFT_TOP)*2);
-        ogreCamera->getParentSceneNode()->lookAt(world->getWorkspace()->getBoundingBox().getCenter(), Ogre::Node::TS_WORLD, Ogre::Vector3::NEGATIVE_UNIT_Z);
+        if(!world->getWorkspace()->getBoundingBox().isInfinite())
+        {
+            ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP));
+            ogreCamera->getParentSceneNode()->lookAt(world->getWorkspace()->getBoundingBox().getCenter(), Ogre::Node::TS_WORLD);
+        }
         
         ogreRoot->renderOneFrame(this->delta);
     }

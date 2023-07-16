@@ -32,7 +32,10 @@ class MainWindow : public QMainWindow
         void createToolbar();
         void updateTree(RNR::Instance* root_instance);
 
+    public slots:
+        void loadDatamodel();
     protected:
+        void widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance);
         void recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance);
         void closeEvent(QCloseEvent* event);
         void resizeEvent(QResizeEvent* event);

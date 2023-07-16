@@ -10,5 +10,6 @@ namespace RNR
     public:
         SelectionBox();
         ~SelectionBox();
+        virtual std::string getClassName() { return "SelectionBox"; }
     };
 }
