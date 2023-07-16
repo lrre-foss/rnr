@@ -58,8 +58,24 @@ namespace RNR
                 {
                     m_objects.erase(child_it);
                 }
+            }
 
             delete child_ent;
+        }
+    }
+
+    Camera* Workspace::getCurrentCamera() const
+    {
+        return currentCamera.get();
+    }
+
+    void Workspace::setCurrentCamera(Camera *newCamera)
+    {
+        if (newCamera != currentCamera.get())
+        {
+            currentCamera = boost::shared_ptr<Camera>(newCamera);
+
+            // TODO: raise propertyChanged and currentCameraChangedSignal
         }
     }
 }
