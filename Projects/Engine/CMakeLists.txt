@@ -2,6 +2,7 @@ add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
     Header/Helpers/XML.hpp
+    Header/App/Script/ReflectionProperty.hpp
     Header/App/GUI/GuiBase3d.hpp
     Header/App/GUI/InstanceAdornment.hpp
     Header/App/GUI/SelectionBox.hpp
@@ -22,6 +23,7 @@ add_library(Engine STATIC
     Source/Helpers/Name.cpp
     Source/Helpers/Strings.cpp
     Source/Helpers/XML.cpp
+    Source/App/Script/ReflectionProperty.cpp
     Source/App/GUI/GuiBase3d.cpp
     Source/App/GUI/InstanceAdornment.cpp
     Source/App/GUI/SelectionBox.cpp

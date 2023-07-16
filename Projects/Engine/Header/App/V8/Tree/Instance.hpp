@@ -37,6 +37,7 @@ namespace RNR
             bool contains(RNR::Instance* child);
             bool isAncestorOf(RNR::Instance* instance);
 
+            static World* getWorld() { return Instance::world; }
             static void setWorld(World* world) { Instance::world = world; }
 
             virtual bool askSetParent(RNR::Instance* instance); // derive this

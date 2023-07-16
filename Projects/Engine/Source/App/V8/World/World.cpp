@@ -29,7 +29,6 @@ namespace RNR
         bool skip = false;
         Instance* instance;
         pugi::xml_attribute class_attr = node.attribute("class");
-        printf("World::xmlAddItem: adding class %s\n", class_attr.as_string());
 
         if(class_attr.as_string() == std::string("Part"))
         {
@@ -61,6 +60,11 @@ namespace RNR
         {
             xmlAddItem(item, instance);
         }
+        
+        if(class_attr.as_string() == std::string("Model")) 
+        {
+            ((ModelInstance*)instance)->build();
+        } 
     }
 
     void World::load(char* path)

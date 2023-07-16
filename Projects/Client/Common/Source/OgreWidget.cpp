@@ -23,6 +23,7 @@ namespace RNR
         this->setMouseTracking(true);
         this->setCursor(QCursor(Qt::BlankCursor));
         this->setFocusPolicy(Qt::StrongFocus);
+        this->selectedInstance = 0;
     }
 
     void OgreWidget::initializeOgre()
@@ -103,11 +104,15 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        Ogre::AxisAlignedBox boundingBox = world->getWorkspace()->getBoundingBox();
-        if(!boundingBox.isNull() && !boundingBox.isInfinite())
+        RNR::ModelInstance* sel_model = dynamic_cast<RNR::ModelInstance*>(selectedInstance);
+        if(sel_model)
         {
-            ogreCamera->getParentSceneNode()->setPosition(boundingBox.getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP));
-            ogreCamera->getParentSceneNode()->lookAt(boundingBox.getCenter(), Ogre::Node::TS_WORLD);
+            Ogre::AxisAlignedBox boundingBox = sel_model->getBoundingBox();
+            if(!boundingBox.isNull() && !boundingBox.isInfinite())
+            {
+                ogreCamera->getParentSceneNode()->setPosition(boundingBox.getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP) * 1.1);
+                ogreCamera->getParentSceneNode()->lookAt(boundingBox.getCenter(), Ogre::Node::TS_WORLD);
+            }
         }
         
         ogreRoot->renderOneFrame(this->delta);

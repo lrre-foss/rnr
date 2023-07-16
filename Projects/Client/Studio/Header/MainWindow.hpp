@@ -34,6 +34,7 @@ class MainWindow : public QMainWindow
 
     public slots:
         void loadDatamodel();
+        void selectInstance(QTreeWidgetItem *item, int column);
     protected:
         void widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance);
         void recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance);

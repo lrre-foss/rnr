@@ -12,6 +12,8 @@ namespace RNR
         Ogre::Vector3 color_val;
 
         Ogre::MaterialPtr color_material;
+
+        void buildMaterial();
     public:
         BrickColor(int color_id, std::string name, Ogre::Vector3 color);
         static Ogre::Vector3 color(int brickcolor);

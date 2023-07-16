@@ -90,6 +90,17 @@ namespace RNR
         this->color_val = color;
     }
 
+    void BrickColor::buildMaterial()
+    {
+        color_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
+        color_material = color_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(color_id));
+        Ogre::Technique* mat_tech = color_material->getTechnique(0);
+        Ogre::Pass* mat_pass = mat_tech->getPass(0);
+        Ogre::TextureUnitState* part_texunit = mat_pass->getTextureUnitState(0);
+        part_texunit->setColourOperationEx(Ogre::LayerBlendOperationEx::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, Ogre::ColourValue(color_val.x, color_val.y, color_val.z));
+        Ogre::RTShader::ShaderGenerator::getSingletonPtr()->validateScheme(mat_tech->getSchemeName());
+    }
+
     Ogre::Vector3 BrickColor::color(int brickcolor)
     {
         for(int i = 0; i < sizeof(brickcolors) / sizeof(BrickColor); i++)
@@ -109,26 +120,12 @@ namespace RNR
             if(brickcolors[i].color_id == brickcolor)
             {
                 if(!brickcolors[i].color_material)
-                {
-                    brickcolors[i].color_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
-                    brickcolors[i].color_material = brickcolors[i].color_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(brickcolor));
-                    Ogre::Technique* mat_tech = brickcolors[i].color_material->getTechnique(0);
-                    Ogre::Pass* mat_pass = mat_tech->getPass(0);
-                    Ogre::TextureUnitState* part_texunit = mat_pass->getTextureUnitState(0);
-                    part_texunit->setColourOperationEx(Ogre::LayerBlendOperationEx::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, Ogre::ColourValue(brickcolors[i].color_val.x, brickcolors[i].color_val.y, brickcolors[i].color_val.z));
-                }
+                    brickcolors[i].buildMaterial();
                 return brickcolors[i].color_material;
             }
         }
         if(!brickcolors[0].color_material)
-        {
-            brickcolors[0].color_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
-            brickcolors[0].color_material = brickcolors[0].color_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(brickcolor));
-            Ogre::Technique* mat_tech = brickcolors[0].color_material->getTechnique(0);
-            Ogre::Pass* mat_pass = mat_tech->getPass(0);
-            Ogre::TextureUnitState* part_texunit = mat_pass->getTextureUnitState(0);
-            part_texunit->setColourOperationEx(Ogre::LayerBlendOperationEx::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, Ogre::ColourValue(brickcolors[0].color_val.x, brickcolors[0].color_val.y, brickcolors[0].color_val.z));
-        }
+            brickcolors[0].buildMaterial();
         return brickcolors[0].color_material;
     }
 

@@ -1,6 +1,7 @@
 #include <MainWindow.hpp>
 #include <QFile>
 #include <QFileDialog>
+#include <App/V8/Tree/ModelInstance.hpp>
 
 MainWindow::MainWindow()
 {
@@ -28,13 +29,13 @@ MainWindow::MainWindow()
     grid->addWidget(this->ogreWidget, 2, 0, 1, 2);
     
     explorer = new QTreeWidget();
+    connect(explorer, SIGNAL(itemActivated(QTreeWidgetItem*, int)), this, SLOT(selectInstance(QTreeWidgetItem*, int)));
     grid->addWidget(explorer, 2, 2, 1, 1);
 
     content_widget->setLayout(grid);
 
     grid->setContentsMargins(0, 0, 0, 0);
     grid->setSpacing(0);
-
     setWindowTitle(QString("RNR Studio"));
     setWindowIcon(QIcon(pixmap));
     setCentralWidget(content_widget);
@@ -54,6 +55,15 @@ void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instanc
     item->setIcon(0, icon);
 }
 
+void MainWindow::selectInstance(QTreeWidgetItem *item, int column)
+{
+    RNR::Instance* instance = item->data(0, Qt::UserRole).value<RNR::Instance*>();
+    if(dynamic_cast<RNR::ModelInstance*>(instance))
+    {
+        ogreWidget->selectedInstance = instance;
+    }
+}
+
 void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance)
 {
     for(auto& child : *instance->getChildren())
@@ -62,6 +72,7 @@ void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* 
         widgetItemPrepare(instance_w, child);
         instance_w->setText(0, QString(child->getName().c_str()));
         instance_w->setData(0, Qt::UserRole, QVariant::fromValue(child));
+
         recurseTreeAddInstance(instance_w, child);
         parent->addChild(instance_w);
     }
