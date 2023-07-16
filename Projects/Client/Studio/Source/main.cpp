@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 
     while (window.isVisible())
     {
-        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f", window.ogreWidget->delta, window.ogreWidget->render_time));
+        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, FPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, 1 / window.ogreWidget->delta));
         app.processEvents();
         window.ogreWidget->render();
         world->preStep();
