@@ -13,6 +13,7 @@ MainWindow::MainWindow()
     ogreRoot = new Ogre::Root();
     Ogre::ConfigDialog* config = OgreBites::getNativeConfigDialog();
     ogreRoot->showConfigDialog(config);
+
     ogreRoot->initialise(false);
     
     menubar = new QMenuBar();

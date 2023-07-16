@@ -119,6 +119,9 @@ namespace RNR
 
         options["externalWindowHandle"] = getWindowHandle();
         options["FSAA"] = "4";
+#ifdef FORCE_ENABLE_VSYNC
+        options["vsync"] = "true";
+#endif
 #if OGRE_PLATFORM == OGRE_PLATFORM_APPLE
         options["macAPI"] = "cocoa";
         options["macAPICocoaUseNSView"] = "true";

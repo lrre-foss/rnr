@@ -13,6 +13,10 @@ if(COMPILE_PLAYER OR COMPILE_STUDIO)
     
     add_subdirectory(Common)
     
+    if(FORCE_ENABLE_VSYNC)
+        target_compile_definitions(Common PUBLIC FORCE_ENABLE_VSYNC)
+    endif()
+
     if(COMPILE_PLAYER)
         add_subdirectory(Player)
     endif()

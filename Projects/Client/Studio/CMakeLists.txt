@@ -16,11 +16,8 @@ if(WIN32)
     list(APPEND HEADER Resource/Windows/Script.rc)
 endif()
 
-if(FORCE_ENABLE_VSYNC)
-    target_compile_definitions(Studio PRIVATE FORCE_ENABLE_VSYNC)
-endif()
-
 qt_add_executable(Studio ${SOURCE} ${HEADER})
+
 
 target_include_directories(Studio PRIVATE Header)
 target_link_libraries(Studio PRIVATE Common Engine)
