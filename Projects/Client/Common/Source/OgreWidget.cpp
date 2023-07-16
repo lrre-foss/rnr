@@ -103,10 +103,11 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
-        if(!world->getWorkspace()->getBoundingBox().isInfinite())
+        Ogre::AxisAlignedBox boundingBox = world->getWorkspace()->getBoundingBox();
+        if(!boundingBox.isNull() && !boundingBox.isInfinite())
         {
-            ogreCamera->getParentSceneNode()->setPosition(world->getWorkspace()->getBoundingBox().getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP));
-            ogreCamera->getParentSceneNode()->lookAt(world->getWorkspace()->getBoundingBox().getCenter(), Ogre::Node::TS_WORLD);
+            ogreCamera->getParentSceneNode()->setPosition(boundingBox.getCorner(Ogre::AxisAlignedBox::CornerEnum::NEAR_LEFT_TOP));
+            ogreCamera->getParentSceneNode()->lookAt(boundingBox.getCenter(), Ogre::Node::TS_WORLD);
         }
         
         ogreRoot->renderOneFrame(this->delta);

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <pugixml.hpp>
-#include <OGRE/OgreVector3.h>
+#include <OGRE/Ogre.h>
 #include <App/CoordinateFrame.hpp>
 
 namespace RNR

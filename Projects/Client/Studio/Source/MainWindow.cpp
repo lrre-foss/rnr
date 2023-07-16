@@ -83,6 +83,8 @@ void MainWindow::updateTree(RNR::Instance* root_instance)
 void MainWindow::loadDatamodel()
 {
     this->ogreWidget->world->load(QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("RBXLs (*.rbxl)")).toLocal8Bit().data());
+
+    updateTree(ogreWidget->world->getDatamodel());
 }
 
 void MainWindow::createToolbar()
