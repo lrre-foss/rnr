@@ -46,40 +46,60 @@ namespace RNR
             }
             else
             {
-                m_legacyGeom->addEntity(m_partEntity, 
-                                        child_part->getCFrame().getPosition(), 
-                                        Ogre::Quaternion(child_part->getCFrame().getRotation()), 
-                                        child_part->getSize());
                 m_legacyDirty = true;
             }
         }
     }
 
+    void Workspace::buildGeomInstance(Instance* instance)
+    {
+        PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
+        if(child_part)
+            m_legacyGeom->addEntity(m_partEntity, 
+                                    child_part->getCFrame().getPosition(), 
+                                    Ogre::Quaternion(child_part->getCFrame().getRotation()), 
+                                    child_part->getSize());
+        for(auto& child : *instance->getChildren())
+            buildGeomInstance(child);
+    }
+
     void Workspace::buildLegacyGeom()
     {
+        if(!m_legacyDirty)
+            return;
+        m_legacyGeom->reset();
+        for(auto& child : *getChildren())
+            buildGeomInstance(child);
         m_legacyGeom->build();
         m_legacyDirty = false;
     }
 
     void Workspace::onChildRemoved(Instance* childRemoved)
     {
-        Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childRemoved->getObject();
-        if(child_ent)
+        PartInstance* child_part = dynamic_cast<PartInstance*>(childRemoved);
+        if(m_instancingEnabled)
         {
-            PartInstance* child_part = dynamic_cast<PartInstance*>(childRemoved);
-            if(child_part)
+            Ogre::InstancedEntity* child_ent = (Ogre::InstancedEntity*)childRemoved->getObject();
+            if(child_ent)
             {
-                child_ent->_getOwner()->removeInstancedEntity(child_ent);
-                child_part->setObject(NULL);            
-
-                auto child_it = std::find(m_objects.begin(), m_objects.end(), child_ent);
-                if (child_it != m_objects.end())
+                if(child_part)
                 {
-                    m_objects.erase(child_it);
-                }
-            }
+                    child_ent->_getOwner()->removeInstancedEntity(child_ent);
+                    child_part->setObject(NULL);            
 
-            delete child_ent;
+                    auto child_it = std::find(m_objects.begin(), m_objects.end(), child_ent);
+                    if (child_it != m_objects.end())
+                    {
+                        m_objects.erase(child_it);
+                    }
+                }
+
+                delete child_ent;
+            }
+        }
+        else
+        {
+            
         }
     }
 

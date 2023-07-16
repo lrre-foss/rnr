@@ -25,6 +25,8 @@ namespace RNR
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 
     private:
+        void buildGeomInstance(Instance* instance);
+
         bool m_instancingEnabled;
         bool m_legacyDirty;
         std::vector<Ogre::InstancedEntity*> m_objects;
