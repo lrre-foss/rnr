@@ -2,6 +2,7 @@ add_library(Engine STATIC
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
     Header/Helpers/XML.hpp
+    Header/Helpers/NormalId.hpp
     Header/App/Script/ReflectionProperty.hpp
     Header/App/GUI/GuiBase3d.hpp
     Header/App/GUI/InstanceAdornment.hpp
@@ -11,6 +12,7 @@ add_library(Engine STATIC
     Header/App/V8/DataModel/Camera.hpp
     Header/App/V8/DataModel/ForceField.hpp
     Header/App/V8/DataModel/PartInstance.hpp
+    Header/App/V8/DataModel/FaceInstance.hpp
     Header/App/V8/DataModel/Workspace.hpp
     Header/App/V8/Tree/Instance.hpp
     Header/App/V8/Tree/PVInstance.hpp
@@ -24,6 +26,7 @@ add_library(Engine STATIC
     Source/Helpers/Name.cpp
     Source/Helpers/Strings.cpp
     Source/Helpers/XML.cpp
+    Source/Helpers/NormalId.cpp
     Source/App/Script/ReflectionProperty.cpp
     Source/App/GUI/GuiBase3d.cpp
     Source/App/GUI/InstanceAdornment.cpp
@@ -33,6 +36,7 @@ add_library(Engine STATIC
     Source/App/V8/DataModel/Camera.cpp
     Source/App/V8/DataModel/ForceField.cpp
     Source/App/V8/DataModel/PartInstance.cpp
+    Source/App/V8/DataModel/FaceInstance.cpp
     Source/App/V8/DataModel/Workspace.cpp
     Source/App/V8/Tree/Instance.cpp
     Source/App/V8/Tree/PVInstance.cpp    
