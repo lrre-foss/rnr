@@ -26,6 +26,8 @@ namespace RNR
 
     std::string ReflectionProperty::toString()
     {
+        if(m_getter(m_object) == 0)
+            return std::string("NULL");
         switch(m_type)
         {
             case PROPERTY_STD_STRING:

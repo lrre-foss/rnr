@@ -105,4 +105,16 @@ namespace RNR
                 printf("Workspace::deserializeProperty: camera ref invalid (%s)\n", node.text().as_string());
         }
     }
+
+    void Workspace::addProperties(std::vector<ReflectionProperty>& properties)
+    {
+        ReflectionProperty _properties[]  = {
+            { this, std::string("CurrentCamera"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_INSTANCE,         
+              REFLECTION_GETTER(Workspace* instance = (Workspace*)object; return instance->currentCamera.get(); ), 
+              REFLECTION_SETTER(Workspace* instance = (Workspace*)object; instance->setCurrentCamera((Camera*)value); ) },
+        };
+
+        properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));
+    }
 }
