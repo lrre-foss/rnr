@@ -26,3 +26,6 @@ set_target_properties(Studio PROPERTIES
     WIN32_EXECUTABLE ON
     MACOSX_BUNDLE ON
 )
+
+install(TARGETS Studio 
+        RUNTIME_DEPENDENCIES)

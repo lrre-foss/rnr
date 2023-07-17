@@ -1,16 +1,8 @@
 #pragma once
 
-namespace RNR {
-    Ogre::Vector3 normalIdVectors[] = {
-        Ogre::Vector3(1, 0, 0),
-        Ogre::Vector3(0, 1, 0),
-        Ogre::Vector3(0, 0, 1),
-        Ogre::Vector3(-1, 0, 0),
-        Ogre::Vector3(0, -1, 0),
-        Ogre::Vector3(0, 0, -1),
-        Ogre::Vector3(0, 0, 0)
-    };
+#include <OGRE/Ogre.h>
 
+namespace RNR {
     enum NormalId
     {
         NORM_X,

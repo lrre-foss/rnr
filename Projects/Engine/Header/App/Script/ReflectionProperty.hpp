@@ -7,9 +7,12 @@ namespace RNR
 {
     enum ReflectionPropertyAccess
     {
-        ACCESS_SCRIPT,
-        ACCESS_CONSOLE,
-        ACCESS_RNR,
+        ACCESS_NONE,
+        ACCESS_PLUGIN,
+        ACCESS_LOCALUSER,
+        ACCESS_WRITEPLAYER,
+        ACCESS_AUTHORIZEDSCRIPT,
+        ACCESS_AUTHORIZED,
     };
 
     template <class T>

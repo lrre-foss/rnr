@@ -3,6 +3,15 @@
 #include <OGRE/Ogre.h>
 
 namespace RNR {
+    static Ogre::Vector3 normalIdVectors[] = {
+        Ogre::Vector3(1, 0, 0),
+        Ogre::Vector3(0, 1, 0),
+        Ogre::Vector3(0, 0, 1),
+        Ogre::Vector3(-1, 0, 0),
+        Ogre::Vector3(0, -1, 0),
+        Ogre::Vector3(0, 0, -1),
+    };
+
     bool validNormalId(NormalId normalId) {
         return ((normalId >= 0) && (normalId < 6)); 
     }
@@ -154,7 +163,7 @@ namespace RNR {
             return Ogre::Vector3::UNIT_X;
         }
     }
-
+ 
     Ogre::Vector3 objectToUvw(const Ogre::Vector3& object, NormalId faceId)
     {
         switch (faceId)
