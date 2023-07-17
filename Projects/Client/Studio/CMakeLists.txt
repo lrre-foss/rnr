@@ -18,6 +18,12 @@ endif()
 
 qt_add_executable(Studio ${SOURCE} ${HEADER})
 
+if(WIN32 OR MINGW)
+    add_custom_command(TARGET Studio POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:Studio> $<TARGET_RUNTIME_DLLS:Studio>
+        COMMAND_EXPAND_LISTS
+    )
+endif()
 
 target_include_directories(Studio PRIVATE Header)
 target_link_libraries(Studio PRIVATE Common Engine)
