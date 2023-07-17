@@ -18,7 +18,7 @@ endif()
 
 qt_add_executable(Player ${SOURCE} ${HEADER})
 
-if(WIN32 OR MINGW)
+if(MINGW)
     add_custom_command(TARGET Player POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy -t $<TARGET_FILE_DIR:Player> $<TARGET_RUNTIME_DLLS:Player>
         COMMAND_EXPAND_LISTS
