@@ -7,18 +7,17 @@
 
 namespace RNR
 {
-    class PartInstance : public PVInstance, public Ogre::Renderable
+    class PartInstance : public PVInstance
     {
     protected:
         int m_brickColor;
-        Ogre::MaterialPtr m_material;
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
-        Ogre::LightList m_nearbyLights;
         Ogre::Vector3 m_size;
         Ogre::Vector4 m_color;
-        static Ogre::MeshPtr m_partMesh;
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
+        virtual void addProperties(std::vector<ReflectionProperty>& properties);
+        std::string mesh_id;
     public:
         PartInstance();
 
@@ -31,10 +30,5 @@ namespace RNR
 
         void setBrickColor(int brickcolor) { m_brickColor = brickcolor; }
         int getBrickColor() { return m_brickColor; }
-        virtual const Ogre::MaterialPtr& getMaterial() const;
-        virtual void getRenderOperation(Ogre::RenderOperation& op);
-        virtual Ogre::Real getSquaredViewDepth(const Ogre::Camera* cam) const;
-        virtual const Ogre::LightList& getLights() const;
-        virtual void getWorldTransforms(Ogre::Matrix4* xform) const;
     };
 }

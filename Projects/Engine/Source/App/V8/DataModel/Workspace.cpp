@@ -34,11 +34,10 @@ namespace RNR
             Ogre::Vector3 part_size = child_part->getSize();
             for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
             {            
-                Ogre::SubEntity* surface = m_partEntity->getSubEntity(i);
+                Ogre::SubMesh* surface = m_partEntity->getMesh()->getSubMesh(i);
                 Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0);
 
                 Ogre::Vector2 uvs;
-
                 std::string surf_name = std::string(surface->getMaterialName().c_str());
                 if(surf_name == "TopMaterial")
                     uvs = Ogre::Vector2(part_size.x, part_size.z);
@@ -53,13 +52,12 @@ namespace RNR
                 else if(surf_name == "FrontMaterial")
                     uvs = Ogre::Vector2(-part_size.x, part_size.z);
 
-                texture->setTextureScale(uvs.x,uvs.y);
+
             }
             m_geom->addEntity(m_partEntity,
-                                    child_part->getCFrame().getPosition(), 
-                                    Ogre::Quaternion(child_part->getCFrame().getRotation()), 
-                                    child_part->getSize());
-
+                              child_part->getCFrame().getPosition(), 
+                              Ogre::Quaternion(child_part->getCFrame().getRotation()), 
+                              child_part->getSize());
         }
         for(auto& child : *instance->getChildren())
             buildGeomInstance(child);

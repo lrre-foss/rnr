@@ -9,6 +9,7 @@ namespace RNR
     protected:
         CoordinateFrame m_cframe;
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
+        virtual void addProperties(std::vector<ReflectionProperty>& properties);
     public:
         PVInstance();
 

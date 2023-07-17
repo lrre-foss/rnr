@@ -16,21 +16,23 @@ MainWindow::MainWindow()
     ogreRoot->showConfigDialog(config);
 
     ogreRoot->initialise(false);
-    
+
     menubar = new QMenuBar();
-    grid->addWidget(menubar, 0, 0, 1, 2);
-
     toolbar = new QToolBar();
-    grid->addWidget(toolbar, 1, 0, 1, 2);
-
     createToolbar();
 
+    grid->addWidget(menubar, 0, 0, 1, 3);
+    grid->addWidget(toolbar, 1, 0, 1, 3);
+
     this->ogreWidget = new RNR::OgreWidget(ogreRoot);
-    grid->addWidget(this->ogreWidget, 2, 0, 1, 2);
+    grid->addWidget(this->ogreWidget, 2, 0, 2, 2);
     
     explorer = new QTreeWidget();
     connect(explorer, SIGNAL(itemActivated(QTreeWidgetItem*, int)), this, SLOT(selectInstance(QTreeWidgetItem*, int)));
     grid->addWidget(explorer, 2, 2, 1, 1);
+
+    properties = new PropertyViewer();
+    grid->addWidget(properties, 3, 2, 1, 1);
 
     content_widget->setLayout(grid);
 
@@ -39,6 +41,7 @@ MainWindow::MainWindow()
     setWindowTitle(QString("RNR Studio"));
     setWindowIcon(QIcon(pixmap));
     setCentralWidget(content_widget);
+
 }
 
 void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance)
@@ -58,10 +61,8 @@ void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instanc
 void MainWindow::selectInstance(QTreeWidgetItem *item, int column)
 {
     RNR::Instance* instance = item->data(0, Qt::UserRole).value<RNR::Instance*>();
-    if(dynamic_cast<RNR::ModelInstance*>(instance))
-    {
-        ogreWidget->selectedInstance = instance;
-    }
+    ogreWidget->selectedInstance = instance;
+    properties->view(instance);
 }
 
 void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance)
@@ -95,7 +96,7 @@ void MainWindow::updateTree(RNR::Instance* root_instance)
 
 void MainWindow::loadDatamodel()
 {
-    this->ogreWidget->world->load(QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("RBXLs (*.rbxl)")).toLocal8Bit().data());
+    this->ogreWidget->world->load(QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("XML RBXLs (*.rbxl *.rbxlx)")).toLocal8Bit().data());
 
     updateTree(ogreWidget->world->getDatamodel());
 }
@@ -117,5 +118,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 {
     QSize new_size = event->size();
     explorer->setMaximumWidth(new_size.width()/4);
+    properties->setMaximumWidth(new_size.width()/4);
 
 }

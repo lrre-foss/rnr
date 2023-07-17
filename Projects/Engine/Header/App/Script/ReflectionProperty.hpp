@@ -2,6 +2,16 @@
 
 #include <string>
 #include <boost/type_index.hpp>
+#include <functional>
+
+#define REFLECTION_GETTER(c) \
+    [](const void* object) { c }
+#define REFLECTION_NO_GETTER() \
+    [](const void* object) { return (const void*)NULL; }
+#define REFLECTION_SETTER(c) \
+    [](void* object, const void* value) { c }
+#define REFLECTION_NO_SETTER() \
+    [](void* object, const void* value) { }
 
 namespace RNR
 {
@@ -15,32 +25,51 @@ namespace RNR
         ACCESS_AUTHORIZED,
     };
 
-    template <class T>
+    enum ReflectionPropertyOperation
+    {
+        OPERATION_READ,
+        OPERATION_READWRITE,
+    };
+
+    enum ReflectionPropertyType
+    {
+        PROPERTY_BOOL,
+        PROPERTY_STD_STRING,
+        PROPERTY_INTEGER,
+        PROPERTY_VECTOR2,
+        PROPERTY_VECTOR3,
+        PROPERTY_CFRAME,
+        PROPERTY_INSTANCE,
+    };
+
     class ReflectionProperty
     {
     private:
+        const void* m_object;
         std::string m_name;
+        std::string m_description;
         ReflectionPropertyAccess m_access;
+        ReflectionPropertyOperation m_op;
+        ReflectionPropertyType m_type;
+        std::function<const void* (const void* /* owner */)> m_getter;
+        std::function<void (void* /* owner */, const void* /* value */)> m_setter;
     public:
-        ReflectionProperty(std::string name, ReflectionPropertyAccess access, T(*getter), T(*setter))
-        {
-            this->m_name = name;
-            this->m_access = access;
-            this->getter = getter;
-            this->setter = setter;
-        }
+        // this == m_object
+        // getter returns an address to the value,
+        // setter sets the value to the contents of the address
+        ReflectionProperty(const void* m_object,
+                           std::string name, 
+                           std::string description, 
+                           ReflectionPropertyAccess access, 
+                           ReflectionPropertyOperation op,
+                           ReflectionPropertyType m_type,
+                           std::function<const void* (const void* /* owner */)> getter,
+                           std::function<void (void* /* owner */, const void* /* value */)> setter);
 
-        bool access(ReflectionPropertyAccess accessor)
-        {
-            return this->m_access <= accessor;
-        }
+        bool access(ReflectionPropertyAccess accessor) { return this->m_access <= accessor; }
+        std::string name() { return m_name; }
+        std::string description() { return m_description; }
 
-        char* class_name()
-        {
-            return boost::typeindex::type_id<T>().pretty_name();
-        }
-
-        T (*getter)();
-        void (*setter)(T val);
+        std::string toString();
     };
 }

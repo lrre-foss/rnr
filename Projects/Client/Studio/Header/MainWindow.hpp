@@ -10,6 +10,7 @@
 #include <QGridLayout>
 #include <QTreeView>
 #include <QVariant>
+#include <PropertyViewer.hpp>
 
 #include <OGRE/Bites/OgreBitesConfigDialog.h>
 #include <OgreWidget.hpp>
@@ -28,6 +29,7 @@ class MainWindow : public QMainWindow
         QTreeWidget* explorer;
         QToolBar* toolbar;
         QMenuBar* menubar;
+        PropertyViewer* properties;
 
         void createToolbar();
         void updateTree(RNR::Instance* root_instance);

@@ -5,11 +5,13 @@ set(CMAKE_AUTOMOC ON)
 list(APPEND SOURCE
     Source/main.cpp
     Source/MainWindow.cpp
+    Source/PropertyViewer.cpp
 )
 
 list(APPEND HEADER
     ${CMAKE_BINARY_DIR}/Resource/Studio.hpp
     Header/MainWindow.hpp
+    Header/PropertyViewer.hpp
 )
 
 if(WIN32)

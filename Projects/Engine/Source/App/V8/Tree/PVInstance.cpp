@@ -15,4 +15,16 @@ namespace RNR
             setCFrame(XML::getCFrame(node));
         }
     }
+
+    void PVInstance::addProperties(std::vector<ReflectionProperty>& properties)
+    {
+        ReflectionProperty _properties[]  = {
+            { this, std::string("CFrame"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_CFRAME,         
+              REFLECTION_GETTER(PVInstance* instance = (PVInstance*)object; return &instance->m_cframe; ), 
+              REFLECTION_SETTER(PVInstance* instance = (PVInstance*)object; instance->setCFrame(*(CoordinateFrame*)value); ) },
+        };
+
+        properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));
+    }
 }

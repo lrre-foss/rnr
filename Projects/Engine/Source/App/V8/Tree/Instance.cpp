@@ -17,6 +17,31 @@ namespace RNR
         setParent(NULL);
     }
 
+    std::vector<ReflectionProperty> Instance::getProperties()
+    {
+        ReflectionProperty properties[]  = {
+            { this, std::string("Name"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_STD_STRING,         
+              REFLECTION_GETTER(Instance* instance = (Instance*)object; return &instance->m_name; ), 
+              REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->setName(*(std::string*)value); ) },
+
+            { this, std::string("Parent"), std::string(""), 
+              ACCESS_NONE, OPERATION_READ, PROPERTY_INSTANCE,         
+              REFLECTION_GETTER(Instance* instance = (Instance*)object; return instance->m_parent; ), 
+              REFLECTION_NO_SETTER() },
+
+            { this, std::string("Archivable"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_BOOL,         
+              REFLECTION_GETTER(Instance* instance = (Instance*)object; return &instance->m_archivable; ), 
+              REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->m_archivable = *(bool*)value; ) },
+        };
+
+        std::vector<ReflectionProperty> _properties(properties, properties+(sizeof(properties)/sizeof(ReflectionProperty)));
+        addProperties(_properties);
+
+        return _properties;
+    }
+
     void Instance::deserializeXmlProperty(pugi::xml_node prop)
     {
         pugi::xml_attribute prop_name = prop.attribute("name");

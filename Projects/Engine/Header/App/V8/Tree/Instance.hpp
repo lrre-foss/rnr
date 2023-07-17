@@ -9,6 +9,8 @@
 #include <Helpers/Name.hpp>
 #include <pugixml.hpp>
 
+#include <App/Script/ReflectionProperty.hpp>
+
 namespace RNR
 {
     class World;
@@ -18,6 +20,7 @@ namespace RNR
         protected:
             static World* world;
             virtual void deserializeProperty(char* prop_name, pugi::xml_node prop) {};
+            virtual void addProperties(std::vector<ReflectionProperty>& properties) {};
 
         private:
 
@@ -32,6 +35,7 @@ namespace RNR
             Instance();
             ~Instance();
             
+            virtual std::vector<ReflectionProperty> getProperties();
             void deserializeXmlProperty(pugi::xml_node prop);
 
             bool contains(RNR::Instance* child);
