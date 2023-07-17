@@ -15,5 +15,6 @@ add_compile_options(-Wno-attributes -Wno-return-type) # Ignore warnings generate
 
 find_package(Boost REQUIRED)
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
+find_package(pugixml REQUIRED)
 
 add_subdirectory(Projects)

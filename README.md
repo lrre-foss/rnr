@@ -19,7 +19,8 @@ There are several goals that RNR seeks to accomplish, them being;
 # Building
 RNR uses [CMake](https://cmake.org/) as its build system and [GCC](https://gcc.gnu.org/) as its compiler. To build RNR, you must first have the following packages installed:
 - [Boost](https://www.boost.org/)
-- [Ogre](https://github.com/OGRECave/ogre)
+- [OGRE](https://github.com/OGRECave/ogre)
+- [pugixml](https://github.com/zeux/pugixml)
 - [Qt 6](https://www.qt.io/product/qt6) (if building the player or studio projects)
 
 For Windows:
