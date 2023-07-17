@@ -13,6 +13,12 @@ namespace RNR
         m_geom->setCastShadows(true);
         m_partEntity = world->getOgreSceneManager()->createEntity("fonts/Cube.mesh");
         m_partEntity->setCastShadows(true);
+
+        for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
+        {
+            Ogre::SubEntity* surface = m_partEntity->getSubEntity(i);
+            Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->createTextureUnitState("textures/stud_top.png");
+        }
     }
 
     void Workspace::onChildAdded(Instance* childAdded)
@@ -25,9 +31,30 @@ namespace RNR
         PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
         if(child_part)
         {
-#ifndef DONT_USE_BRICKCOLOR_MATERIAL
-            m_partEntity->setMaterial(BrickColor::material(child_part->getBrickColor()));
-#endif
+            Ogre::Vector3 part_size = child_part->getSize();
+            for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
+            {            
+                Ogre::SubEntity* surface = m_partEntity->getSubEntity(i);
+                Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+
+                Ogre::Vector2 uvs;
+
+                std::string surf_name = std::string(surface->getMaterialName().c_str());
+                if(surf_name == "TopMaterial")
+                    uvs = Ogre::Vector2(part_size.x, part_size.z);
+                else if(surf_name == "BottomMaterial")
+                    uvs = Ogre::Vector2(-part_size.x, part_size.z);
+                else if(surf_name == "LeftMaterial")
+                    uvs = Ogre::Vector2(part_size.y, part_size.z);
+                else if(surf_name == "RightMaterial")
+                    uvs = Ogre::Vector2(-part_size.y, part_size.z);
+                else if(surf_name == "BackMaterial")
+                    uvs = Ogre::Vector2(part_size.x, part_size.z);
+                else if(surf_name == "FrontMaterial")
+                    uvs = Ogre::Vector2(-part_size.x, part_size.z);
+
+                texture->setTextureScale(uvs.x,uvs.y);
+            }
             m_geom->addEntity(m_partEntity,
                                     child_part->getCFrame().getPosition(), 
                                     Ogre::Quaternion(child_part->getCFrame().getRotation()), 
