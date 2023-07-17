@@ -1,5 +1,7 @@
 #pragma once
 
+#include <OGRE/Ogre.h>
+
 namespace RNR {
     Ogre::Vector3 normalIdVectors[] = {
         Ogre::Vector3(1, 0, 0),

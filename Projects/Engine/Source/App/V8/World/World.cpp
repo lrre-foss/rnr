@@ -17,8 +17,6 @@ namespace RNR
         m_workspace->setParent(m_datamodel);
 
         m_tmb = new TopMenuBar();
-
-        load("/home/caesium/Downloads/Telegram Desktop/Destroy-History-1.rbxl");
     }
 
     World::~World()
