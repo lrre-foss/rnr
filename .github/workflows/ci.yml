@@ -16,6 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        name: Clone repository
         with:
           submodules: recursive
         
@@ -33,10 +34,10 @@ jobs:
             mingw-w64-x86_64-ogre3d
             mingw-w64-x86_64-qt6
       
-      - name: Generate CMake build files
+      - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
-      - name: Build
+      - name: Build (Ninja)
         run: ninja -C build
       
       - name: Organize binaries
