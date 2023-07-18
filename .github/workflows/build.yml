@@ -2,65 +2,6 @@ name: Build
 on: [ push ]
 
 jobs:
-  linux:
-    strategy:
-      matrix:
-        configuration: [ Release, Debug ]
-    
-    name: Linux
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-        name: Clone repository
-        with:
-          submodules: recursive
-      
-      - uses: awalsh128/cache-apt-pkgs-action@latest
-        name: Install required packages
-        with:
-          version: 1.0
-          packages: >-
-            git
-            clang
-            cmake
-            ninja-build
-            libboost-dev 
-            Libogre-1.12-dev
-            libpugixml-dev
-            qt6-base-dev 
-      
-      - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
-      
-      - name: Run Ninja build
-        run: ninja -C build
-      
-      # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
-      - name: Organize binaries
-        run: mkdir build/dist && find build -perm /a+x -exec mv {} build/dist \;
-
-      - name: Add RNR resources
-        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
-
-      - name: Add OGRE plugins
-        run: cp -R build/plugins build/dist && cp Content/linux_plugins.cfg build/dist/plugins.cfg
-      
-      - name: Add OGRE shaders
-        run: cp -R build/shaders build/dist
-
-      - name: Set output variables
-        id: vars
-        run: |
-          echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
-          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: rnr-${{ steps.vars.outputs.hash }}-linux_x64-${{ steps.vars.outputs.configuration }}
-          path: build/dist
-
   windows:
     strategy:
       matrix:
@@ -86,7 +27,6 @@ jobs:
         with:
           msystem: ${{ matrix.sys }}
           install: >-
-            git
             mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
             mingw-w64-${{ matrix.env }}-cmake
             mingw-w64-${{ matrix.env }}-ninja
@@ -124,7 +64,7 @@ jobs:
         id: vars
         run: |
           echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
-          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "hash=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       
       - name: Upload artifact
         uses: actions/upload-artifact@v3
