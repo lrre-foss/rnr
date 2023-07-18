@@ -1,13 +1,12 @@
-name: CI
 on: [push]
 
 jobs:
-  build-windows:
+  build-win_x64:
     strategy:
       matrix:
         configuration: [release, debug]
 
-    name: Build (Windows)
+    name: build (win_x64)
     runs-on: windows-latest
 
     defaults:
@@ -39,7 +38,7 @@ jobs:
       - name: Build (Ninja)
         run: ninja -C build
       
-      # ouch - unless and until we start using CMake's install command, these commands are a necessary evil
+      # ouch - unless and until we start using CMake's install command, these next few commands are a necessary evil
       - name: Organize binaries
         run: mkdir build/dist && mv build/*.exe build/dist && cd build/dist && for x in *.exe; do mv $x "RNR.$x"; done && cd ../../
       
@@ -58,8 +57,12 @@ jobs:
       - name: Add resources
         run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
       
+      - name: Set output variables
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
-          name: RNR (win_x64-${{ matrix.configuration }}-${{ github.sha }})
+          name: RNR (${{ steps.vars.outputs.sha_short }}-${{ matrix.configuration }}-win_x64)
           path: build/dist
