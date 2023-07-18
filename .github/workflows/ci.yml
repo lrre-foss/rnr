@@ -1,0 +1,69 @@
+name: ci
+on: [push]
+
+jobs:
+  build-win_x64:
+    strategy:
+      matrix:
+        configuration: [release, debug]
+
+    name: build (win_x64)
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - uses: actions/checkout@v3
+        name: Clone repository
+        with:
+          submodules: recursive
+        
+      - uses: msys2/setup-msys2@v2
+        name: Set up MSYS2
+        with:
+          msystem: mingw64
+          install: >-
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-pugixml
+            mingw-w64-x86_64-ogre3d
+            mingw-w64-x86_64-qt6
+      
+      - name: Generate Ninja build files
+        run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'release' && 'MinSizeRel' || 'Debug' }} .
+      
+      - name: Build (Ninja)
+        run: ninja -C build
+      
+      # ouch - unless and until we start using CMake's install command, these next few commands are a necessary evil
+      - name: Organize binaries
+        run: mkdir build/dist && mv build/*.exe build/dist && cd build/dist && for x in *.exe; do mv $x "RNR.$x"; done && cd ../../
+      
+      - name: Add Qt dependencies
+        run: windeployqt6 build/dist/*.exe
+      
+      - name: Add runtime dependencies
+        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "mingw64" | xargs -I '{}' cp -v '{}' build/dist
+      
+      - name: Add OGRE plugins
+        run: cp Content/win32_plugins.cfg build/dist/plugins.cfg && mkdir build/dist/plugins/ && cat build/dist/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/mingw64/bin/{}.dll' build/dist/plugins/
+      
+      - name: Add OGRE shaders
+        run: mkdir build/dist/ShaderCache && mkdir build/dist/shaders && cp -R /mingw64/share/OGRE/Media/Main build/dist/shaders && cp -R /mingw64/share/OGRE/Media/RTShaderLib build/dist/shaders
+      
+      - name: Add resources
+        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+      
+      - name: Set output variables
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: RNR (${{ steps.vars.outputs.sha_short }}-${{ matrix.configuration }}-win_x64)
+          path: build/dist
