@@ -10,8 +10,8 @@
 
 int main(int argc, char** argv)
 {
-    if (!fs::is_directory("ShaderCache") || !fs::exists("ShaderCache"))
-        fs::create_directory("ShaderCache");
+    if (!std::filesystem::is_directory("ShaderCache") || !std::filesystem::exists("ShaderCache")) {
+        std::filesystem::create_directory("ShaderCache");
     }
 
     QSurfaceFormat format;
