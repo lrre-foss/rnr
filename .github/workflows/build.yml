@@ -17,16 +17,15 @@ jobs:
           submodules: recursive
       
       - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y 
-          git
-          
-          clang
-          cmake
-          ninja-build
-          libboost-dev
-          libogre-1.12-dev
-          libpugixml-dev
-          qt6-base-dev
+        run: sudo apt-get update && sudo apt-get install -y \
+          git \
+          clang \
+          cmake \
+          ninja-build \
+          libboost-dev \
+          libogre-1.12-dev \
+          libpugixml-dev \
+          qt6-base-dev 
       
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -D CI -D CMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
@@ -85,7 +84,6 @@ jobs:
           msystem: ${{ matrix.sys }}
           install: >-
             git
-
             mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
             mingw-w64-${{ matrix.env }}-cmake
             mingw-w64-${{ matrix.env }}-ninja
