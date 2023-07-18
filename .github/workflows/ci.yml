@@ -1,0 +1,59 @@
+name: CI
+on: [push]
+
+jobs:
+  build-windows:
+    strategy:
+      matrix:
+        configuration: [Release, Debug]
+
+    name: Build (Windows)
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: msys2/setup-msys2@v2
+        name: Set up MSYS2
+        with:
+          update: true
+          msystem: mingw64
+          install: >-
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-pugixml
+            mingw-w64-x86_64-ogre
+            mingw-w64-x86_64-qt
+      
+      - name: Generate CMake build files
+        run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+      
+      - name: Build
+        run: ninja -C build
+      
+      - name: Organize binaries
+        run: mkdir build/dist && mv build/*.exe build/dist && cd build/dist && for x in *.exe; do mv $x "RNR.$x"; done && cd ../../
+      
+      - name: Add Qt dependencies
+        run: windeployqt6 build/dist/*.exe
+      
+      # ouch - unless and until we start using CMake's install command, these commands are a necessary evil
+      - name: Add runtime dependencies
+        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "mingw64" | xargs -I '{}' cp -v '{}' build/dist
+      
+      - name: Add OGRE plugins
+        run: cp Content/win32_plugins.cfg build/dist/plugins.cfg && mkdir build/dist/plugins/ && cat build/dist/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/mingw64/bin/{}.dll' build/dist/plugins/
+
+      - name: Add resources
+        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+      
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: RNR for Windows (${{ matrix.configuration }})
+          path: build/dist
