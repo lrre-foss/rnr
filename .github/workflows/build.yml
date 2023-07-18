@@ -21,16 +21,10 @@ jobs:
         with:
           version: 1.1
           packages: >-
-            git
-            clang
-            cmake
-            ninja-build
-            libboost-dev 
-            Libogre-1.12-dev
-            libpugixml-dev 
+
       
-      - name: Install Qt
-        run: sudo apt-get install qt6-base-dev
+      - name: Install required packages
+        run: sudo apt-get update && sudo apt-get install -y clang cmake ninja-build libboost-dev libogre-1.12-dev libpugixml-dev libglx-dev qt6-base-dev qt6-3d-dev libqt6gui6 libqt6core6 libqt6openglwidgets6 libqt6opengl6-dev
       
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
