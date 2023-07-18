@@ -5,8 +5,9 @@ jobs:
   windows:
     strategy:
       matrix:
+        include:
+          - { sys: clang64, env: clang-x86_64 }
         configuration: [ Release, Debug ]
-        sys: [ clang64-x86_64 ]
 
     name: Windows
     runs-on: windows-latest
@@ -26,13 +27,13 @@ jobs:
         with:
           msystem: ${{ matrix.sys }}
           install: >-
-            mingw-w64-${{ matrix.sys }}-${{ contains(matrix.sys, 'clang') && 'clang' || 'gcc' }}
-            mingw-w64-${{ matrix.sys }}-cmake
-            mingw-w64-${{ matrix.sys }}-ninja
-            mingw-w64-${{ matrix.sys }}-boost
-            mingw-w64-${{ matrix.sys }}-pugixml
-            mingw-w64-${{ matrix.sys }}-ogre3d
-            mingw-w64-${{ matrix.sys }}-qt6
+            mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
+            mingw-w64-${{ matrix.env }}-cmake
+            mingw-w64-${{ matrix.env }}-ninja
+            mingw-w64-${{ matrix.env }}-boost
+            mingw-w64-${{ matrix.env }}-pugixml
+            mingw-w64-${{ matrix.env }}-ogre3d
+            mingw-w64-${{ matrix.env }}-qt6
       
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
