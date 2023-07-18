@@ -27,8 +27,8 @@ jobs:
             mingw-w64-x86_64-ninja
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-pugixml
-            mingw-w64-x86_64-ogre
-            mingw-w64-x86_64-qt
+            mingw-w64-x86_64-ogre3d
+            mingw-w64-x86_64-qt6
       
       - name: Generate CMake build files
         run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
