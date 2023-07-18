@@ -30,6 +30,9 @@ jobs:
             libpugixml-dev
             qt6-base-dev 
       
+      - name: Let CMake recognize Qt
+        run: cp /usr/lib/x86_64-linux-gnu/cmake/Qt6/Qt6Config.cmake /usr/lib/cmake/Qt6
+      
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
@@ -86,7 +89,6 @@ jobs:
         with:
           msystem: ${{ matrix.sys }}
           install: >-
-            git
             mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
             mingw-w64-${{ matrix.env }}-cmake
             mingw-w64-${{ matrix.env }}-ninja
@@ -124,7 +126,7 @@ jobs:
         id: vars
         run: |
           echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
-          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "hash=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
       
       - name: Upload artifact
         uses: actions/upload-artifact@v3
