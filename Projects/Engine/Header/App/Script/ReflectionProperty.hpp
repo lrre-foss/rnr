@@ -40,6 +40,7 @@ namespace RNR
         PROPERTY_VECTOR3,
         PROPERTY_CFRAME,
         PROPERTY_INSTANCE,
+        PROPERTY_FLOAT,
     };
 
     class ReflectionProperty

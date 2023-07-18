@@ -11,6 +11,7 @@ namespace RNR
         virtual void build();
         Ogre::AxisAlignedBox getBoundingBox() { return m_boundingbox; }
         virtual std::string getClassName() { return "Model"; }
+        virtual void onChildAdded(Instance* instance);
     private:
         Ogre::AxisAlignedBox m_boundingbox;
         

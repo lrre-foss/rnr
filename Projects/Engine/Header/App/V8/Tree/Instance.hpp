@@ -40,7 +40,11 @@ namespace RNR
 
             bool contains(RNR::Instance* child);
             bool isAncestorOf(RNR::Instance* instance);
+            bool isA(std::string type);
 
+            Instance* findFirstChild(std::string name);
+            Instance* findFirstChildOfType(std::string type);
+            
             static World* getWorld() { return Instance::world; }
             static void setWorld(World* world) { Instance::world = world; }
 
