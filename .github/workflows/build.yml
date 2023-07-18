@@ -16,11 +16,22 @@ jobs:
         with:
           submodules: recursive
       
-      - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y git clang cmake ninja-build libboost-dev libogre-1.12-dev libpugixml-dev qt6-base-dev 
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        name: Install required packages
+        with:
+          version: 1.0
+          packages: >-
+            git
+            clang
+            cmake
+            ninja-build
+            libboost-dev 
+            Libogre-1.12-dev
+            libpugixml-dev
+            qt6-base-dev 
       
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -D CI -D CMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -G Ninja -B build -DCI -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
       - name: Build (Ninja)
         run: ninja -C build
@@ -85,7 +96,7 @@ jobs:
             mingw-w64-${{ matrix.env }}-qt6
       
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -D CMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -G Ninja -B build -DCI -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
       - name: Build (Ninja)
         run: ninja -C build
