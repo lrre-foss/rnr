@@ -2,6 +2,63 @@ name: Build
 on: [ push ]
 
 jobs:
+  linux:
+    strategy:
+      matrix:
+        configuration: [ Release, Debug ]
+    
+    name: Linux
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        name: Clone repository
+        with:
+          submodules: recursive
+      
+      - name: Install required packages
+        run: apt install -y 
+          git
+          
+          clang
+          cmake
+          ninja-build
+          libboost-dev
+          libogre-1.12-dev
+          libpugixml-dev
+          qt6-base-dev
+      
+      - name: Generate Ninja build files
+        run: cmake -G Ninja -B build -D CI -D CMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+      
+      - name: Build (Ninja)
+        run: ninja -C build
+      
+      # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
+      - name: Organize binaries
+        run: mkdir build/dist && find build -perm /a+x -exec mv {} build/dist \;
+      
+      - name: Add OGRE plugins
+        run: cp -R build/plugins build/dist && cp Content/linux_plugins.cfg build/dist/plugins.cfg
+      
+      - name: Add OGRE shaders
+        run: cp -R build/shaders build/dist
+      
+      - name: Add resources
+        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+      
+      - name: Set output variables
+        id: vars
+        run: |
+          echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
+          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      
+      - name: Upload
+        uses: actions/upload-artifact@v3
+        with:
+          name: rnr-${{ steps.vars.outputs.hash }}-linux_x64-${{ steps.vars.outputs.configuration }}
+          path: build/dist
+
   windows:
     strategy:
       matrix:
@@ -27,6 +84,8 @@ jobs:
         with:
           msystem: ${{ matrix.sys }}
           install: >-
+            git
+
             mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
             mingw-w64-${{ matrix.env }}-cmake
             mingw-w64-${{ matrix.env }}-ninja
@@ -36,14 +95,14 @@ jobs:
             mingw-w64-${{ matrix.env }}-qt6
       
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -G Ninja -B build -D CMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
       - name: Build (Ninja)
         run: ninja -C build
       
       # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
       - name: Organize binaries
-        run: mkdir build/dist && mv build/*.exe build/dist && cd build/dist && for x in *.exe; do mv $x "RNR.$x"; done
+        run: mkdir build/dist && mv build/*.exe build/dist
       
       - name: Add Qt dependencies
         run: windeployqt6 build/dist/*.exe
@@ -55,7 +114,7 @@ jobs:
         run: cp Content/win32_plugins.cfg build/dist/plugins.cfg && mkdir build/dist/plugins/ && cat build/dist/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/${{ matrix.sys }}/bin/{}.dll' build/dist/plugins/
       
       - name: Add OGRE shaders
-        run: mkdir build/dist/ShaderCache && mkdir build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib build/dist/shaders
+        run: mkdir build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main/* build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib/* build/dist/shaders
       
       - name: Add resources
         run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
@@ -69,5 +128,5 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
-          name: rnr-win_x64-${{ steps.vars.outputs.configuration }}-${{ steps.vars.outputs.hash }}
+          name: rnr-${{ steps.vars.outputs.hash }}-win_x64-${{ steps.vars.outputs.configuration }}
           path: build/dist

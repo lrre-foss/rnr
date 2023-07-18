@@ -11,3 +11,5 @@ add_executable(Server ${SOURCE} ${HEADER})
 
 target_include_directories(Server PRIVATE Header)
 target_link_libraries(Server PRIVATE Engine)
+
+set_target_properties(Server PROPERTIES OUTPUT_NAME "RNR.Server")

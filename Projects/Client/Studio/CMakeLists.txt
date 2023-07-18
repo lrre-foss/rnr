@@ -24,6 +24,8 @@ target_include_directories(Studio PRIVATE Header)
 target_link_libraries(Studio PRIVATE Common Engine)
 
 set_target_properties(Studio PROPERTIES
+    OUTPUT_NAME "RNR.Studio"
+    
     WIN32_EXECUTABLE ON
     MACOSX_BUNDLE ON
 )

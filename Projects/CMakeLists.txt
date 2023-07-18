@@ -6,6 +6,7 @@ add_subdirectory(${DEPENDENCIES_DIR}/Luau ${CMAKE_BINARY_DIR}/Dependencies/Luau)
 
 # RNR
 add_link_options(-static)
+link_libraries(-static-libgcc -static-libstdc++)
 
 add_subdirectory(Engine)
 add_subdirectory(Client)
