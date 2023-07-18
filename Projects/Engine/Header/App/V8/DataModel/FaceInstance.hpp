@@ -11,6 +11,8 @@ namespace RNR
         NormalId m_face;
 
     public:
-        
+        FaceInstance();
+
+        virtual void build() = 0;
     };
 }

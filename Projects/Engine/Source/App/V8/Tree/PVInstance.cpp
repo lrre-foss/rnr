@@ -1,4 +1,5 @@
 #include <App/V8/Tree/PVInstance.hpp>
+#include <App/V8/World/World.hpp>
 #include <Helpers/XML.hpp>
 
 namespace RNR

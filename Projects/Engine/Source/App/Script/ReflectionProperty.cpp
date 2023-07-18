@@ -47,12 +47,15 @@ namespace RNR
                         vector.y,
                         vector.z);
                 }
+            case PROPERTY_FLOAT:
+                return Strings::string_format("%f",
+                       *(float*)m_getter(m_object));
             case PROPERTY_CFRAME:
                 {
                     CoordinateFrame cframe = *(CoordinateFrame*)m_getter(m_object);
                     Ogre::Vector3 cframe_position = cframe.getPosition();
                     Ogre::Quaternion cframe_rotation = Ogre::Quaternion(cframe.getRotation());
-                    return Strings::string_format("(%f,%f,%f)), (%f,%f,%f,%f)", 
+                    return Strings::string_format("(%f,%f,%f), (%f,%f,%f,%f)", 
                         cframe_position.x,
                         cframe_position.y,
                         cframe_position.z,

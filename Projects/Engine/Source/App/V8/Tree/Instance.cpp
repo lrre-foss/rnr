@@ -159,4 +159,29 @@ namespace RNR
     {
         
     }
+
+    bool Instance::isA(std::string type)
+    {
+        if (type == getClassName()); // TODO: check if type is any of parent types
+    }
+
+    Instance* Instance::findFirstChild(std::string name)
+    {
+        for(auto& child : m_children)
+        {
+            if(child->getName() == name)
+                return child;
+        }
+        return NULL;
+    }
+
+    Instance* Instance::findFirstChildOfType(std::string type)
+    {
+        for(auto& child : m_children)
+        {
+            if(child->isA(type))
+                return child;
+        }
+        return NULL;
+    }
 }

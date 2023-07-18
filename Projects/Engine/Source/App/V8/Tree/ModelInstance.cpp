@@ -1,5 +1,6 @@
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
+#include <App/Humanoid/Humanoid.hpp>
 
 namespace RNR
 {
@@ -25,6 +26,15 @@ namespace RNR
             Ogre::Vector3 size = child_pv->getSize() / 2.0;
             m_boundingbox.merge(child_pv->getPosition() + size);
             m_boundingbox.merge(child_pv->getPosition() - size);
+        }
+    }
+
+    void ModelInstance::onChildAdded(Instance* instance)
+    {
+        if(instance->getClassName() == "Humanoid")
+        {
+            Humanoid* instance_humanoid = (Humanoid*)instance;
+            instance_humanoid->createHealthBar();
         }
     }
 }

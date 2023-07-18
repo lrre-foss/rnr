@@ -1,6 +1,7 @@
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/GUI/SelectionBox.hpp>
+#include <App/Humanoid/Humanoid.hpp>
 #include <pugixml.hpp>
 
 namespace RNR
@@ -46,6 +47,10 @@ namespace RNR
         {
             instance = new ModelInstance();
         } 
+        else if(class_attr.as_string() == std::string("Humanoid")) 
+        {
+            instance = new Humanoid();
+        } 
         else
         {
             instance = new Instance();
@@ -67,11 +72,6 @@ namespace RNR
         {
             xmlAddItem(item, instance);
         }
-        
-        if(class_attr.as_string() == std::string("Model")) 
-        {
-            ((ModelInstance*)instance)->build();
-        } 
     }
 
     void World::load(char* path)
