@@ -17,7 +17,7 @@ jobs:
           submodules: recursive
       
       - name: Install required packages
-        run: sudo apt-get install -y 
+        run: sudo apt-get update && sudo apt-get install -y 
           git
           
           clang
@@ -80,7 +80,7 @@ jobs:
           submodules: recursive
         
       - uses: msys2/setup-msys2@v2
-        name: Set up MSYS2
+        name: Set up MSYS2 and install required packages
         with:
           msystem: ${{ matrix.sys }}
           install: >-
