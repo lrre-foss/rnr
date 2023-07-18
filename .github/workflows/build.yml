@@ -2,54 +2,6 @@ name: Build
 on: [ push ]
 
 jobs:
-  linux:
-    strategy:
-      matrix:
-        configuration: [ Release, Debug ]
-    
-    name: Linux
-    runs-on: ubuntu-latest
-    
-    steps:
-      - uses: actions/checkout@v3
-        name: Clone repository
-        with:
-          submodules: recursive
-
-      - name: Install required packages
-        run: sudo apt-get update && sudo apt-get install -y build-essential clang-15 clangd-15 libclang-15-dev cmake ninja-build libboost-dev libogre-1.12-dev libpugixml-dev libglx-dev qt6-base-dev qt6-base-private-dev qt6-declarative-dev qt6-declarative-private-dev qt6-tools-dev qt6-tools-private-dev qt6-scxml-dev qt6-documentation-tools libqt6core5compat6-dev qt6-tools-dev-tools qt6-l10n-tools qt6-shader-baker libqt6shadertools6-dev qt6-quick3d-dev qt6-quick3d-dev-tools libqt6svg6-dev libqt6quicktimeline6-dev libqt6serialport6-dev libgl1-mesa-dev libvulkan-dev libxcb-xinput-dev libxcb-xinerama0-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-xkb1 libxcb-randr0 libxcb-icccm4
-      
-      - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
-      
-      - name: Run Ninja build
-        run: ninja -C build
-      
-      # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
-      - name: Organize binaries
-        run: mkdir build/dist && find build -perm /a+x -exec mv {} build/dist \;
-
-      - name: Add RNR resources
-        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
-
-      - name: Add OGRE plugins
-        run: cp -R build/plugins build/dist && cp Content/linux_plugins.cfg build/dist/plugins.cfg
-      
-      - name: Add OGRE shaders
-        run: cp -R build/shaders build/dist
-
-      - name: Set output variables
-        id: vars
-        run: |
-          echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
-          echo "hash=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: rnr-${{ steps.vars.outputs.hash }}-linux_x64-${{ steps.vars.outputs.configuration }}
-          path: build/dist
-
   windows:
     strategy:
       matrix:
