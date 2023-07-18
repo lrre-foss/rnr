@@ -124,7 +124,8 @@ namespace RNR
             ogreCamera->getParentSceneNode()->setOrientation(Ogre::Quaternion(cam->getCFrame().getRotation()));
         }
         
-        ogreRoot->renderOneFrame(this->delta);
+        if(isVisible())
+            ogreRoot->renderOneFrame(this->delta);
     }
 
     Ogre::NameValuePairList OgreWidget::getRenderOptions()
