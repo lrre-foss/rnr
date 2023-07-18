@@ -39,19 +39,22 @@ jobs:
       - name: Build (Ninja)
         run: ninja -C build
       
+      # ouch - unless and until we start using CMake's install command, these commands are a necessary evil
       - name: Organize binaries
         run: mkdir build/dist && mv build/*.exe build/dist && cd build/dist && for x in *.exe; do mv $x "RNR.$x"; done && cd ../../
       
       - name: Add Qt dependencies
         run: windeployqt6 build/dist/*.exe
       
-      # ouch - unless and until we start using CMake's install command, these commands are a necessary evil
       - name: Add runtime dependencies
         run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "mingw64" | xargs -I '{}' cp -v '{}' build/dist
       
       - name: Add OGRE plugins
         run: cp Content/win32_plugins.cfg build/dist/plugins.cfg && mkdir build/dist/plugins/ && cat build/dist/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/mingw64/bin/{}.dll' build/dist/plugins/
-
+      
+      - name: Add OGRE shaders
+        run: mkdir build/dist/ShaderCache && mkdir build/dist/shaders && cp -R /mingw64/share/OGRE/Media/Main build/dist/shaders && cp -R /mingw64/share/OGRE/Media/RTShaderLib build/dist/shaders
+      
       - name: Add resources
         run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
       
