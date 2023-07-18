@@ -8,7 +8,6 @@
 
 /*
  * These properties are part of VarFileInfo.
- * PRODUCT_LANGUAGE is also the resource file's recognizer (but still shares the same value.)
  * For more information, please see: https://learn.microsoft.com/en-us/windows/win32/menurc/varfileinfo-block
  */
 #define PRODUCT_LANGUAGE             0x0409 // en-US
