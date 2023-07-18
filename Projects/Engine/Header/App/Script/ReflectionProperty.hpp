@@ -70,6 +70,10 @@ namespace RNR
         bool access(ReflectionPropertyAccess accessor) { return this->m_access <= accessor; }
         std::string name() { return m_name; }
         std::string description() { return m_description; }
+        ReflectionPropertyType type() { return m_type; }
+
+        const void* rawGetter() { return m_getter(m_object); }
+        void rawSetter(const void* value) { return m_setter((void*)m_object, value); }
 
         std::string toString();
     };

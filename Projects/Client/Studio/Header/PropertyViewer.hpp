@@ -11,6 +11,6 @@ private:
     QLabel* prop_label;
 public:
     PropertyViewer();
-
+    
     void view(RNR::Instance* instance);
 };

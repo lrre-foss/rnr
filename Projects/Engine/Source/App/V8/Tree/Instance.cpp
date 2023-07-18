@@ -20,17 +20,17 @@ namespace RNR
     std::vector<ReflectionProperty> Instance::getProperties()
     {
         ReflectionProperty properties[]  = {
-            { this, std::string("Name"), std::string(""), 
+            { this, std::string("Name"), std::string("This is the name of this Instance."), 
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_STD_STRING,         
               REFLECTION_GETTER(Instance* instance = (Instance*)object; return &instance->m_name; ), 
               REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->setName(*(std::string*)value); ) },
 
-            { this, std::string("Parent"), std::string(""), 
+            { this, std::string("Parent"), std::string("This is the parent of this Instance."), 
               ACCESS_NONE, OPERATION_READ, PROPERTY_INSTANCE,         
               REFLECTION_GETTER(Instance* instance = (Instance*)object; return instance->m_parent; ), 
               REFLECTION_NO_SETTER() },
 
-            { this, std::string("Archivable"), std::string(""), 
+            { this, std::string("Archivable"), std::string("This determines whether this Instance may be saved or replicated."), 
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_BOOL,         
               REFLECTION_GETTER(Instance* instance = (Instance*)object; return &instance->m_archivable; ), 
               REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->m_archivable = *(bool*)value; ) },

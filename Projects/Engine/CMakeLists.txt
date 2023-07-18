@@ -10,11 +10,13 @@ add_library(Engine STATIC
     Header/App/GUI/TopMenuBar.hpp
     Header/App/Humanoid/Humanoid.hpp
     Header/App/V8/DataModel/Camera.hpp
+    Header/App/V8/DataModel/DataModel.hpp
     Header/App/V8/DataModel/ForceField.hpp
     Header/App/V8/DataModel/PartInstance.hpp
     Header/App/V8/DataModel/FaceInstance.hpp
     Header/App/V8/DataModel/Workspace.hpp
     Header/App/V8/Tree/Instance.hpp
+    Header/App/V8/Tree/InstanceFactory.hpp
     Header/App/V8/Tree/PVInstance.hpp
     Header/App/V8/Tree/ModelInstance.hpp
     Header/App/V8/World/World.hpp
@@ -34,11 +36,13 @@ add_library(Engine STATIC
     Source/App/GUI/TopMenuBar.cpp
     Source/App/Humanoid/Humanoid.cpp
     Source/App/V8/DataModel/Camera.cpp
+    Source/App/V8/DataModel/DataModel.cpp
     Source/App/V8/DataModel/ForceField.cpp
     Source/App/V8/DataModel/PartInstance.cpp
     Source/App/V8/DataModel/FaceInstance.cpp
     Source/App/V8/DataModel/Workspace.cpp
     Source/App/V8/Tree/Instance.cpp
+    Source/App/V8/Tree/InstanceFactory.cpp
     Source/App/V8/Tree/PVInstance.cpp    
     Source/App/V8/Tree/ModelInstance.cpp    
     Source/App/CoordinateFrame.cpp

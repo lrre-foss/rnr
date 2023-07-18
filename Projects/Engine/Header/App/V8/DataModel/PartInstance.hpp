@@ -23,7 +23,7 @@ namespace RNR
 
         void updateMatrix();
 
-        virtual std::string getClassName() { return "PartInstance"; }
+        virtual std::string getClassName() { return "Part"; }
         void setSize(Ogre::Vector3 size) { m_size = size; }
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }

@@ -82,6 +82,7 @@ void MainWindow::recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* 
 
 void MainWindow::updateTree(RNR::Instance* root_instance)
 {
+    explorer->clear();
     for(auto& child : *root_instance->getChildren())
     {
         QTreeWidgetItem* parent = new QTreeWidgetItem();

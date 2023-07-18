@@ -1,6 +1,7 @@
 #include <PropertyViewer.hpp>
 #include <QVBoxLayout>
 #include <QHeaderView>
+#include <QFile>
 
 PropertyViewer::PropertyViewer() : QWidget()
 {
@@ -9,6 +10,8 @@ PropertyViewer::PropertyViewer() : QWidget()
     prop_table->horizontalHeader()->setVisible(false);
     prop_table->horizontalHeader()->setStretchLastSection(true);
     prop_table->setColumnCount(2);
+    prop_table->setMouseTracking(true);
+    prop_table->viewport()->setMouseTracking(true);
 
     prop_label = new QLabel();
     QVBoxLayout* layout = new QVBoxLayout(this);
@@ -33,12 +36,55 @@ void PropertyViewer::view(RNR::Instance* instance)
     for(auto& property : properties)
     {
         QTableWidgetItem* new_property_item = new QTableWidgetItem(tr("%1").arg(property.name().c_str()));
-        QTableWidgetItem* new_property_itemval = new QTableWidgetItem(tr("%1").arg(property.toString().c_str()));
 
-        new_property_item->setStatusTip(property.description().c_str());
+        Qt::ItemFlags cell_flags = new_property_item->flags();
+        cell_flags.setFlag(Qt::ItemFlag::ItemIsEditable, false);
+        new_property_item->setFlags(cell_flags);
+        new_property_item->setToolTip(QString(property.description().c_str()));
+
+        QTableWidgetItem* new_property_itemval = new QTableWidgetItem(tr("%1").arg(property.toString().c_str()));
+        new_property_itemval->setToolTip(QString(property.description().c_str()));
+
+        switch(property.type())
+        {
+            case RNR::PROPERTY_BOOL:
+                {
+                    bool check_state = *(bool*)property.rawGetter();
+                    new_property_itemval->setCheckState(check_state ? Qt::Checked : Qt::Unchecked);
+                    new_property_itemval->setText("");
+                    
+                    cell_flags = new_property_itemval->flags();
+                    cell_flags.setFlag(Qt::ItemFlag::ItemIsEditable, false);
+                    new_property_itemval->setFlags(cell_flags);
+                }
+                break;
+            case RNR::PROPERTY_INSTANCE:
+                {
+                    cell_flags = new_property_itemval->flags();
+                    cell_flags.setFlag(Qt::ItemFlag::ItemIsEditable, false);
+                    new_property_itemval->setFlags(cell_flags);
+
+                    RNR::Instance* instance_ref = (RNR::Instance*)property.rawGetter();
+                    if(!instance_ref)
+                        break;
+                    QImage image;
+                    QString icon_path;
+                    icon_path = "content/textures/studio/icons/";
+                    icon_path += instance_ref->getClassName();
+                    icon_path += ".png";
+                    if(QFile::exists(icon_path))
+                        image = QImage(icon_path);
+                    else
+                        image = QImage("content/textures/studio/icons/Instance.png");
+                    new_property_itemval->setData(Qt::DecorationRole, QPixmap::fromImage(image));
+                }
+                break;
+        }
 
         prop_table->setItem(property_count, 0, new_property_item);
         prop_table->setItem(property_count, 1, new_property_itemval);
         property_count++;
     }
+
+    prop_table->resizeRowsToContents();
 }
