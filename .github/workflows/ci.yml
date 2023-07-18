@@ -5,7 +5,7 @@ jobs:
   build-windows:
     strategy:
       matrix:
-        configuration: [Release, Debug]
+        configuration: [release, debug]
 
     name: Build (Windows)
     runs-on: windows-latest
@@ -23,7 +23,6 @@ jobs:
       - uses: msys2/setup-msys2@v2
         name: Set up MSYS2
         with:
-          update: true
           msystem: mingw64
           install: >-
             mingw-w64-x86_64-gcc
@@ -35,7 +34,7 @@ jobs:
             mingw-w64-x86_64-qt6
       
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -G Ninja -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'release' && 'MinSizeRel' || 'Debug' }} .
       
       - name: Build (Ninja)
         run: ninja -C build
@@ -59,5 +58,5 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
-          name: RNR for Windows (${{ matrix.configuration }})
+          name: RNR (win_x64-${{ matrix.configuration }}-${{ github.sha }})
           path: build/dist
