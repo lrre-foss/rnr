@@ -3,7 +3,7 @@
 [![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
 [Discord](https://discord.gg/89WagAUr)
 
-RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining partially compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
+RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
 
 Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
 
@@ -13,6 +13,7 @@ There are several goals that RNR seeks to accomplish, them being;
 - Easy-to-use (simple CLI options to launch and host games, as well as a level editor with a modern UI)
 - Fully compatible with Roblox versions up to 0.3.744.0 (dated April 2008) in areas such as hosting, joining, levels, etc.
 - Incorporates all the various facets of the Roblox engine, plus a little bit extra (e.g. a network replication whitelist, fancy shader support, etc.)
+- Made using clean-room reverse engineering
 - Uses Roblox's [Luau](https://luau-lang.org/) as its scripting language while remaining fully compatible with classic Roblox scripts written using Lua 5.1
 - As free and open-source as possible (with client code licensed under the GPL and the engine itself being released into the public domain, void of any copyright)
 - Patching all the security vulnerabilities and fixing bugs/inefficiencies that legacy Roblox clients had
