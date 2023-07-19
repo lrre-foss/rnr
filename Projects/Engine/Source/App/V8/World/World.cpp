@@ -31,7 +31,9 @@ namespace RNR
 
         m_tmb = new TopMenuBar();
 
-
+        Camera* start_cam = new Camera();
+        start_cam->setParent(m_workspace);
+        m_workspace->setCurrentCamera(start_cam);
     }
 
     World::~World()
@@ -76,7 +78,15 @@ namespace RNR
     void World::load(char* path)
     {
         m_refs.clear();
-        
+
+        Camera* old_camera = m_workspace->getCurrentCamera();
+        if(old_camera)
+        {
+            m_workspace->setCurrentCamera(0);
+            old_camera->setParent(NULL);
+            delete old_camera;
+        }
+
         pugi::xml_document rbxl_doc;
         pugi::xml_parse_result result = rbxl_doc.load_file(path);
         if(result)

@@ -7,6 +7,7 @@ namespace RNR
     {
         m_cf_yaw = 0.f;
         m_cf_pitch = 0.f;
+        setName("Camera");
     }
 
     Camera::~Camera()
