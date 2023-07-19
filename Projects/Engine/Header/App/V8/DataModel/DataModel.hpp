@@ -8,6 +8,7 @@ namespace RNR
     public:
         DataModel();
 
+        Instance* getService(std::string service_name);
     private:
 
     };

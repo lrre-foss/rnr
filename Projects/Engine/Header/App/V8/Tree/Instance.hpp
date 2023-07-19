@@ -36,7 +36,7 @@ namespace RNR
             ~Instance();
             
             virtual std::vector<ReflectionProperty> getProperties();
-            void deserializeXmlProperty(pugi::xml_node prop);
+            void deserializeXmlProperty(pugi::xml_node prop); // TODO: eventually replace this with a method that uses getProperties
 
             bool contains(RNR::Instance* child);
             bool isAncestorOf(RNR::Instance* instance);

@@ -12,23 +12,26 @@ namespace RNR
     {
         Instance::setWorld(this);
 
+        m_instanceFactory = new InstanceFactory();
+
+        m_instanceFactory->registerInstance("Camera", InstanceFactory::instanceBuilder<Camera>);
+        m_instanceFactory->registerInstance("Model", InstanceFactory::instanceBuilder<ModelInstance>);
+        m_instanceFactory->registerInstance("SelectionBox", InstanceFactory::instanceBuilder<SelectionBox>);
+        m_instanceFactory->registerInstance("Part", InstanceFactory::instanceBuilder<PartInstance>);
+        m_instanceFactory->registerInstance("Workspace", InstanceFactory::instanceBuilder<Workspace>);
+        m_instanceFactory->registerInstance("Humanoid", InstanceFactory::instanceBuilder<Humanoid>);
+        m_instanceFactory->registerInstance("RunService", InstanceFactory::instanceBuilder<RunService>);
+
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
-        m_datamodel = new Instance();
+        m_datamodel = new DataModel();
         m_datamodel->setName("DataModel");
-        m_workspace = new Workspace();
-        m_workspace->setParent(m_datamodel);
-
-        InstanceFactory();
-
-        InstanceFactory::singleton()->registerInstance("Camera", InstanceFactory::instanceBuilder<Camera>);
-        InstanceFactory::singleton()->registerInstance("Model", InstanceFactory::instanceBuilder<ModelInstance>);
-        InstanceFactory::singleton()->registerInstance("SelectionBox", InstanceFactory::instanceBuilder<SelectionBox>);
-        InstanceFactory::singleton()->registerInstance("Part", InstanceFactory::instanceBuilder<PartInstance>);
-        InstanceFactory::singleton()->registerInstance("Workspace", InstanceFactory::instanceBuilder<Workspace>);
-        InstanceFactory::singleton()->registerInstance("Humanoid", InstanceFactory::instanceBuilder<Humanoid>);
+        m_workspace = (Workspace*)m_datamodel->getService("Workspace");
+        m_runService = (RunService*)m_datamodel->getService("RunService");
 
         m_tmb = new TopMenuBar();
+
+
     }
 
     World::~World()
@@ -42,39 +45,19 @@ namespace RNR
 
         Instance* instance;
 
-        /*
         try{
-            instance = InstanceFactory::singleton()->build(class_attr.as_string());
+            if(parent == m_datamodel && m_datamodel->findFirstChildOfType(class_attr.as_string()))
+                instance = m_datamodel->findFirstChildOfType(class_attr.as_string());
+            else
+            {
+                std::string class_name = class_attr.value();
+                instance = m_instanceFactory->build(class_name);
+            }
         }
         catch(std::runtime_error e)
         {
             printf("World::xmlAddItem: InstanceFactory::build failed  '%s'\n", e.what());
             return;
-        }*/
-
-        if(class_attr.as_string() == std::string("Part"))
-        {
-            instance = new PartInstance();
-        }
-        else if(class_attr.as_string() == std::string("Workspace"))
-        {
-            instance = m_workspace;
-        } 
-        else if(class_attr.as_string() == std::string("Camera"))
-        {
-            instance = new Camera();
-        } 
-        else if(class_attr.as_string() == std::string("Model")) 
-        {
-            instance = new ModelInstance();
-        } 
-        else if(class_attr.as_string() == std::string("Humanoid")) 
-        {
-            instance = new Humanoid();
-        } 
-        else
-        {
-            instance = new Instance();
         }
 
         pugi::xml_attribute referent = node.attribute("referent");
@@ -137,6 +120,8 @@ namespace RNR
 
     double World::step(float timestep)
     {
+        if(m_runService && m_runService->getRunning())
+            m_runService->step(timestep);
         return 0.0;
     }
 

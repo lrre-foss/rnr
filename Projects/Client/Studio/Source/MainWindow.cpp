@@ -108,6 +108,19 @@ void MainWindow::createToolbar()
     QAction* load_action = file_menu->addAction("Load", this, SLOT(loadDatamodel()));
     QMenu* help_menu = menubar->addMenu("Help");
     help_menu->addAction("About...");
+
+    QAction* run_action = toolbar->addAction(QIcon("content/textures/studio/icons/run.png"), "", this, SLOT(run()));
+    QAction* pause_action = toolbar->addAction(QIcon("content/textures/studio/icons/pause.png"), "", this, SLOT(pause()));
+}
+
+void MainWindow::run()
+{
+    this->ogreWidget->world->getRunService()->run();
+}
+
+void MainWindow::pause()
+{
+    this->ogreWidget->world->getRunService()->pause();
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

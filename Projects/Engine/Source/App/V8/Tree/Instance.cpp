@@ -162,7 +162,9 @@ namespace RNR
 
     bool Instance::isA(std::string type)
     {
-        if (type == getClassName()); // TODO: check if type is any of parent types
+        if (type == getClassName())
+            return true; // TODO: check if type is any of parent types
+        return false;
     }
 
     Instance* Instance::findFirstChild(std::string name)

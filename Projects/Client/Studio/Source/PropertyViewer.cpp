@@ -45,6 +45,15 @@ void PropertyViewer::view(RNR::Instance* instance)
         QTableWidgetItem* new_property_itemval = new QTableWidgetItem(tr("%1").arg(property.toString().c_str()));
         new_property_itemval->setToolTip(QString(property.description().c_str()));
 
+        if(property.op() == RNR::OPERATION_READ)
+        {
+            cell_flags = new_property_itemval->flags();
+            cell_flags.setFlag(Qt::ItemFlag::ItemIsEditable, false);
+            cell_flags.setFlag(Qt::ItemFlag::ItemIsEnabled, false);
+            new_property_itemval->setFlags(cell_flags);
+            new_property_item->setFlags(cell_flags);
+        }
+
         switch(property.type())
         {
             case RNR::PROPERTY_BOOL:
@@ -52,7 +61,7 @@ void PropertyViewer::view(RNR::Instance* instance)
                     bool check_state = *(bool*)property.rawGetter();
                     new_property_itemval->setCheckState(check_state ? Qt::Checked : Qt::Unchecked);
                     new_property_itemval->setText("");
-                    
+
                     cell_flags = new_property_itemval->flags();
                     cell_flags.setFlag(Qt::ItemFlag::ItemIsEditable, false);
                     new_property_itemval->setFlags(cell_flags);

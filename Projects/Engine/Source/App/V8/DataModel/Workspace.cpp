@@ -18,6 +18,8 @@ namespace RNR
         {
             Ogre::SubEntity* surface = m_partEntity->getSubEntity(i);
             Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->createTextureUnitState("textures/stud_top.png");
+
+            surface->getMaterial()->setShininess(1.0);
         }
     }
 

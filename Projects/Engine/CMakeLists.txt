@@ -14,6 +14,7 @@ add_library(Engine STATIC
     Header/App/V8/DataModel/ForceField.hpp
     Header/App/V8/DataModel/PartInstance.hpp
     Header/App/V8/DataModel/FaceInstance.hpp
+    Header/App/V8/DataModel/RunService.hpp
     Header/App/V8/DataModel/Workspace.hpp
     Header/App/V8/Tree/Instance.hpp
     Header/App/V8/Tree/InstanceFactory.hpp
@@ -40,6 +41,7 @@ add_library(Engine STATIC
     Source/App/V8/DataModel/ForceField.cpp
     Source/App/V8/DataModel/PartInstance.cpp
     Source/App/V8/DataModel/FaceInstance.cpp
+    Source/App/V8/DataModel/RunService.cpp
     Source/App/V8/DataModel/Workspace.cpp
     Source/App/V8/Tree/Instance.cpp
     Source/App/V8/Tree/InstanceFactory.cpp

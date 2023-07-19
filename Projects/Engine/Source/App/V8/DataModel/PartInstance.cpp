@@ -8,8 +8,9 @@ namespace RNR
     {
         setName("Part");
 
-        updateMatrix();
         m_color = Ogre::Vector4(0.63, 0.64, 0.63, 1.0);
+
+        updateMatrix();
     }
 
     void PartInstance::updateMatrix()

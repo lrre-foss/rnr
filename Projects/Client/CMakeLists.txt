@@ -20,6 +20,10 @@ if(COMPILE_PLAYER OR COMPILE_STUDIO)
     if(COMPILE_STUDIO)
         add_subdirectory(Studio)
     endif()
+
+    if(NOT CI)
+        file(COPY ${CMAKE_SOURCE_DIR}/Content/RNR/ DESTINATION ${CMAKE_BINARY_DIR}/content)
+    endif()
 endif()
 
 if(COMPILE_SERVER)
