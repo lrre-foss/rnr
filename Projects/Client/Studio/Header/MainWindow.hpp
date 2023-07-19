@@ -40,9 +40,7 @@ class MainWindow : public QMainWindow
         void run();
         void pause();
 
-#ifndef NDEBUG
         void dbg_pointlight();
-#endif
     protected:
         void widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance);
         void recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance);
