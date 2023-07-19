@@ -128,12 +128,10 @@ void MainWindow::pause()
     this->ogreWidget->world->getRunService()->pause();
 }
 
-#ifndef NDEBUG
 void MainWindow::dbg_pointlight()
 {
     
 }
-#endif
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {
