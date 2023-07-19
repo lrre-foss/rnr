@@ -117,7 +117,7 @@ namespace RNR
                 snprintf(error_text, 255, "Attempt to set %s as its own parent", m_name.c_str());
                 throw std::runtime_error(error_text);
             }
-            if (isAncestorOf(newParent))
+            if (newParent && isAncestorOf(newParent))
             {
                 snprintf(error_text, 255, "Attempt to set parent of %s to %s results in circular reference", newParent->getName().c_str(), m_name.c_str());
                 throw std::runtime_error(error_text);

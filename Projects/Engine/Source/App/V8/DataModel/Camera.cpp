@@ -36,13 +36,13 @@ namespace RNR
         Ogre::Radian old_yaw;
         Ogre::Radian old_roll;
 
-        getCFrame().getRotation().ToEulerAnglesZXY(old_yaw, old_pitch, old_roll);
+        getCFrame().getRotation().ToEulerAnglesYXZ(old_yaw, old_pitch, old_roll);
 
         pitch = old_pitch + pitch;
         yaw = old_yaw - yaw;
 
         Ogre::Matrix3 rotation;
-        rotation.FromEulerAnglesZXY(yaw, pitch, Ogre::Radian(0));
+        rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
         getCFrame().setRotation(rotation);  
     }
 

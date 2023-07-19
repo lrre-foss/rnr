@@ -84,7 +84,6 @@ namespace RNR
         {
             m_workspace->setCurrentCamera(0);
             old_camera->setParent(NULL);
-            delete old_camera;
         }
 
         pugi::xml_document rbxl_doc;
