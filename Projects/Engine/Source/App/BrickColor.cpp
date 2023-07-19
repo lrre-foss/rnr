@@ -83,6 +83,8 @@ namespace RNR
         { 1032, std::string("Hot pink"), Ogre::Vector3(255.0/255.0, 0/255.0, 191.0/255.0) }
     };
 
+    static bool bc_prep = false;
+
     BrickColor::BrickColor(int color_id, std::string color_name, Ogre::Vector3 color)
     {
         this->color_id = color_id;
@@ -92,13 +94,22 @@ namespace RNR
 
     void BrickColor::buildMaterial()
     {
-        color_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
-        color_material = color_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(color_id));
+        if(!bc_prep)
+        {
+            Ogre::RTShader::ShaderGenerator::getSingletonPtr()->createScheme("rtshader");
+
+            bc_prep = true;
+        }
+        Ogre::MaterialPtr part_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
+        color_material = part_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(color_id));
+        Ogre::RTShader::ShaderGenerator::getSingletonPtr()->cloneShaderBasedTechniques(*part_material, *color_material);
         Ogre::Technique* mat_tech = color_material->getTechnique(0);
+        mat_tech->setLightingEnabled(true);
+        mat_tech->setShadingMode(Ogre::ShadeOptions::SO_PHONG);
         Ogre::Pass* mat_pass = mat_tech->getPass(0);
         Ogre::TextureUnitState* part_texunit = mat_pass->getTextureUnitState(0);
         part_texunit->setColourOperationEx(Ogre::LayerBlendOperationEx::LBX_MODULATE, Ogre::LBS_MANUAL, Ogre::LBS_CURRENT, Ogre::ColourValue(color_val.x, color_val.y, color_val.z));
-        Ogre::RTShader::ShaderGenerator::getSingletonPtr()->validateScheme(mat_tech->getSchemeName());
+
     }
 
     Ogre::Vector3 BrickColor::color(int brickcolor)

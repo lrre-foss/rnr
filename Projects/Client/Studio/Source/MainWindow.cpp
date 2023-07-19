@@ -111,6 +111,11 @@ void MainWindow::createToolbar()
 
     QAction* run_action = toolbar->addAction(QIcon("content/textures/studio/icons/run.png"), "", this, SLOT(run()));
     QAction* pause_action = toolbar->addAction(QIcon("content/textures/studio/icons/pause.png"), "", this, SLOT(pause()));
+
+#ifndef NDEBUG
+    toolbar->addSeparator();
+    QAction* pointlight = toolbar->addAction(QIcon("content/textures/studio/icons/PointLight.png"), "Debug: Add PointLight to Instance", this, SLOT(dbg_pointlight()));
+#endif
 }
 
 void MainWindow::run()
@@ -122,6 +127,13 @@ void MainWindow::pause()
 {
     this->ogreWidget->world->getRunService()->pause();
 }
+
+#ifndef NDEBUG
+void MainWindow::dbg_pointlight()
+{
+    
+}
+#endif
 
 void MainWindow::closeEvent(QCloseEvent* event)
 {

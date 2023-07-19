@@ -36,7 +36,11 @@ namespace RNR
             Ogre::Vector3 part_size = child_part->getSize();
             for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
             {            
+                m_partEntity->setMaterial(BrickColor::material(child_part->getBrickColor()));
+                /*
                 Ogre::SubMesh* surface = m_partEntity->getMesh()->getSubMesh(i);
+                surface->setMaterial();
+
                 Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0);
 
                 Ogre::Vector2 uvs;
@@ -52,7 +56,7 @@ namespace RNR
                 else if(surf_name == "BackMaterial")
                     uvs = Ogre::Vector2(part_size.x, part_size.z);
                 else if(surf_name == "FrontMaterial")
-                    uvs = Ogre::Vector2(-part_size.x, part_size.z);
+                    uvs = Ogre::Vector2(-part_size.x, part_size.z);*/
 
 
             }
