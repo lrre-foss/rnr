@@ -35,7 +35,8 @@ namespace RNR
             {
                 case BATCH_INSTANCED:
                     {
-                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity("materials/partinstanced");
+                        Ogre::Entity* childEntity = (Ogre::Entity*)childAdded->getObject();
+                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity(childEntity->getSubEntity(0)->getMaterialName());
                         replica->setPosition(part->getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
                         replica->setScale(part->getSize());

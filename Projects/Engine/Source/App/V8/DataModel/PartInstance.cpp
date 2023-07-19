@@ -29,7 +29,7 @@ namespace RNR
         Ogre::Entity* entity = (Ogre::Entity*)getObject();
         for(auto& subentity : entity->getSubEntities())
         {
-            subentity->getMaterial()->setManualCullingMode(Ogre::ManualCullingMode::MANUAL_CULL_BACK);
+            subentity->setMaterial(BrickColor::material(m_brickColor));
         }
     }
 
