@@ -11,24 +11,29 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - name: Install Arch Linux
-        run: curl -L https://github.com/zaoqi/github-actions-archlinux/raw/master/install.sh | sh
-      
       - name: Install required packages
-        run: sudo pacman --no-confirm -Syu \
-             base-devel \
-             clang \
-             cmake \
-             ninja \
-             pugixml \
-             ogre \
-             qt6
-      
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          version: 2.0
+          packages: >-
+            clang
+            cmake
+            ninja-build
+            libboost-dev
+            libogre-1.12-dev
+            libpugixml-dev
+        
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.5.*
+          cache: true
+        
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
@@ -75,13 +80,13 @@ jobs:
         shell: msys2 {0}
 
     steps:
-      - uses: actions/checkout@v3
-        name: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           submodules: recursive
-        
-      - uses: msys2/setup-msys2@v2
-        name: Set up MSYS2 and install required packages
+ 
+      - name: Set up MSYS2 and install required packages
+        uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.sys }}
           install: >-
