@@ -1,12 +1,12 @@
 #include <App/V8/DataModel/Camera.hpp>
+#include <App/V8/World/World.hpp>
+#include <App/InputManager.hpp>
 #include <Helpers/XML.hpp>
 
 namespace RNR
 {
     Camera::Camera()
     {
-        m_cf_yaw = 0.f;
-        m_cf_pitch = 0.f;
         setName("Camera");
     }
 
@@ -27,7 +27,7 @@ namespace RNR
         }
     }
 
-    void Camera::cameraFrame(float xd, float yd)
+    void Camera::cameraFrame(float xd, float yd, bool movement_disable)
     {
         Ogre::Radian pitch = Ogre::Radian(yd);
         Ogre::Radian yaw = Ogre::Radian(xd);
@@ -44,6 +44,28 @@ namespace RNR
         Ogre::Matrix3 rotation;
         rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
         getCFrame().setRotation(rotation);  
+
+        if(!movement_disable)
+        {        
+            float speed = 50;
+            Ogre::Vector3 position = getCFrame().getPosition();
+            Ogre::Vector3 movement = Ogre::Vector3(0, 0, 0);
+
+            IInputManager* input = world->getInputManager();
+            if(input->isKeyDown('W'))
+                movement.z = -speed;
+            else if(input->isKeyDown('S'))
+                movement.z = speed;
+            if(input->isKeyDown('A'))
+                movement.x = -speed;
+            else if(input->isKeyDown('D'))
+                movement.x = speed;
+
+            movement = rotation * movement;
+            position += movement * world->getLastDelta();
+
+            getCFrame().setPosition(position);
+        }
     }
 
     void Camera::addProperties(std::vector<ReflectionProperty>& properties)

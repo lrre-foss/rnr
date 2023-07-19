@@ -11,6 +11,8 @@ namespace RNR
 
     void QtInputManager::keyEvent(QKeyEvent* e)
     {
+        if(e->isAutoRepeat())
+            return;
         if(e->type() == QEvent::KeyPress)
             keyDown(e->key());
         else if(e->type() == QEvent::KeyRelease)

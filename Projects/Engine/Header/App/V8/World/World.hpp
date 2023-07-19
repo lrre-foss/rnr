@@ -13,6 +13,8 @@
 
 namespace RNR
 {
+    class IInputManager;
+
     struct WorldUndeserialized
     {
         Instance* instance;
@@ -31,6 +33,7 @@ namespace RNR
             Ogre::SceneManager* m_ogreSceneManager;
             TopMenuBar* m_tmb;
             InstanceFactory* m_instanceFactory;
+            IInputManager* m_inputManager;
             float m_lastDelta;
 
             void xmlAddItem(pugi::xml_node node, Instance* parent);
@@ -48,6 +51,8 @@ namespace RNR
 
             float getLastDelta() { return m_lastDelta; }
             DataModel* getDatamodel() { return m_datamodel; }
+            void setInputManager(IInputManager* inputManager) { m_inputManager = inputManager; }
+            IInputManager* getInputManager() { return m_inputManager; }
             void setDatamodel(DataModel* instance) { m_datamodel = instance; }
             Workspace* getWorkspace() { return m_workspace; }
             void setWorkspace(Workspace* workspace) { m_workspace = workspace; }

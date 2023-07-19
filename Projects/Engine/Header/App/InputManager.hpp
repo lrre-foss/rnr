@@ -14,6 +14,7 @@ namespace RNR
     class IInputManager
     {
         World* m_world;
+        std::vector<int> scancodes_down;
     protected:
         MouseState state;
     public:
@@ -21,8 +22,11 @@ namespace RNR
 
         virtual void resetMouse() {};
 
-        void setWorld(World* world) { m_world = world; }
+        void setWorld(World* world) { m_world = world; world->setInputManager(this); }
 
+        void frame();
+
+        bool isKeyDown(int scancode);
         void keyDown(int scancode);
         void keyUp(int scancode);
 

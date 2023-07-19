@@ -15,14 +15,11 @@ namespace RNR
             CoordinateFrame m_focus;
             virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
             virtual void addProperties(std::vector<ReflectionProperty>& properties);
-
-            float m_cf_yaw;
-            float m_cf_pitch;
         public:
             Camera();
             ~Camera();
 
-            void cameraFrame(float xd, float yd);
+            void cameraFrame(float xd, float yd, bool movement_disable = true);
 
             virtual std::string getClassName() { return "Camera"; }
             CoordinateFrame& getCFrame() { return m_cframe; };

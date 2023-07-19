@@ -3,6 +3,7 @@
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/GUI/SelectionBox.hpp>
 #include <App/Humanoid/Humanoid.hpp>
+#include <App/InputManager.hpp>
 #include <stdexcept>
 #include <pugixml.hpp>
 
@@ -11,6 +12,8 @@ namespace RNR
     World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager)
     {
         Instance::setWorld(this);
+
+        m_inputManager = 0;
 
         m_instanceFactory = new InstanceFactory();
 
@@ -124,7 +127,8 @@ namespace RNR
 
     void World::preStep()
     {
-        //
+        if(m_inputManager)
+            m_inputManager->frame();
     }
 
     double World::step(float timestep)

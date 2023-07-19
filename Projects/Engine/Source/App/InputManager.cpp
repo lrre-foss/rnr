@@ -14,12 +14,24 @@ namespace RNR
 
     void IInputManager::keyDown(int scancode)
     {
-
+        auto it = std::find(scancodes_down.begin(), scancodes_down.end(), scancode);
+        if(it == scancodes_down.end())
+            scancodes_down.push_back(scancode);
     }
 
     void IInputManager::keyUp(int scancode)
     {
+        auto it = std::find(scancodes_down.begin(), scancodes_down.end(), scancode);
+        if(it != scancodes_down.end())
+            scancodes_down.erase(it);
+    }
 
+    bool IInputManager::isKeyDown(int scancode)
+    {
+        auto it = std::find(scancodes_down.begin(), scancodes_down.end(), scancode);
+        if(it != scancodes_down.end())
+            return true;
+        return false;
     }
 
     void IInputManager::mouseMoveAbsolute(float x, float y)
@@ -43,6 +55,14 @@ namespace RNR
                 resetMouse();
             }
         }
+    }
+
+    void IInputManager::frame()
+    {
+        Workspace* workspace = m_world->getWorkspace();
+        Camera* camera = workspace->getCurrentCamera();
+        if(camera) 
+            camera->cameraFrame(0, 0, false); // update camera position
     }
 
     void IInputManager::mousePrimaryState(bool down)
