@@ -1,7 +1,10 @@
 #include <MainWindow.hpp>
 #include <QFile>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QInputDialog>
 #include <App/V8/Tree/ModelInstance.hpp>
+#include <App/V8/DataModel/Light.hpp>
 
 MainWindow::MainWindow()
 {
@@ -130,7 +133,22 @@ void MainWindow::pause()
 
 void MainWindow::dbg_pointlight()
 {
-    
+    if(!ogreWidget->selectedInstance)
+    {
+        QMessageBox::about(this, "selectedInstance = NULL", "Please select an instance in the explorer");
+        return;
+    }
+
+    printf("MainWindow::dbg_pointlight: inserting Light\n");
+    RNR::Light* dbg_light = new RNR::Light();
+    dbg_light->setParent(ogreWidget->selectedInstance);
+
+    double r = QInputDialog::getDouble(this, "Red", "Set red component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
+    double g = QInputDialog::getDouble(this, "Blue", "Set blue component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
+    double b = QInputDialog::getDouble(this, "Green", "Set green component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
+    dbg_light->setColor(Ogre::Vector3(r,g,b));
+
+    updateTree(ogreWidget->world->getDatamodel());
 }
 
 void MainWindow::closeEvent(QCloseEvent* event)

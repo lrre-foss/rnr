@@ -18,6 +18,7 @@ namespace RNR
     struct WorldUndeserialized
     {
         Instance* instance;
+        Instance* parent;
         pugi::xml_node node;
     };
 

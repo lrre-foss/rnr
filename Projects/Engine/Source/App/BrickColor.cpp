@@ -151,4 +151,16 @@ namespace RNR
         }
         return false;
     }
+
+    std::string BrickColor::name(int brickcolor)
+    {
+        for(int i = 0; i < sizeof(brickcolors) / sizeof(BrickColor); i++)
+        {
+            if(brickcolors[i].color_id == brickcolor)
+            {
+                return brickcolors[i].color_name;
+            }
+        }
+        return brickcolors[0].color_name;
+    }
 }

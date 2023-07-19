@@ -11,26 +11,38 @@ namespace RNR
 {
     class Camera;
 
+    enum WorkspaceBatchingMode
+    {
+        BATCH_INSTANCED,
+        BATCH_STATIC_GEOMETRY,
+    };
+
     class Workspace : public ModelInstance
     {
+        friend class TopMenuBar;
     public:
         Workspace();
 
         virtual std::string getClassName() { return "Workspace"; }
-        virtual void onChildAdded(RNR::Instance* childAdded);
-        virtual void onChildRemoved(RNR::Instance* childRemoved);
+        virtual void onDescendantAdded(RNR::Instance* childAdded);
+        virtual void onDescendantRemoved(RNR::Instance* childRemoved);
 
         void buildGeom();
         
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 
+        void setDirty() { m_geomDirty = true; }
     private:
+        enum WorkspaceBatchingMode m_batchMode;
+    
         virtual void addProperties(std::vector<ReflectionProperty>& properties);
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
+
         void buildGeomInstance(Instance* instance);
 
         bool m_geomDirty;
         Ogre::StaticGeometry* m_geom; 
+        Ogre::InstanceManager* m_instanceManager;
         Ogre::SceneNode* m_worldspawn;
         Ogre::Entity* m_partEntity;
 

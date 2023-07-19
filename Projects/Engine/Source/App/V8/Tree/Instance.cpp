@@ -132,6 +132,9 @@ namespace RNR
                 {
                     children->erase(child_it);
                     m_parent->onChildRemoved(this);
+                    m_parent->onDescendantRemoved(this);
+                    for(auto& child : m_children)
+                        descendantRemovedChildren(m_parent, child);
                 
                     if (m_parent->numChildren() == 0)
                     {
@@ -140,13 +143,32 @@ namespace RNR
                 }
             }
 
+            onSetParent(newParent);
             m_parent = newParent;
+
             if(m_parent)
             {
                 m_parent->m_children.push_back(this);
                 newParent->onChildAdded(this);
+                newParent->onDescendantAdded(this);
+                for(auto& child : m_children)
+                    descendantAddedChildren(m_parent, child);
             }
         }
+    }
+
+    void Instance::descendantAddedChildren(Instance* p, Instance* c)
+    {
+        for(auto& child : *c->getChildren())
+            descendantAddedChildren(p, child);
+        p->onDescendantAdded(c);
+    }
+
+    void Instance::descendantRemovedChildren(Instance* p, Instance* c)
+    {
+        for(auto& child : *c->getChildren())
+            descendantRemovedChildren(p, child);
+        p->onDescendantRemoved(c);
     }
 
     void Instance::onChildAdded(Instance* childAdded)
@@ -154,10 +176,26 @@ namespace RNR
         //
     }
 
+    void Instance::onDescendantAdded(Instance* descendantAdded)
+    {
+        if(m_parent)
+            m_parent->onDescendantAdded(descendantAdded);        
+    }
 
     void Instance::onChildRemoved(RNR::Instance* childRemoved)
     {
-        
+
+    }
+
+    void Instance::onDescendantRemoved(Instance* descendantRemoved)
+    {
+        if(m_parent)
+            m_parent->onDescendantRemoved(descendantRemoved);
+    }
+
+    void Instance::onSetParent(Instance* newParent)
+    {
+
     }
 
     bool Instance::isA(std::string type)

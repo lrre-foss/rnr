@@ -30,6 +30,9 @@ namespace RNR
             RNR::Instance* m_parent;
             std::vector<RNR::Instance*> m_children;
             bool m_archivable;
+
+            void descendantAddedChildren(Instance* p, Instance* c);
+            void descendantRemovedChildren(Instance* p, Instance* c);
         
         public:
             Instance();
@@ -69,6 +72,9 @@ namespace RNR
             int numChildren() { return this->m_children.size(); };
 
             virtual void onChildAdded(RNR::Instance* childAdded);
+            virtual void onDescendantAdded(RNR::Instance* descendantAdded); // make sure this is called in any derived versions of this
             virtual void onChildRemoved(RNR::Instance* childRemoved);
+            virtual void onDescendantRemoved(RNR::Instance* descendantRemoved); // make sure this is called in any derived versions of this
+            virtual void onSetParent(RNR::Instance* newParent);
     };
 }

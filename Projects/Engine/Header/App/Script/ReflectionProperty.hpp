@@ -41,6 +41,7 @@ namespace RNR
         PROPERTY_CFRAME,
         PROPERTY_INSTANCE,
         PROPERTY_FLOAT,
+        PROPERTY_BRICKCOLOR,
     };
 
     class ReflectionProperty

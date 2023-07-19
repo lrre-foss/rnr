@@ -3,6 +3,8 @@
 #include <QHeaderView>
 #include <QFile>
 
+#include <App/BrickColor.hpp>
+
 PropertyViewer::PropertyViewer() : QWidget()
 {
     prop_table = new QTableWidget();
@@ -86,6 +88,17 @@ void PropertyViewer::view(RNR::Instance* instance)
                     else
                         image = QImage("content/textures/studio/icons/Instance.png");
                     new_property_itemval->setData(Qt::DecorationRole, QPixmap::fromImage(image));
+                }
+                break;
+            case RNR::PROPERTY_BRICKCOLOR:
+                {
+                    int brickcolor = *(int*)property.rawGetter();
+                    Ogre::Vector3 color = RNR::BrickColor::color(brickcolor);
+                    new_property_itemval->setBackground(QBrush(QColor(
+                        (int)floorf(color.x * 255),
+                        (int)floorf(color.y * 255),
+                        (int)floorf(color.z * 255)
+                    )));
                 }
                 break;
         }

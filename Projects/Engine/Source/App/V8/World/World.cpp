@@ -32,7 +32,7 @@ namespace RNR
         m_workspace = (Workspace*)m_datamodel->getService("Workspace");
         m_runService = (RunService*)m_datamodel->getService("RunService");
 
-        m_tmb = new TopMenuBar();
+        m_tmb = new TopMenuBar(this);
 
         Camera* start_cam = new Camera();
         start_cam->setParent(m_workspace);
@@ -70,9 +70,9 @@ namespace RNR
             m_refs[referent.as_string()] = instance;
         WorldUndeserialized s;
         s.instance = instance;
+        s.parent = parent;
         s.node = node;
         m_undeserialized.push(s);
-        instance->setParent(parent);
 
         for(pugi::xml_node item = node.child("Item"); item; item = item.next_sibling("Item"))
             xmlAddItem(item, instance);
@@ -111,6 +111,7 @@ namespace RNR
                     s.instance->deserializeXmlProperty(prop);
                 }
 
+                s.instance->setParent(s.parent);
                 if(s.instance->getClassName() == "Model")
                 {
                     ModelInstance* m = (ModelInstance*)s.instance;
@@ -129,6 +130,7 @@ namespace RNR
     {
         if(m_inputManager)
             m_inputManager->frame();
+        m_tmb->frame();
     }
 
     double World::step(float timestep)

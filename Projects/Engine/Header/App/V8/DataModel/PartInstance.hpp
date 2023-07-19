@@ -28,6 +28,8 @@ namespace RNR
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }
 
+        Ogre::Vector3 getOgreCenter() { return m_position + (m_size / 2.f); }
+
         void setBrickColor(int brickcolor) { m_brickColor = brickcolor; }
         int getBrickColor() { return m_brickColor; }
     };
