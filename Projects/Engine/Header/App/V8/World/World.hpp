@@ -6,6 +6,7 @@
 #include <App/V8/DataModel/Camera.hpp>
 #include <App/V8/DataModel/RunService.hpp>
 #include <App/V8/DataModel/DataModel.hpp>
+#include <Network/Players.hpp>
 #include <App/GUI/TopMenuBar.hpp>
 #include <OGRE/Ogre.h>
 #include <pugixml.hpp>
@@ -18,6 +19,7 @@ namespace RNR
     struct WorldUndeserialized
     {
         Instance* instance;
+        Instance* parent;
         pugi::xml_node node;
     };
 
@@ -29,6 +31,7 @@ namespace RNR
             DataModel* m_datamodel;
             Workspace* m_workspace;
             RunService* m_runService;
+            Players* m_players;
             Ogre::Root* m_ogreRoot;
             Ogre::SceneManager* m_ogreSceneManager;
             TopMenuBar* m_tmb;

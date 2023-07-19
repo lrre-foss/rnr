@@ -4,6 +4,8 @@ add_library(Engine STATIC
     Header/Helpers/XML.hpp
     Header/Helpers/NormalId.hpp
     Header/App/Script/ReflectionProperty.hpp
+    Header/App/Script/Script.hpp
+    Header/App/Script/ScriptContext.hpp
     Header/App/GUI/GuiBase3d.hpp
     Header/App/GUI/InstanceAdornment.hpp
     Header/App/GUI/SelectionBox.hpp
@@ -26,6 +28,8 @@ add_library(Engine STATIC
     Header/App/BrickColor.hpp
     Header/App/InputManager.hpp
     Header/Network/GUID.hpp
+    Header/Network/Player.hpp
+    Header/Network/Players.hpp
     Header/Rendering/Adorn.hpp
 
     Source/Helpers/Name.cpp
@@ -33,6 +37,7 @@ add_library(Engine STATIC
     Source/Helpers/XML.cpp
     Source/Helpers/NormalId.cpp
     Source/App/Script/ReflectionProperty.cpp
+    Source/App/Script/Script.cpp
     Source/App/GUI/GuiBase3d.cpp
     Source/App/GUI/InstanceAdornment.cpp
     Source/App/GUI/SelectionBox.cpp
@@ -55,6 +60,8 @@ add_library(Engine STATIC
     Source/App/InputManager.cpp
     Source/App/V8/World/World.cpp
     Source/Network/GUID.cpp
+    Source/Network/Player.cpp
+    Source/Network/Players.cpp
     Source/Rendering/Adorn.cpp
 )
 

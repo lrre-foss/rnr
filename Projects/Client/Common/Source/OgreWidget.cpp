@@ -59,9 +59,10 @@ namespace RNR
 
         ogreCamera = ogreSceneManager->createCamera("myCam");
         ogreCamera->setNearClipDistance(0.1); // specific to this sample
-        ogreCamera->setFarClipDistance(5000.f);
+        ogreCamera->setFarClipDistance(1000.f);
         ogreCamera->setAutoAspectRatio(true);
         ogreCamera->setFOVy(Ogre::Degree(70.f));
+        ogreCamera->setUseRenderingDistance(true);
         camNode->attachObject(ogreCamera);
 
         ogreViewport = ogreWindow->addViewport(ogreCamera);

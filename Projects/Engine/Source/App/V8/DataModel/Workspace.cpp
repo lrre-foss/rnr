@@ -8,81 +8,69 @@ namespace RNR
     Workspace::Workspace() : ModelInstance()
     {
         setName("Workspace");
+        m_batchMode = BATCH_STATIC_GEOMETRY;
+
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
-        m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
-        m_geom->setCastShadows(true);
-        m_partEntity = world->getOgreSceneManager()->createEntity("fonts/Cube.mesh");
-        m_partEntity->setCastShadows(true);
-
-        for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
+        
+        switch(m_batchMode)
         {
-            Ogre::SubEntity* surface = m_partEntity->getSubEntity(i);
-            Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->createTextureUnitState("textures/stud_top.png");
-
-            surface->getMaterial()->setShininess(1.0);
+            case BATCH_INSTANCED:
+                m_instanceManager = world->getOgreSceneManager()->createInstanceManager("workspaceInstanceManager", "fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
+                break;
+            case BATCH_STATIC_GEOMETRY:
+                m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
+                m_geom->setRegionDimensions(Ogre::Vector3(512,512,512));
+                m_geom->setCastShadows(true);
+                break;
         }
     }
 
-    void Workspace::onChildAdded(Instance* childAdded)
+    void Workspace::onDescendantAdded(Instance* childAdded)
     {
-        m_geomDirty = true;
+        PartInstance* part = dynamic_cast<PartInstance*>(childAdded);
+        if(part)
+        {
+            Ogre::SceneNode* child_node = childAdded->getNode();
+            switch(m_batchMode)
+            {
+                case BATCH_INSTANCED:
+                    {
+                        Ogre::Entity* childEntity = (Ogre::Entity*)childAdded->getObject();
+                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity(childEntity->getSubEntity(0)->getMaterialName());
+                        replica->setPosition(part->getPosition());
+                        replica->setOrientation(part->getCFrame().getRotation());
+                        replica->setScale(part->getSize());
+                        childAdded->setObject(replica);
+                    }
+                    break;
+                case BATCH_STATIC_GEOMETRY:
+                    m_geom->addEntity((Ogre::Entity*)childAdded->getObject(), 
+                        part->getPosition(), 
+                        part->getCFrame().getRotation(),
+                        part->getSize());
+                    break;
+            }
+            child_node->setVisible(false);
+            m_geomDirty = true;
+        }
     }
 
     void Workspace::buildGeomInstance(Instance* instance)
     {
-        PartInstance* child_part = dynamic_cast<PartInstance*>(instance);
-        if(child_part)
-        {
-            Ogre::Vector3 part_size = child_part->getSize();
-            for(int i = 0; i < m_partEntity->getNumSubEntities(); i++)
-            {            
-                m_partEntity->setMaterial(BrickColor::material(child_part->getBrickColor()));
-                /*
-                Ogre::SubMesh* surface = m_partEntity->getMesh()->getSubMesh(i);
-                surface->setMaterial();
 
-                Ogre::TextureUnitState* texture = surface->getMaterial()->getTechnique(0)->getPass(0)->getTextureUnitState(0);
-
-                Ogre::Vector2 uvs;
-                std::string surf_name = std::string(surface->getMaterialName().c_str());
-                if(surf_name == "TopMaterial")
-                    uvs = Ogre::Vector2(part_size.x, part_size.z);
-                else if(surf_name == "BottomMaterial")
-                    uvs = Ogre::Vector2(-part_size.x, part_size.z);
-                else if(surf_name == "LeftMaterial")
-                    uvs = Ogre::Vector2(part_size.y, part_size.z);
-                else if(surf_name == "RightMaterial")
-                    uvs = Ogre::Vector2(-part_size.y, part_size.z);
-                else if(surf_name == "BackMaterial")
-                    uvs = Ogre::Vector2(part_size.x, part_size.z);
-                else if(surf_name == "FrontMaterial")
-                    uvs = Ogre::Vector2(-part_size.x, part_size.z);*/
-
-
-            }
-            m_geom->addEntity(m_partEntity,
-                              child_part->getCFrame().getPosition(), 
-                              Ogre::Quaternion(child_part->getCFrame().getRotation()), 
-                              child_part->getSize());
-        }
-        for(auto& child : *instance->getChildren())
-            buildGeomInstance(child);
     }
 
     void Workspace::buildGeom()
     {
-        if(!m_geomDirty)
+        if(!m_geomDirty || m_batchMode != BATCH_STATIC_GEOMETRY)
             return;
-        m_geom->reset();
-        for(auto& child : *getChildren())
-            buildGeomInstance(child);
         m_geom->build();
         m_geomDirty = false;
     }
 
-    void Workspace::onChildRemoved(Instance* childRemoved)
+    void Workspace::onDescendantRemoved(Instance* childRemoved)
     {
-        m_geomDirty = true;
+        m_geomDirty = true;        
     }
 
     Camera* Workspace::getCurrentCamera() const

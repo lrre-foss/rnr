@@ -16,6 +16,7 @@ material materials/partinstanced
 
             rtshader_system
             {
+                transform_stage instanced
                 lighting_stage per_pixel
             }
         }

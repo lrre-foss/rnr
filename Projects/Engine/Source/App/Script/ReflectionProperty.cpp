@@ -1,6 +1,7 @@
 #include <App/Script/ReflectionProperty.hpp>
 #include <App/V8/Tree/Instance.hpp>
 #include <App/CoordinateFrame.hpp>
+#include <App/BrickColor.hpp>
 #include <Helpers/Strings.hpp>
 #include <format>
 
@@ -64,6 +65,8 @@ namespace RNR
                         cframe_rotation.z,
                         cframe_rotation.w);
                 }
+            case PROPERTY_BRICKCOLOR:
+                return std::string(BrickColor::name(*(int*)m_getter(m_object)));
             default:
                 return std::string("???");
         }
