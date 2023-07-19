@@ -19,12 +19,12 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 4.0
+          version: 5.0
           packages: >-
             build-essential
             cmake
             ninja-build
-            libboost-dev
+            libboost-all-dev
             libogre-1.12-dev
             libpugixml-dev
         
