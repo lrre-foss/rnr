@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <cstddef>
 
 #include <OGRE/Ogre.h>
 #include <boost/shared_ptr.hpp>
