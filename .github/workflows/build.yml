@@ -31,7 +31,6 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
-          arch: clang_64
           version: 6.*
           cache: true
         
