@@ -19,9 +19,9 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 2.0
+          version: 2.1
           packages: >-
-            clang
+            build-essential
             cmake
             ninja-build
             libboost-dev
