@@ -114,6 +114,7 @@ void MainWindow::createToolbar()
 
     QAction* run_action = toolbar->addAction(QIcon("content/textures/studio/icons/run.png"), "", this, SLOT(run()));
     QAction* pause_action = toolbar->addAction(QIcon("content/textures/studio/icons/pause.png"), "", this, SLOT(pause()));
+    QAction* playSolo_action = toolbar->addAction(QIcon("content/textures/studio/icons/play.png"), "", this, SLOT(playSolo()));
 
 #ifndef NDEBUG
     toolbar->addSeparator();
@@ -131,6 +132,17 @@ void MainWindow::pause()
     this->ogreWidget->world->getRunService()->pause();
 }
 
+void MainWindow::playSolo()
+{
+    this->ogreWidget->world->getRunService()->run();
+
+    RNR::Players* players = (RNR::Players*)this->ogreWidget->world->getDatamodel()->getService("Players");
+    RNR::Player* player = players->createLocalPlayer(0);
+    player->setName(QInputDialog::getText(this, "Player Name", "Enter your player name").toLocal8Bit().data());
+
+    updateTree(ogreWidget->world->getDatamodel());
+}
+
 void MainWindow::dbg_pointlight()
 {
     if(!ogreWidget->selectedInstance)
@@ -144,8 +156,8 @@ void MainWindow::dbg_pointlight()
     dbg_light->setParent(ogreWidget->selectedInstance);
 
     double r = QInputDialog::getDouble(this, "Red", "Set red component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
-    double g = QInputDialog::getDouble(this, "Blue", "Set blue component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
-    double b = QInputDialog::getDouble(this, "Green", "Set green component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
+    double g = QInputDialog::getDouble(this, "Green", "Set green component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
+    double b = QInputDialog::getDouble(this, "Blue", "Set blue component [0.0-1.0]", 1.0, 0.0, 1.0, 2);
     dbg_light->setColor(Ogre::Vector3(r,g,b));
 
     updateTree(ogreWidget->world->getDatamodel());

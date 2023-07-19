@@ -4,6 +4,7 @@
 #include <App/GUI/SelectionBox.hpp>
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/InputManager.hpp>
+#include <Network/Player.hpp>
 #include <stdexcept>
 #include <pugixml.hpp>
 
@@ -24,6 +25,8 @@ namespace RNR
         m_instanceFactory->registerInstance("Workspace", InstanceFactory::instanceBuilder<Workspace>);
         m_instanceFactory->registerInstance("Humanoid", InstanceFactory::instanceBuilder<Humanoid>);
         m_instanceFactory->registerInstance("RunService", InstanceFactory::instanceBuilder<RunService>);
+        m_instanceFactory->registerInstance("Players", InstanceFactory::instanceBuilder<Players>);
+        m_instanceFactory->registerInstance("Player", InstanceFactory::instanceBuilder<Player>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -31,6 +34,7 @@ namespace RNR
         m_datamodel->setName("DataModel");
         m_workspace = (Workspace*)m_datamodel->getService("Workspace");
         m_runService = (RunService*)m_datamodel->getService("RunService");
+        m_players = (Players*)m_datamodel->getService("Players");
 
         m_tmb = new TopMenuBar(this);
 

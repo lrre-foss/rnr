@@ -19,7 +19,7 @@ namespace RNR
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
-                m_geom->setRegionDimensions(Ogre::Vector3(255,255,255));
+                m_geom->setRegionDimensions(Ogre::Vector3(512,512,512));
                 m_geom->setCastShadows(true);
                 break;
         }
@@ -40,6 +40,7 @@ namespace RNR
                         replica->setPosition(part->getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
                         replica->setScale(part->getSize());
+                        childAdded->setObject(replica);
                     }
                     break;
                 case BATCH_STATIC_GEOMETRY:

@@ -9,6 +9,8 @@ namespace RNR
         setName("Part");
 
         m_color = Ogre::Vector4(0.63, 0.64, 0.63, 1.0);
+        m_transparency = 0.0;
+        m_reflectance = 0.0;
 
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
         setObject(world->getOgreSceneManager()->createEntity("fonts/Cube.mesh"));
@@ -30,6 +32,7 @@ namespace RNR
         for(auto& subentity : entity->getSubEntities())
         {
             subentity->setMaterial(BrickColor::material(m_brickColor));
+            subentity->getMaterial()->setShininess(64);
         }
     }
 
@@ -47,6 +50,14 @@ namespace RNR
                 printf("PartInstance::deserializeProperty: BrickColor not valid number (%i)\n", getBrickColor());
             }
         }
+        else if(prop_name == std::string("Reflectance"))
+        {
+            setReflectance(node.text().as_float());
+        }
+        else if(prop_name == std::string("Transparency"))
+        {
+            setTransparency(node.text().as_float());
+        }
         else
             PVInstance::deserializeProperty(prop_name, node);
         updateMatrix();
@@ -63,6 +74,14 @@ namespace RNR
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_BRICKCOLOR,         
               REFLECTION_GETTER(PartInstance* instance = (PartInstance*)object; return &instance->m_brickColor; ), 
               REFLECTION_SETTER(PartInstance* instance = (PartInstance*)object; instance->setBrickColor(*(int*)value); ) },
+            { this, std::string("Reflectance"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_FLOAT,         
+              REFLECTION_GETTER(PartInstance* instance = (PartInstance*)object; return &instance->m_reflectance; ), 
+              REFLECTION_SETTER(PartInstance* instance = (PartInstance*)object; instance->setReflectance(*(float*)value); ) },
+            { this, std::string("Transparency"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_FLOAT,         
+              REFLECTION_GETTER(PartInstance* instance = (PartInstance*)object; return &instance->m_transparency; ), 
+              REFLECTION_SETTER(PartInstance* instance = (PartInstance*)object; instance->setTransparency(*(float*)value); ) },
         };
 
         PVInstance::addProperties(properties);

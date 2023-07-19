@@ -14,6 +14,9 @@ namespace RNR
     class TopMenuBar 
     {
         Ogre::TextAreaOverlayElement* m_debugText;
+        Ogre::TextAreaOverlayElement* m_playerList;
+        Ogre::OverlayContainer* m_playerPanel;
+        Ogre::OverlayManager* m_overlayManager;
         World* m_world;
     public:
         TopMenuBar(World* world);

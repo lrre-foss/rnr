@@ -39,6 +39,7 @@ class MainWindow : public QMainWindow
         void selectInstance(QTreeWidgetItem *item, int column);
         void run();
         void pause();
+        void playSolo();
 
         void dbg_pointlight();
     protected:
