@@ -1,12 +1,14 @@
 list(APPEND SOURCE
     Source/GL/Adorn.cpp
     Source/OgreWidget.cpp
+    Source/QtInputManager.cpp
 )
 
 list(APPEND HEADER
     Header/GL/Adorn.hpp
     Header/GL/RenderContext.hpp
     Header/OgreWidget.hpp
+    Header/QtInputManager.hpp
 )
 
 qt_standard_project_setup()

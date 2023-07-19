@@ -23,6 +23,7 @@ add_library(Engine STATIC
     Header/App/V8/World/World.hpp
     Header/App/CoordinateFrame.hpp
     Header/App/BrickColor.hpp
+    Header/App/InputManager.hpp
     Header/Network/GUID.hpp
     Header/Rendering/Adorn.hpp
 
@@ -49,6 +50,7 @@ add_library(Engine STATIC
     Source/App/V8/Tree/ModelInstance.cpp    
     Source/App/CoordinateFrame.cpp
     Source/App/BrickColor.cpp
+    Source/App/InputManager.cpp
     Source/App/V8/World/World.cpp
     Source/Network/GUID.cpp
     Source/Rendering/Adorn.cpp

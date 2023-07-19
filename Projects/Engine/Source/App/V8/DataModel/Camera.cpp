@@ -5,7 +5,8 @@ namespace RNR
 {
     Camera::Camera()
     {
-        //
+        m_cf_yaw = 0.f;
+        m_cf_pitch = 0.f;
     }
 
     Camera::~Camera()
@@ -19,6 +20,29 @@ namespace RNR
         {
             setCFrame(XML::getCFrame(node));
         }
+        else if(prop_name == std::string("Focus"))
+        {
+            setFocus(XML::getCFrame(node));
+        }
+    }
+
+    void Camera::cameraFrame(float xd, float yd)
+    {
+        Ogre::Radian pitch = Ogre::Radian(yd);
+        Ogre::Radian yaw = Ogre::Radian(xd);
+
+        Ogre::Radian old_pitch;
+        Ogre::Radian old_yaw;
+        Ogre::Radian old_roll;
+        
+        getCFrame().getRotation().ToEulerAnglesZXY(old_yaw, old_pitch, old_roll);
+
+        pitch = old_pitch + pitch;
+        yaw = old_yaw - yaw;
+
+        Ogre::Matrix3 rotation;
+        rotation.FromEulerAnglesZXY(yaw, pitch, Ogre::Radian(0));
+        getCFrame().setRotation(rotation);  
     }
 
     void Camera::addProperties(std::vector<ReflectionProperty>& properties)
@@ -28,6 +52,10 @@ namespace RNR
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_CFRAME,         
               REFLECTION_GETTER(Camera* instance = (Camera*)object; return &instance->m_cframe; ), 
               REFLECTION_SETTER(Camera* instance = (Camera*)object; instance->setCFrame(*(CoordinateFrame*)value); ) },
+            { this, std::string("Target"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_CFRAME,         
+              REFLECTION_GETTER(Camera* instance = (Camera*)object; return &instance->m_focus; ), 
+              REFLECTION_SETTER(Camera* instance = (Camera*)object; instance->setFocus(*(CoordinateFrame*)value); ) },
         };
 
         properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));

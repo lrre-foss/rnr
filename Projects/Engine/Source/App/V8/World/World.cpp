@@ -122,6 +122,7 @@ namespace RNR
     {
         if(m_runService && m_runService->getRunning())
             m_runService->step(timestep);
+        m_lastDelta = timestep;
         return 0.0;
     }
 

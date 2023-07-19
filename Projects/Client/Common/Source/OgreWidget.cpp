@@ -24,9 +24,11 @@ namespace RNR
         this->setAttribute(Qt::WA_OpaquePaintEvent);
         this->setAttribute(Qt::WA_PaintOnScreen);
         this->setMouseTracking(true);
-        this->setCursor(QCursor(Qt::BlankCursor));
+        //this->setCursor(QCursor(Qt::BlankCursor));
         this->setFocusPolicy(Qt::StrongFocus);
         this->selectedInstance = 0;
+
+        inputManager = new QtInputManager(this);
     }
 
     void OgreWidget::initializeOgre()
@@ -168,8 +170,29 @@ namespace RNR
         //
     }
 
+    void OgreWidget::keyPressEvent(QKeyEvent *e)
+    {
+        inputManager->keyEvent(e);
+    }
+
+    void OgreWidget::keyReleaseEvent(QKeyEvent *e)
+    {
+        inputManager->keyEvent(e);
+    }
+
+    void OgreWidget::mousePressEvent(QMouseEvent *e)
+    {
+        inputManager->mouseEvent(e);
+    }
+
+    void OgreWidget::mouseReleaseEvent(QMouseEvent *e)
+    {
+        inputManager->mouseEvent(e);
+    }
+
     void OgreWidget::mouseMoveEvent(QMouseEvent *mEvent)
     {
+        inputManager->mouseEvent(mEvent);
     }
 
     void OgreWidget::closeEvent(QCloseEvent* event)

@@ -9,6 +9,7 @@
 #include <OGRE/RTShaderSystem/OgreShaderGenerator.h>
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/World/World.hpp>
+#include <QtInputManager.hpp>
 
 #include <GL/Adorn.hpp>
 
@@ -34,9 +35,12 @@ namespace RNR
             Ogre::Camera* ogreCamera;
             Ogre::Viewport* ogreViewport;
             Ogre::RTShader::ShaderGenerator* ogreShaderGen;
+
+            QCursor cursor;
             
             void render(); 
             void initializeOgre();
+            void setWorld(RNR::World* world) { this->world = world; inputManager->setWorld(world); }
 
             Ogre::NameValuePairList getRenderOptions();
             Ogre::String getWindowHandle();
@@ -44,11 +48,18 @@ namespace RNR
         protected:
             virtual void paintEvent(QPaintEvent* pEvent);
             virtual void resizeEvent(QResizeEvent* rEvent);
+            
+            virtual void keyPressEvent(QKeyEvent *event);
+            virtual void keyReleaseEvent(QKeyEvent *event);
             virtual void mouseMoveEvent(QMouseEvent *event);
+            virtual void mousePressEvent(QMouseEvent *event);
+            virtual void mouseReleaseEvent(QMouseEvent *event);
+
             virtual void closeEvent(QCloseEvent* event);
             virtual QPaintEngine* paintEngine() const;
             
         private:
             QElapsedTimer timer;
+            QtInputManager* inputManager;
     };
 }

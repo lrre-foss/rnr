@@ -31,6 +31,7 @@ namespace RNR
             Ogre::SceneManager* m_ogreSceneManager;
             TopMenuBar* m_tmb;
             InstanceFactory* m_instanceFactory;
+            float m_lastDelta;
 
             void xmlAddItem(pugi::xml_node node, Instance* parent);
         public:
@@ -45,8 +46,7 @@ namespace RNR
             double step(float timestep);
             void update();
 
-
-
+            float getLastDelta() { return m_lastDelta; }
             DataModel* getDatamodel() { return m_datamodel; }
             void setDatamodel(DataModel* instance) { m_datamodel = instance; }
             Workspace* getWorkspace() { return m_workspace; }
