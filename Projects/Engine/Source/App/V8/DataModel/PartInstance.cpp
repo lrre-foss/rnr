@@ -13,7 +13,7 @@ namespace RNR
         m_reflectance = 0.0;
 
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        setObject(world->getOgreSceneManager()->createEntity("fonts/Cube.mesh"));
+        setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
         getNode()->attachObject(getObject());
 
         updateMatrix();
@@ -24,16 +24,32 @@ namespace RNR
         m_matrix = m_cframe.getMatrix(); 
         m_position = m_cframe.getPosition();
 
-        getNode()->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
-        getNode()->setPosition(m_position);
-        getNode()->setScale(m_size);
+        if(getNode())
+        {
+            getNode()->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
+            getNode()->setPosition(m_position);
+            getNode()->setScale(m_size);
+        }
+
+        if(getObject() && dynamic_cast<Ogre::InstancedEntity*>(getObject()))
+        {
+            Ogre::InstancedEntity* object = (Ogre::InstancedEntity*)getObject();
+
+            object->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
+            object->setPosition(m_position);
+            object->setScale(m_size);
+
+            object->updateTransforms();
+        }
 
         Ogre::Entity* entity = (Ogre::Entity*)getObject();
         for(auto& subentity : entity->getSubEntities())
         {
             subentity->setMaterial(BrickColor::material(m_brickColor));
             subentity->getMaterial()->setShininess(64);
+            subentity->getMaterial()->setLightingEnabled(true);
         }
+        entity->setCastShadows(true);
     }
 
     void PartInstance::deserializeProperty(char* prop_name, pugi::xml_node node)
@@ -57,6 +73,10 @@ namespace RNR
         else if(prop_name == std::string("Transparency"))
         {
             setTransparency(node.text().as_float());
+        }
+        else if(prop_name == std::string("Anchored"))
+        {
+            setAnchored(node.text().as_bool());
         }
         else
             PVInstance::deserializeProperty(prop_name, node);

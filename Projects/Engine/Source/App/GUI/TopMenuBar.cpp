@@ -128,11 +128,13 @@ namespace RNR
                 snprintf(render_debugtext, 255, "using BATCH_STATIC_GEOMETRY\nGeom Regions: %i", workspace->m_geom->getRegions().size());
                 break;
         }
-        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n\nPhysics\n%i objects, %i constraints",
+        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n\nPhysics\nDT = %f\n%i objects, %i constraints\nRunService: running = %s, paused = %s",
                  m_world->getLastDelta(),
                  render_debugtext,
-                 m_world->getOgreSceneManager(),
-                 dynamicsWorld->getNumCollisionObjects(), dynamicsWorld->getNumConstraints());
+                 m_world->getLastPhysicsDelta(),
+                 dynamicsWorld->getNumCollisionObjects(), dynamicsWorld->getNumConstraints(),
+                 m_world->getRunService()->getRunning() ? "true" : "false",
+                 m_world->getRunService()->getPaused() ? "true" : "false");
         m_debugText->setCaption(debugtext);
 
         Players* players = (Players*)m_world->getDatamodel()->getService("Players");

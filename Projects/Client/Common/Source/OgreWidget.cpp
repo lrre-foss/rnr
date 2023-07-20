@@ -93,11 +93,11 @@ namespace RNR
 
         Ogre::FontPtr pFont = Ogre::FontManager::getSingletonPtr()->create("ComicSans", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         pFont->setType(Ogre::FT_TRUETYPE);
-        pFont->setSource("fonts/comic.ttf");
+        pFont->setSource("fonts/ComicSans.ttf");
         pFont->setTrueTypeSize(16);
         pFont->load();
         
-        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
         ogreSceneManager->setShadowFarDistance(500.f);
 
         ogreSceneLight = ogreSceneManager->createLight("SunLight");
@@ -126,6 +126,8 @@ namespace RNR
         this->delta = ogreRoot->getTimer()->getMicroseconds() / 1000000.0;
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
+
+        world->preRender(this->delta);
 
         if(world->getWorkspace()->getCurrentCamera())
         {

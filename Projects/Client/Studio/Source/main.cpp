@@ -32,11 +32,9 @@ int main(int argc, char** argv)
 
     while (window.isVisible())
     {
-        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, FPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, 1 / window.ogreWidget->delta));
+        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, Pt=%f, FPS=%f, pFPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, window.ogreWidget->world->getPhysicsTime(), 1 / window.ogreWidget->delta, 1 / window.ogreWidget->world->getLastPhysicsDelta()));
         app.processEvents();
         window.ogreWidget->render();
-        world->preStep();
-        world->step(window.ogreWidget->delta);
         world->update();
     }
 }

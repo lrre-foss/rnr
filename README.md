@@ -22,6 +22,7 @@ There are several goals that RNR seeks to accomplish, them being;
 RNR uses [CMake](https://cmake.org/) as its build system and [GCC](https://gcc.gnu.org/) as its compiler. To build RNR, you must first have the following packages installed:
 - [Boost](https://www.boost.org/)
 - [OGRE](https://github.com/OGRECave/ogre)
+- [Bullet](https://github.com/bulletphysics/bullet3)
 - [pugixml](https://github.com/zeux/pugixml)
 - [Qt 6](https://www.qt.io/product/qt6) (if building the player or studio projects)
 
@@ -32,6 +33,8 @@ For Windows:
 Additionally, you must also acquire the content folder of the Roblox client you would like to use its resources from and place it in the root of the repository. Proprietary Roblox assets are not included with RNR.
 
 Finally, you may run `cmake --build .` in the path of the folder you've cloned the repository to so that you may configure and then finally build RNR.
+
+P.S.: You can check our [GitHub actions page](https://github.com/lrre-foss/rnr/actions) to browse automatic ready-to-run Windows (and soon Linux) builds for each commit. :-) 
 
 # License
 RNR is licensed under two separate licenses:

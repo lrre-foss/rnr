@@ -3,6 +3,8 @@ add_library(Engine STATIC
     Header/Helpers/Strings.hpp
     Header/Helpers/XML.hpp
     Header/Helpers/NormalId.hpp
+    Header/Helpers/Bullet.hpp
+    Header/Helpers/Lock.hpp
     Header/App/Script/ReflectionProperty.hpp
     Header/App/Script/Script.hpp
     Header/App/Script/ScriptContext.hpp
@@ -37,6 +39,7 @@ add_library(Engine STATIC
     Source/Helpers/Strings.cpp
     Source/Helpers/XML.cpp
     Source/Helpers/NormalId.cpp
+    Source/Helpers/Bullet.cpp
     Source/App/Script/ReflectionProperty.cpp
     Source/App/Script/Script.cpp
     Source/App/GUI/GuiBase3d.cpp

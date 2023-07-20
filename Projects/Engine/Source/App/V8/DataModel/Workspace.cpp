@@ -8,18 +8,18 @@ namespace RNR
     Workspace::Workspace() : ModelInstance()
     {
         setName("Workspace");
-        m_batchMode = BATCH_DONT;
+        m_batchMode = BATCH_INSTANCED;
 
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
-        
+
         switch(m_batchMode)
         {
             case BATCH_INSTANCED:
-                m_instanceManager = world->getOgreSceneManager()->createInstanceManager("workspaceInstanceManager", "fonts/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
+                m_instanceManager = world->getOgreSceneManager()->createInstanceManager("workspaceInstanceManager", "meshes/Cube_Instanced.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
-                m_geom->setRegionDimensions(Ogre::Vector3(2048,2048,2048));
+                m_geom->setRegionDimensions(Ogre::Vector3(4096, 4096, 4096));
                 m_geom->setCastShadows(true);
                 break;
             case BATCH_DONT:
@@ -37,11 +37,13 @@ namespace RNR
             {
                 case BATCH_INSTANCED:
                     {
-                        Ogre::Entity* childEntity = (Ogre::Entity*)childAdded->getObject();
-                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity("materials/partinstanced");
-                        replica->setPosition(part->getPosition());
+                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity(BrickColor::material(part->getBrickColor())->getName());
+                        part->updateMatrix();
+                        replica->setPosition(part->getCFrame().getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
                         replica->setScale(part->getSize());
+                        replica->setCastShadows(true);
+                        m_worldspawn->attachObject(replica);
                         childAdded->setObject(replica);
                         child_node->setVisible(false);
                     }
@@ -55,8 +57,10 @@ namespace RNR
                     m_geomDirty = true;
                     break;
                 case BATCH_DONT:
+                    child_node->setVisible(true);
                     break;
             }
+            world->registerPhysicsPart(part);
         }
     }
 
@@ -75,6 +79,9 @@ namespace RNR
 
     void Workspace::onDescendantRemoved(Instance* childRemoved)
     {
+        PartInstance* part = dynamic_cast<PartInstance*>(childRemoved);
+        if(part)
+            world->deletePhysicsPart(part);
         m_geomDirty = true;        
     }
 

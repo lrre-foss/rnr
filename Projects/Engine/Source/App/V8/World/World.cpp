@@ -8,9 +8,25 @@
 #include <Network/Player.hpp>
 #include <stdexcept>
 #include <pugixml.hpp>
+#include <Helpers/Bullet.hpp>
 
 namespace RNR
 {
+    void physicsThread(World* world)
+    {
+        float delta;
+        float time;
+        while(world->getPhysicsShouldBeRunningPleaseStopIfItIsStillRunning())
+        {
+            delta = world->getPhysicsTimer()->getMicroseconds() / 1000000.0;
+            time += world->getPhysicsTimer()->getMilliseconds() / 1000.0;
+            world->setPhysicsTime(time);
+            world->getPhysicsTimer()->reset();
+            world->preStep();
+            world->step(delta);
+        }
+    }
+
     World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager)
     {
         Instance::setWorld(this);
@@ -20,7 +36,7 @@ namespace RNR
         btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
         btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
         m_dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+        m_dynamicsWorld->setGravity(btVector3(0, -64, 0));
 
         m_inputManager = 0;
 
@@ -45,6 +61,11 @@ namespace RNR
         m_runService = (RunService*)m_datamodel->getService("RunService");
         m_players = (Players*)m_datamodel->getService("Players");
 
+        m_runPhysics = true;
+        m_physicsTimer = new Ogre::Timer();
+        m_physicsThread = std::thread(physicsThread, this);
+        m_physicsTime = 0.0;
+
         m_tmb = new TopMenuBar(this);
 
         Camera* start_cam = new Camera();
@@ -54,7 +75,8 @@ namespace RNR
 
     World::~World()
     {
-        //
+        m_runPhysics = false;
+        m_physicsThread.join();
     }
 
     void World::xmlAddItem(pugi::xml_node node, Instance* parent)
@@ -118,13 +140,14 @@ namespace RNR
                 WorldUndeserialized s = m_undeserialized.top();
                 m_undeserialized.pop();
 
-                s.instance->setParent(s.parent);
 
                 pugi::xml_node props = s.node.child("Properties");
                 for(pugi::xml_node prop : props.children())
                 {
                     s.instance->deserializeXmlProperty(prop);
                 }
+
+                s.instance->setParent(s.parent);
 
                 if(s.instance->getClassName() == "Model")
                 {
@@ -140,26 +163,102 @@ namespace RNR
         m_workspace->build();
     }
 
-    void World::preStep()
+    void World::preRender(float timestep)
     {
         if(m_inputManager)
             m_inputManager->frame();
         m_tmb->frame();
+        m_lastDelta = timestep;
+        if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
+        {
+            physicsIterateLock.lock();
+            for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+            {
+                btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+                if(!obj->isActive())
+                    continue;
+                PartInstance* part = (PartInstance*)obj->getUserPointer();
+                part->updateMatrix();
+            }
+            update();
+            physicsIterateLock.unlock();
+        }
+    }
+
+    void World::preStep()
+    {
+
     }
 
     double World::step(float timestep)
     {
-        if(m_runService && m_runService->getRunning())
+        if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
             m_runService->step(timestep);
-            m_dynamicsWorld->stepSimulation(timestep);
+            m_dynamicsWorld->stepSimulation(timestep, 2);
+
+            physicsIterateLock.lock();
+            for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+            {
+                btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+                if(!obj->isActive())
+                    continue;
+                btRigidBody* body = btRigidBody::upcast(obj);
+                btTransform trans;
+                if(body && body->getMotionState())
+                {
+                    body->getMotionState()->getWorldTransform(trans);
+                }
+                else
+                {
+                    trans = obj->getWorldTransform();
+                }
+                PartInstance* part = (PartInstance*)obj->getUserPointer();
+                part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
+                Ogre::Matrix3 partRot;
+                Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
+                transOgre.ToRotationMatrix(partRot);
+                part->getCFrame().setRotation(partRot);
+            }
+            physicsIterateLock.unlock();
         }
-        m_lastDelta = timestep;
+        m_lastPhysicsDelta = timestep;
         return 0.0;
     }
 
     void World::update()
     {
         m_workspace->buildGeom();
+    }
+
+    void World::registerPhysicsPart(PartInstance* partRegistered)
+    {
+        btCollisionShape* partShape = new btBoxShape(Bullet::v3ToBullet(partRegistered->getSize() / 2.f));
+        partShape->setUserPointer(partRegistered);
+
+        btTransform partTransform;
+        partTransform.setIdentity();
+        partTransform.setOrigin(Bullet::v3ToBullet(partRegistered->getPosition()));
+        partTransform.setRotation(Bullet::qtToBullet(partRegistered->getRotation()));
+        
+        btScalar mass = partRegistered->getSize().length();
+        if(partRegistered->getAnchored())
+            mass = 0;
+        
+        btVector3 localInertia = btVector3(0,0,0);        
+        if(mass)
+            partShape->calculateLocalInertia(mass, localInertia);
+
+        btDefaultMotionState* partMotionState = new btDefaultMotionState(partTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, partMotionState, partShape, localInertia);
+        btRigidBody* body = new btRigidBody(rbInfo);
+        body->setUserPointer(partRegistered);
+
+        m_dynamicsWorld->addRigidBody(body);
+    }
+
+    void World::deletePhysicsPart(PartInstance* partDelete)
+    {
+
     }
 }

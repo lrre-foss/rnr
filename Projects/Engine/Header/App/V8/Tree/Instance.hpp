@@ -8,6 +8,7 @@
 #include <boost/shared_ptr.hpp>
 
 #include <Helpers/Name.hpp>
+#include <Helpers/Lock.hpp>
 #include <pugixml.hpp>
 
 #include <App/Script/ReflectionProperty.hpp>
@@ -78,5 +79,7 @@ namespace RNR
             virtual void onChildRemoved(RNR::Instance* childRemoved);
             virtual void onDescendantRemoved(RNR::Instance* descendantRemoved); // make sure this is called in any derived versions of this
             virtual void onSetParent(RNR::Instance* newParent);
+
+            Lock instanceLock;
     };
 }
