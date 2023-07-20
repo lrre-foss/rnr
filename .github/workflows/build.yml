@@ -2,6 +2,69 @@ name: Build
 on: [ push ]
 
 jobs:
+  linux:
+    strategy:
+      matrix:
+        configuration: [ Release, Debug ]
+    
+    name: Linux
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install required packages
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          version: 5.0
+          packages: >-
+            build-essential
+            cmake
+            ninja-build
+            libboost-all-dev
+            libogre-1.12-dev
+            libpugixml-dev
+        
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: 6.*
+          cache: true
+        
+      - name: Generate Ninja build files
+        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+      
+      - name: Run Ninja build
+        run: ninja -C build
+      
+      # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
+      - name: Organize binaries
+        run: mkdir build/dist && find build -perm /a+x -exec mv {} build/dist \;
+
+      - name: Add RNR resources
+        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+
+      - name: Add OGRE plugins
+        run: cp -R build/plugins build/dist && cp Content/linux_plugins.cfg build/dist/plugins.cfg
+      
+      - name: Add OGRE shaders
+        run: cp -R build/shaders build/dist
+
+      - name: Set output variables
+        id: vars
+        run: |
+          echo "configuration=${{ matrix.configuration }}" | awk '{print tolower($0)}' >> $GITHUB_OUTPUT
+          echo "hash=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: rnr-${{ steps.vars.outputs.hash }}-linux_x64-${{ steps.vars.outputs.configuration }}
+          path: build/dist
+
   windows:
     strategy:
       matrix:
@@ -17,13 +80,13 @@ jobs:
         shell: msys2 {0}
 
     steps:
-      - uses: actions/checkout@v3
-        name: Clone repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           submodules: recursive
-        
-      - uses: msys2/setup-msys2@v2
-        name: Set up MSYS2 and install required packages
+ 
+      - name: Set up MSYS2 and install required packages
+        uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.sys }}
           install: >-
@@ -58,7 +121,7 @@ jobs:
         run: mkdir build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main/* build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib/* build/dist/shaders
     
       - name: Add additional runtime dependencies
-        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "clang64" | xargs -I '{}' cp -v '{}' build/dist
+        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "${{ matrix.sys }}" | xargs -I '{}' cp -v '{}' build/dist
       
       - name: Set output variables
         id: vars
