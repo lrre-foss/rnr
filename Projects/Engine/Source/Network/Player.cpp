@@ -53,6 +53,8 @@ namespace RNR
         Humanoid* character_humanoid = new Humanoid();
         character_humanoid->setParent(m_character);        
         m_character->setParent(world->getWorkspace());
+        
+        character_humanoid->buildJoints();
 
         Camera* player_camera = world->getWorkspace()->getCurrentCamera();
         player_camera->setCFrame(CoordinateFrame());

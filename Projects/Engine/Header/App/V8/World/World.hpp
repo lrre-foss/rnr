@@ -6,6 +6,7 @@
 #include <App/V8/DataModel/Camera.hpp>
 #include <App/V8/DataModel/RunService.hpp>
 #include <App/V8/DataModel/DataModel.hpp>
+#include <App/V8/World/ComPlicitNgine.hpp>
 #include <Network/Players.hpp>
 #include <App/GUI/TopMenuBar.hpp>
 #include <OGRE/Ogre.h>
@@ -13,7 +14,6 @@
 #include <stack>
 #include "LinearMath/btVector3.h"
 #include "btBulletDynamicsCommon.h"
-
 
 namespace RNR
 {
@@ -30,9 +30,6 @@ namespace RNR
     class World
     {
         private:
-            std::thread m_physicsThread;
-            Ogre::Timer* m_physicsTimer;
-
             bool m_runPhysics;
             std::map<std::string, Instance*> m_refs;
             std::stack<WorldUndeserialized> m_undeserialized;
@@ -47,8 +44,7 @@ namespace RNR
             InstanceFactory* m_instanceFactory;
             IInputManager* m_inputManager;
             float m_lastDelta;
-            float m_lastPhysicsDelta;
-            float m_physicsTime;
+            ComPlicitNgine* m_ngine;
 
             void xmlAddItem(pugi::xml_node node, Instance* parent);
         public:
@@ -65,8 +61,9 @@ namespace RNR
             void update();
 
             btDiscreteDynamicsWorld* getDynamicsWorld() { return m_dynamicsWorld; }
+            ComPlicitNgine* getComPlicitNgine() { return m_ngine; }
             float getLastDelta() { return m_lastDelta; }
-            float getLastPhysicsDelta() { return m_lastPhysicsDelta; }
+            float getLastPhysicsDelta() { return m_ngine->getLastPhysicsDelta(); }
             DataModel* getDatamodel() { return m_datamodel; }
             void setInputManager(IInputManager* inputManager) { m_inputManager = inputManager; }
             IInputManager* getInputManager() { return m_inputManager; }
@@ -77,13 +74,7 @@ namespace RNR
             void setRunService(RunService* runService) { m_runService = runService; }
             Ogre::Root* getOgreRoot() { return m_ogreRoot; }
             Ogre::SceneManager* getOgreSceneManager() { return m_ogreSceneManager; }
-            Ogre::Timer* getPhysicsTimer() { return m_physicsTimer; }
-            float getPhysicsTime() { return m_physicsTime; }
-            void setPhysicsTime(float newTime) { m_physicsTime = newTime; } // should only be used by physicsThread
             bool getPhysicsShouldBeRunningPleaseStopIfItIsStillRunning() { return m_runPhysics; }
-
-            void registerPhysicsPart(PartInstance* partRegistered);
-            void deletePhysicsPart(PartInstance* partDelete);
 
             Lock physicsIterateLock;
     };

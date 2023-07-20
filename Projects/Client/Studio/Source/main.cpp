@@ -30,9 +30,11 @@ int main(int argc, char** argv)
     window.updateTree(world->getDatamodel());
     window.ogreWidget->setWorld(world);
 
+    RNR::ComPlicitNgine* ngine = world->getComPlicitNgine();
+
     while (window.isVisible())
     {
-        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, Pt=%f, FPS=%f, pFPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, window.ogreWidget->world->getPhysicsTime(), 1 / window.ogreWidget->delta, 1 / window.ogreWidget->world->getLastPhysicsDelta()));
+        window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, Pt=%f, FPS=%f, pFPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, ngine->getPhysicsTime(), 1 / window.ogreWidget->delta, 1 / ngine->getLastPhysicsDelta()));
         app.processEvents();
         window.ogreWidget->render();
         world->update();
