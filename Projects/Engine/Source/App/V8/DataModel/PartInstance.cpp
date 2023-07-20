@@ -13,7 +13,7 @@ namespace RNR
         m_reflectance = 0.0;
 
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        setObject(world->getOgreSceneManager()->createEntity("fonts/Cube.mesh"));
+        setObject(world->getOgreSceneManager()->createEntity("meshes/cube.mesh"));
         getNode()->attachObject(getObject());
 
         updateMatrix();

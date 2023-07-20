@@ -1,4 +1,4 @@
-material materials/guibase3d
+material materials/GuiBase3d
 {
 	technique
 	{
