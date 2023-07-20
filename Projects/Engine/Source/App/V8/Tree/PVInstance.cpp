@@ -6,7 +6,7 @@ namespace RNR
 {
     PVInstance::PVInstance() : m_cframe(), Instance()
     {
-        
+
     }
 
     void PVInstance::deserializeProperty(char* prop_name, pugi::xml_node node)
@@ -27,5 +27,10 @@ namespace RNR
         };
 
         properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));
+    }
+
+    Ogre::Vector3 PVInstance::relativePositionTo(PVInstance* point)
+    {
+        return point->getPosition() - getPosition();
     }
 }

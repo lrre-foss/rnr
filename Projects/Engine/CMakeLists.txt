@@ -16,6 +16,7 @@ add_library(Engine STATIC
     Header/App/V8/DataModel/ForceField.hpp
     Header/App/V8/DataModel/PartInstance.hpp
     Header/App/V8/DataModel/Light.hpp
+    Header/App/V8/DataModel/Lighting.hpp
     Header/App/V8/DataModel/FaceInstance.hpp
     Header/App/V8/DataModel/RunService.hpp
     Header/App/V8/DataModel/Workspace.hpp
@@ -48,6 +49,7 @@ add_library(Engine STATIC
     Source/App/V8/DataModel/ForceField.cpp
     Source/App/V8/DataModel/PartInstance.cpp
     Source/App/V8/DataModel/Light.cpp
+    Source/App/V8/DataModel/Lighting.cpp
     Source/App/V8/DataModel/FaceInstance.cpp
     Source/App/V8/DataModel/RunService.cpp
     Source/App/V8/DataModel/Workspace.cpp
@@ -65,5 +67,7 @@ add_library(Engine STATIC
     Source/Rendering/Adorn.cpp
 )
 
-target_include_directories(Engine PUBLIC ${BOOST_INCLUDE_DIRS} Header/)
-target_link_libraries(Engine PUBLIC ${BOOST_LIBRARIES} pugixml OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
+target_include_directories(Engine PUBLIC ${Boost_INCLUDE_DIRS} ${BULLET_ROOT_DIR}/${BULLET_INCLUDE_DIR} Header/)
+target_compile_definitions(Engine PUBLIC ${BULLET_DEFINITIONS})
+target_link_directories(Engine PUBLIC ${Bullet_DIR}/${BULLET_ROOT_DIR}/${BULLET_LIBRARY_DIRS})
+target_link_libraries(Engine PUBLIC ${Boost_LIBRARIES} ${RNR_BULLET_LIBRARIES} pugixml OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)

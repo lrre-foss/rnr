@@ -15,6 +15,17 @@ namespace RNR
     Instance::~Instance()
     {
         setParent(NULL);
+        if(getNode())
+        {
+            getNode()->removeAndDestroyAllChildren();
+            delete getNode();
+        }
+        if(getObject())
+        {
+            if(getObject()->getParentNode() != 0)
+                getObject()->detachFromParent();
+            delete getObject();
+        }
     }
 
     std::vector<ReflectionProperty> Instance::getProperties()
@@ -47,6 +58,8 @@ namespace RNR
         pugi::xml_attribute prop_name = prop.attribute("name");
         if(prop_name.as_string() == std::string("Name"))
             setName(prop.text().as_string());
+        else if(prop_name.as_string() == std::string("archivable"))
+            m_archivable = prop.text().as_bool();
         else
             deserializeProperty((char*)prop_name.as_string(), prop);
     }

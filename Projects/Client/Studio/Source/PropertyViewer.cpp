@@ -81,7 +81,7 @@ void PropertyViewer::view(RNR::Instance* instance)
                     QImage image;
                     QString icon_path;
                     icon_path = "content/textures/studio/icons/";
-                    icon_path += instance_ref->getClassName();
+                    icon_path += instance_ref->getExplorerIcon();
                     icon_path += ".png";
                     if(QFile::exists(icon_path))
                         image = QImage(icon_path);

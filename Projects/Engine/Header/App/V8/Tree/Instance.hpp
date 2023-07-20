@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <cstddef>
 
 #include <OGRE/Ogre.h>
 #include <boost/shared_ptr.hpp>
@@ -36,7 +37,7 @@ namespace RNR
         
         public:
             Instance();
-            ~Instance();
+            virtual ~Instance();
             
             virtual std::vector<ReflectionProperty> getProperties();
             void deserializeXmlProperty(pugi::xml_node prop); // TODO: eventually replace this with a method that uses getProperties
@@ -61,6 +62,7 @@ namespace RNR
             RNR::Instance* getParent() { return this->m_parent; };
             std::string getName() { return this->m_name; };
             virtual std::string getClassName() { return "Instance"; }
+            virtual std::string getExplorerIcon() { return getClassName(); }
 
             void setParent(RNR::Instance* newParent);
             void setName(std::string name);

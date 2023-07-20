@@ -1,11 +1,15 @@
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/V8/World/World.hpp>
+#include <App/InputManager.hpp>
 
 namespace RNR
 {
     Humanoid::Humanoid()
     {
-        //
+        setName("Humanoid");
+
+        m_maxHealth = 100.f;
+        m_health = 100.f;
     }
 
     Humanoid::~Humanoid()
@@ -42,13 +46,38 @@ namespace RNR
         }
         if(getNode())
             world->getOgreSceneManager()->destroySceneNode(getNode());
+
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
         Ogre::BillboardSet* healthBarSet = world->getOgreSceneManager()->createBillboardSet("HumanoidHealth" + getParent()->getName());
-        Ogre::Billboard* healthBarBillboard = healthBarSet->createBillboard(Ogre::Vector3(100, 0, 200));
-        getNode()->attachObject(healthBarSet);
-        getNode()->setPosition(getHead()->getPosition());
+        healthBarSet->setBillboardType(Ogre::BillboardType::BBT_PERPENDICULAR_COMMON);
+        healthBarSet->setDebugDisplayEnabled(true);
+        //Ogre::Billboard* healthBarBillboard = healthBarSet->createBillboard(Ogre::Vector3(0, 2, 0), Ogre::ColourValue(1, 0, 0, 1));
+        Ogre::Billboard* healthBarBillboardFilled = healthBarSet->createBillboard(Ogre::Vector3(0, 2, 0), Ogre::ColourValue(0, 1, 0, 1));
+        float healthBarScale = 0.5f;
+        //healthBarBillboard->setDimensions(5 * healthBarScale, 1 * healthBarScale);
+        healthBarBillboardFilled->setDimensions((m_health / m_maxHealth) * 5.f * healthBarScale, 1 * healthBarScale);
+        healthBarSet->setCastShadows(true);
 
-        printf("Humanoid::createHealthBar: WIP");
+        Ogre::BillboardSet* nameBarSet = world->getOgreSceneManager()->createBillboardSet("HumanoidName" + getParent()->getName());        
+        nameBarSet->setDebugDisplayEnabled(true);
+        Ogre::FontPtr comic = Ogre::FontManager::getSingletonPtr()->getByName("ComicSans");
+        if(!comic)
+            printf("Humanoid::createHealthBar: comic == NULL\n");
+        comic->putText(nameBarSet, getParent()->getName(), 1);
+        int num_billboards = nameBarSet->getNumBillboards();
+        for(int i = 0; i < num_billboards; i++)
+        {
+            Ogre::Billboard* chara = nameBarSet->getBillboard(i);
+            Ogre::Vector3 chara_pos = chara->getPosition();
+            chara_pos.y += 2 + healthBarScale;
+            chara->setPosition(chara_pos);
+        }
+        getNode()->attachObject(healthBarSet);
+        getNode()->attachObject(nameBarSet);
+        getNode()->setPosition(getHead()->getPosition());
+        getNode()->setOrientation(getHead()->getRotation());
+
+        printf("Humanoid::createHealthBar: WIP\n");
     }
 
     void Humanoid::deserializeProperty(char* prop_name, pugi::xml_node prop)
@@ -60,6 +89,58 @@ namespace RNR
         else if(prop_name == std::string("MaxHealth"))
         {
             setMaxHealth(prop.text().as_float());
+        }
+    }
+
+    void Humanoid::inputFrame(float dx, float dy)
+    {
+        IInputManager* inputManager = world->getInputManager();
+        PartInstance* torso = getTorso();
+        Camera* camera = world->getWorkspace()->getCurrentCamera();
+        if(!torso)
+        {
+            printf("Humanoid::inputFrame: no torso\n");
+            return;
+        }
+        if(inputManager)
+        {
+            Ogre::Matrix3 camera_rotation;
+            camera_rotation.FromEulerAnglesYXZ(camera->getYaw(), Ogre::Radian(0), Ogre::Radian(0)); // we only want yaw because otherwise the movement target will go through the ground/in the air
+            Ogre::Quaternion direction = torso->getRotation();
+            Ogre::Quaternion new_direction = Ogre::Quaternion::nlerp(0.5f, direction, camera_rotation);
+            float forward = 0;
+
+            if(inputManager->isKeyDown('W'))
+                forward = 16;
+
+            Ogre::Vector3 move = Ogre::Vector3(0, 0, -forward);
+            move = direction * move;
+            move *= world->getLastDelta();
+
+            bool move_valid = true;
+    
+            // TODO: collision checking
+
+            if(!move_valid)
+                return;
+
+            for(auto& child : *getParent()->getChildren())
+            {
+                PartInstance* bp = dynamic_cast<PartInstance*>(child);
+                if(bp)
+                {
+                    Ogre::Vector3 bp_p = bp->getPosition();
+                    bp_p += move;
+                    bp->getCFrame().setPosition(bp_p);
+                    Ogre::Matrix3 new_rotation_matrix;
+                    new_direction.ToRotationMatrix(new_rotation_matrix);
+                    bp->getCFrame().setRotation(new_rotation_matrix);
+                    bp->updateMatrix();
+                    world->getWorkspace()->setDirty();
+                }
+            }
+
+            camera->getCFrame().setPosition(camera->getCFrame().getPosition() + move);
         }
     }
 

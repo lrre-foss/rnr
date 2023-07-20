@@ -10,10 +10,13 @@ namespace RNR
         int m_userId;
     public:
         Player();
+
+        void initLocalPlayer();
+        void loadCharacter();
         
         ModelInstance* getCharacter() { return m_character; }
         void setCharacter(ModelInstance* model) { m_character = model; }
         virtual std::string getClassName() { return "Player"; }
-        virtual void addProperties(std::vector<ReflectionProperty>& properties);
+        virtual void addProperties(std::vector<ReflectionProperty>& properties);        
     };
 }

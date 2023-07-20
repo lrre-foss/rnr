@@ -17,13 +17,13 @@ jobs:
         shell: msys2 {0}
 
     steps:
-      - uses: actions/checkout@v3
-        name: Clone repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
         with:
           submodules: recursive
-        
-      - uses: msys2/setup-msys2@v2
-        name: Set up MSYS2 and install required packages
+ 
+      - name: Set up MSYS2 and install required packages
+        uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.sys }}
           install: >-
@@ -34,6 +34,7 @@ jobs:
             mingw-w64-${{ matrix.env }}-pugixml
             mingw-w64-${{ matrix.env }}-ogre3d
             mingw-w64-${{ matrix.env }}-qt6
+            mingw-w64-${{ matrix.env }}-bullet
       
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
@@ -58,7 +59,7 @@ jobs:
         run: mkdir build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main/* build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib/* build/dist/shaders
     
       - name: Add additional runtime dependencies
-        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "clang64" | xargs -I '{}' cp -v '{}' build/dist
+        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "${{ matrix.sys }}" | xargs -I '{}' cp -v '{}' build/dist
       
       - name: Set output variables
         id: vars

@@ -11,6 +11,16 @@ namespace RNR
         );
     }
 
+    Ogre::Vector3 XML::getColor(pugi::xml_node node)
+    {
+        Ogre::Vector3 rgb;
+        unsigned int hex = node.text().as_uint();
+        rgb.x = ((hex >> 16) & 0xff) / 255.0;
+        rgb.y = ((hex >> 8)  & 0xff) / 255.0;
+        rgb.z = ((hex)       & 0xff) / 255.0;
+        return rgb;
+    }
+
     CoordinateFrame XML::getCFrame(pugi::xml_node node)
     {
         CoordinateFrame cframe;

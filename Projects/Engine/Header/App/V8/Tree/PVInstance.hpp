@@ -15,6 +15,7 @@ namespace RNR
 
         CoordinateFrame& getCFrame() { return m_cframe; };
         void setCFrame(CoordinateFrame cframe) { m_cframe = cframe; };
+        Ogre::Vector3 relativePositionTo(PVInstance* point);
         virtual std::string getClassName() { return "PVInstance"; }
 
         Ogre::Vector3 getPosition() { return m_cframe.getPosition(); }

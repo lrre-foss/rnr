@@ -16,11 +16,13 @@ add_compile_options(-Wno-attributes -Wno-return-type) # Ignore warnings generate
 find_package(Boost REQUIRED)
 find_package(OGRE REQUIRED COMPONENTS Bites CONFIG)
 find_package(pugixml REQUIRED)
+find_package(Bullet CONFIG REQUIRED)
+set(RNR_BULLET_LIBRARIES LinearMath Bullet3Common BulletDynamics BulletSoftBody BulletCollision BulletInverseDynamics)
 
 add_subdirectory(Projects)
 
 if(CI AND UNIX)
-    file(COPY ${OGRE_MEDIA_DIR}/Main/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
+    file(COPY ${OGRE_MEDIA_DIR}/ShadowVolume/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
     file(COPY ${OGRE_MEDIA_DIR}/RTShaderLib/ DESTINATION ${CMAKE_BINARY_DIR}/shaders)
     file(COPY ${OGRE_PLUGIN_DIR}/ DESTINATION ${CMAKE_BINARY_DIR}/plugins)
 endif()

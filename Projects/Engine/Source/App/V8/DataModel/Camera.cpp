@@ -1,6 +1,7 @@
 #include <App/V8/DataModel/Camera.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/InputManager.hpp>
+#include <Network/Players.hpp>
 #include <Helpers/XML.hpp>
 
 namespace RNR
@@ -40,6 +41,7 @@ namespace RNR
 
         pitch = old_pitch + pitch;
         yaw = old_yaw - yaw;
+        m_yaw = yaw;
 
         Ogre::Matrix3 rotation;
         rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));

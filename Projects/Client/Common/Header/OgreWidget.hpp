@@ -34,6 +34,7 @@ namespace RNR
             Ogre::SceneManager* ogreSceneManager;
             Ogre::Camera* ogreCamera;
             Ogre::Viewport* ogreViewport;
+            Ogre::Light* ogreSceneLight;
             Ogre::RTShader::ShaderGenerator* ogreShaderGen;
 
             QCursor cursor;

@@ -13,8 +13,10 @@ namespace RNR
 
     enum WorkspaceBatchingMode
     {
+        BATCH_DONT,
         BATCH_INSTANCED,
         BATCH_STATIC_GEOMETRY,
+        BATCH_DYNAMIC_RENDERABLE,
     };
 
     class Workspace : public ModelInstance
