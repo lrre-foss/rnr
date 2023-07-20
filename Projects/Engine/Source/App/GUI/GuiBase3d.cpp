@@ -8,6 +8,6 @@ namespace RNR
         m_transparency = 0.f;
         m_visible = true;
 
-        m_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/guibase3d");
+        m_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/GuiBase3d");
     }
 }

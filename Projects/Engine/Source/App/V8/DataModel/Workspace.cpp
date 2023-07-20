@@ -8,7 +8,7 @@ namespace RNR
     Workspace::Workspace() : ModelInstance()
     {
         setName("Workspace");
-        m_batchMode = BATCH_DONT;
+        m_batchMode = BATCH_STATIC_GEOMETRY;
 
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
         
@@ -19,7 +19,7 @@ namespace RNR
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
-                m_geom->setRegionDimensions(Ogre::Vector3(2048,2048,2048));
+                m_geom->setRegionDimensions(Ogre::Vector3(4096, 4096, 4096));
                 m_geom->setCastShadows(true);
                 break;
             case BATCH_DONT:
@@ -38,7 +38,7 @@ namespace RNR
                 case BATCH_INSTANCED:
                     {
                         Ogre::Entity* childEntity = (Ogre::Entity*)childAdded->getObject();
-                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity("materials/partinstanced");
+                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity("materials/PartInstanced");
                         replica->setPosition(part->getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
                         replica->setScale(part->getSize());

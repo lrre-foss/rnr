@@ -93,7 +93,7 @@ namespace RNR
 
         Ogre::FontPtr pFont = Ogre::FontManager::getSingletonPtr()->create("ComicSans", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         pFont->setType(Ogre::FT_TRUETYPE);
-        pFont->setSource("fonts/comic.ttf");
+        pFont->setSource("fonts/ComicSans.ttf");
         pFont->setTrueTypeSize(16);
         pFont->load();
         

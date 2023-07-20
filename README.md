@@ -34,6 +34,8 @@ Additionally, you must also acquire the content folder of the Roblox client you 
 
 Finally, you may run `cmake --build .` in the path of the folder you've cloned the repository to so that you may configure and then finally build RNR.
 
+P.S.: You can check our [GitHub actions page](https://github.com/lrre-foss/rnr/actions) to browse automatic ready-to-run Windows (and soon Linux) builds for each commit. :-) 
+
 # License
 RNR is licensed under two separate licenses:
 - All of RNR, with the sole exception of the engine, is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.txt).

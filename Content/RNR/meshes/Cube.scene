@@ -15,22 +15,22 @@
   </nodes>
   <externals >
     <item type="material" >
-      <file name="TopMaterial.material" />
+      <file name="../materials/TopMaterial.material" />
     </item>
     <item type="material" >
-      <file name="BackMaterial.material" />
+      <file name="../materials/BackMaterial.material" />
     </item>
     <item type="material" >
-      <file name="BottomMaterial.material" />
+      <file name="../materials/BottomMaterial.material" />
     </item>
     <item type="material" >
-      <file name="FrontMaterial.material" />
+      <file name="../materials/FrontMaterial.material" />
     </item>
     <item type="material" >
-      <file name="LeftMaterial.material" />
+      <file name="../materials/LeftMaterial.material" />
     </item>
     <item type="material" >
-      <file name="RightMaterial.material" />
+      <file name="../materials/RightMaterial.material" />
     </item>
   </externals>
   <environment >

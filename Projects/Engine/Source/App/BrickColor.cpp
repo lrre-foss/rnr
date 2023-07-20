@@ -100,7 +100,7 @@ namespace RNR
 
             bc_prep = true;
         }
-        Ogre::MaterialPtr part_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/partinstanced");
+        Ogre::MaterialPtr part_material = Ogre::MaterialManager::getSingletonPtr()->getByName("materials/PartInstanced");
         color_material = part_material->clone(Ogre::String("tmp_part/") + Ogre::StringConverter::toString(color_id));
         Ogre::RTShader::ShaderGenerator::getSingletonPtr()->cloneShaderBasedTechniques(*part_material, *color_material);
         Ogre::Technique* mat_tech = color_material->getTechnique(0);

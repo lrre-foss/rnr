@@ -1,4 +1,4 @@
-material materials/partinstanced
+material materials/PartInstanced
 {
     receive_shadows on 
 
