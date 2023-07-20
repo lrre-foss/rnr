@@ -1,5 +1,6 @@
 #include <OgreWidget.hpp>
 #include <QApplication>
+#include <filesystem>
 
 #include <OGRE/Bites/OgreSGTechniqueResolverListener.h>
 #include <OGRE/OgreDefaultDebugDrawer.h>
@@ -71,6 +72,11 @@ namespace RNR
         if(Ogre::RTShader::ShaderGenerator::initialize())
         {
             ogreShaderGen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+
+            if (!std::filesystem::is_directory("ShaderCache") || !std::filesystem::exists("ShaderCache")) {
+                std::filesystem::create_directory("ShaderCache");
+            }
+            
             ogreShaderGen->setShaderCachePath("ShaderCache/");
             ogreShaderGen->addSceneManager(ogreSceneManager);
 
