@@ -17,6 +17,7 @@ namespace RNR
         }
         printf("Players::createLocalPlayer: created player %i\n", userId);
         m_localPlayer = new Player();
+        m_localPlayer->initLocalPlayer();
         return m_localPlayer;
     }
 

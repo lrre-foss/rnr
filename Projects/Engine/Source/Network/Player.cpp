@@ -1,4 +1,5 @@
 #include <Network/Player.hpp>
+#include <App/Humanoid/Humanoid.hpp>
 #include <App/V8/World/World.hpp>
 
 namespace RNR
@@ -21,5 +22,28 @@ namespace RNR
         };
 
         properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));
+    }
+
+    void Player::initLocalPlayer()
+    {
+
+    }
+
+    void Player::loadCharacter()
+    {
+        m_character = new ModelInstance();
+        m_character->setName(getName());
+
+        PartInstance* head = new PartInstance();
+        head->setName("Head");
+        head->setSize(Ogre::Vector3(2, 1, 1));
+        head->setParent(m_character);
+
+        Humanoid* character_humanoid = new Humanoid();
+        character_humanoid->setParent(m_character);        
+        m_character->setParent(world->getWorkspace());
+
+        Camera* player_camera = world->getWorkspace()->getCurrentCamera();
+        player_camera->setCFrame(CoordinateFrame());
     }
 }

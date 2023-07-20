@@ -1,6 +1,7 @@
 #include <App/V8/DataModel/Camera.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/InputManager.hpp>
+#include <Network/Players.hpp>
 #include <Helpers/XML.hpp>
 
 namespace RNR

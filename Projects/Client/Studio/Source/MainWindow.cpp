@@ -51,7 +51,7 @@ void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instanc
 {
     QString icon_path;
     icon_path = "content/textures/studio/icons/";
-    icon_path += instance->getClassName();
+    icon_path += instance->getExplorerIcon();
     icon_path += ".png";
     QIcon icon;
     if(QFile::exists(icon_path))
@@ -139,6 +139,7 @@ void MainWindow::playSolo()
     RNR::Players* players = (RNR::Players*)this->ogreWidget->world->getDatamodel()->getService("Players");
     RNR::Player* player = players->createLocalPlayer(0);
     player->setName(QInputDialog::getText(this, "Player Name", "Enter your player name").toLocal8Bit().data());
+    player->loadCharacter();
 
     updateTree(ogreWidget->world->getDatamodel());
 }

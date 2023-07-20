@@ -5,7 +5,10 @@ namespace RNR
 {
     Humanoid::Humanoid()
     {
-        //
+        setName("Humanoid");
+
+        m_maxHealth = 100.f;
+        m_health = 100.f;
     }
 
     Humanoid::~Humanoid()

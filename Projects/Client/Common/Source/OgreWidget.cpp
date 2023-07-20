@@ -6,6 +6,7 @@
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreFontManager.h>
+#include <App/V8/DataModel/Lighting.hpp>
 
 #ifdef __unix__
 #include <qpa/qplatformnativeinterface.h>
@@ -90,19 +91,19 @@ namespace RNR
         pFont->setTrueTypeSize(16);
         pFont->load();
         
-        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
         ogreSceneManager->setShadowFarDistance(500.f);
 
-        Ogre::Light* light = ogreSceneManager->createLight("SunLight");
+        ogreSceneLight = ogreSceneManager->createLight("SunLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
         lightNode->setPosition(0, 10, 15);
         lightNode->setDirection(-0.25, -0.5, -0.5);
-        lightNode->attachObject(light);
+        lightNode->attachObject(ogreSceneLight);
 
-        light->setCastShadows(true);
-        light->setDiffuseColour(0.9, 0.9, 1.0);
-        light->setSpecularColour(1.0, 1.0, 1.0);
-        light->setType(Ogre::Light::LT_DIRECTIONAL);
+        ogreSceneLight->setCastShadows(true);
+        ogreSceneLight->setDiffuseColour(0.9, 0.9, 1.0);
+        ogreSceneLight->setSpecularColour(1.0, 1.0, 1.0);
+        ogreSceneLight->setType(Ogre::Light::LT_DIRECTIONAL);
 
         Ogre::MaterialManager::getSingletonPtr()->reloadAll();
         Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -125,6 +126,21 @@ namespace RNR
             Camera* cam = world->getWorkspace()->getCurrentCamera();
             ogreCamera->getParentSceneNode()->setPosition(cam->getCFrame().getPosition());
             ogreCamera->getParentSceneNode()->setOrientation(Ogre::Quaternion(cam->getCFrame().getRotation()));
+        }
+
+        RNR::Lighting* lighting = (RNR::Lighting*)world->getDatamodel()->getService("Lighting");
+        if(lighting)
+        {
+            Ogre::Vector3 clearColor = lighting->getClearColor();
+            ogreViewport->setBackgroundColour(Ogre::ColourValue(clearColor.x, clearColor.y, clearColor.z));
+            Ogre::Vector3 shadowColor = lighting->getShadowColor();
+            ogreSceneManager->setShadowColour(Ogre::ColourValue(shadowColor.x, shadowColor.y, shadowColor.z));
+            Ogre::Vector3 topAmbient = lighting->getTopAmbient();
+            ogreSceneLight->setDiffuseColour(Ogre::ColourValue(topAmbient.x, topAmbient.y, topAmbient.z));
+            Ogre::Vector3 bottomAmbient = lighting->getBottomAmbient();
+            ogreSceneManager->setAmbientLight(Ogre::ColourValue(bottomAmbient.x, bottomAmbient.y, bottomAmbient.z));
+            Ogre::Vector3 spotLight = lighting->getSpotLight();
+            ogreSceneLight->setSpecularColour(Ogre::ColourValue(spotLight.x, spotLight.y, spotLight.z));
         }
         
         if(isVisible())

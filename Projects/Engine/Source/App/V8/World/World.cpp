@@ -1,6 +1,7 @@
 #include <App/V8/World/World.hpp>
 #include <App/V8/Tree/InstanceFactory.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
+#include <App/V8/DataModel/Lighting.hpp>
 #include <App/GUI/SelectionBox.hpp>
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/InputManager.hpp>
@@ -27,6 +28,7 @@ namespace RNR
         m_instanceFactory->registerInstance("RunService", InstanceFactory::instanceBuilder<RunService>);
         m_instanceFactory->registerInstance("Players", InstanceFactory::instanceBuilder<Players>);
         m_instanceFactory->registerInstance("Player", InstanceFactory::instanceBuilder<Player>);
+        m_instanceFactory->registerInstance("Lighting", InstanceFactory::instanceBuilder<Lighting>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -109,13 +111,14 @@ namespace RNR
                 WorldUndeserialized s = m_undeserialized.top();
                 m_undeserialized.pop();
 
+                s.instance->setParent(s.parent);
+                
                 pugi::xml_node props = s.node.child("Properties");
                 for(pugi::xml_node prop : props.children())
                 {
                     s.instance->deserializeXmlProperty(prop);
                 }
 
-                s.instance->setParent(s.parent);
                 if(s.instance->getClassName() == "Model")
                 {
                     ModelInstance* m = (ModelInstance*)s.instance;

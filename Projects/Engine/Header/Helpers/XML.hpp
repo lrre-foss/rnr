@@ -10,6 +10,7 @@ namespace RNR
     {
     public:
         static Ogre::Vector3 getVector3(pugi::xml_node node);
+        static Ogre::Vector3 getColor(pugi::xml_node node);
         static CoordinateFrame getCFrame(pugi::xml_node node);
     };
 }

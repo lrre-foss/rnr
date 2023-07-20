@@ -61,6 +61,7 @@ namespace RNR
             RNR::Instance* getParent() { return this->m_parent; };
             std::string getName() { return this->m_name; };
             virtual std::string getClassName() { return "Instance"; }
+            virtual std::string getExplorerIcon() { return getClassName(); }
 
             void setParent(RNR::Instance* newParent);
             void setName(std::string name);
