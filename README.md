@@ -1,6 +1,6 @@
 # RNR
 [![GitHub CI Status](https://img.shields.io/github/actions/workflow/status/lrre-foss/rnr/build.yml?branch=trunk&label=builds)](https://github.com/lrre-foss/rnr/actions)
-[![Discord](https://img.shields.io/discord/1130992923329175552?style=social&logo=discord)](hhttps://discord.gg/2tj4TREby3)
+[![Discord](https://img.shields.io/discord/1130992923329175552?style=social&logo=discord)](https://discord.gg/2tj4TREby3)
 [![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
 
 RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
