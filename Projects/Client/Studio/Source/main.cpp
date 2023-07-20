@@ -35,8 +35,6 @@ int main(int argc, char** argv)
         window.statusBar()->showMessage(QString::asprintf("Dt=%f, Rt=%f, FPS=%f", window.ogreWidget->delta, window.ogreWidget->render_time, 1 / window.ogreWidget->delta));
         app.processEvents();
         window.ogreWidget->render();
-        world->preStep();
-        world->step(window.ogreWidget->delta);
         world->update();
     }
 }

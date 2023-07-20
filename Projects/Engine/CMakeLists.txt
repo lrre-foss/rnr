@@ -4,6 +4,7 @@ add_library(Engine STATIC
     Header/Helpers/XML.hpp
     Header/Helpers/NormalId.hpp
     Header/Helpers/Bullet.hpp
+    Header/Helpers/Lock.hpp
     Header/App/Script/ReflectionProperty.hpp
     Header/App/Script/Script.hpp
     Header/App/Script/ScriptContext.hpp

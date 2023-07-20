@@ -127,6 +127,8 @@ namespace RNR
         this->render_time += ogreRoot->getTimer()->getMilliseconds() / 1000.0;
         ogreRoot->getTimer()->reset();
 
+        world->preRender(this->delta);
+
         if(world->getWorkspace()->getCurrentCamera())
         {
             Camera* cam = world->getWorkspace()->getCurrentCamera();

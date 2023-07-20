@@ -12,6 +12,21 @@
 
 namespace RNR
 {
+    void physicsThread(World* world)
+    {
+        float delta;
+        float time;
+        while(world->getPhysicsShouldBeRunningPleaseStopIfItIsStillRunning())
+        {
+            delta = world->getPhysicsTimer()->getMicroseconds() / 1000000.0;
+            time += world->getPhysicsTimer()->getMilliseconds() / 1000.0;
+            world->setPhysicsTime(time);
+            world->getPhysicsTimer()->reset();
+            world->preStep();
+            world->step(delta);
+        }
+    }
+
     World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager)
     {
         Instance::setWorld(this);
@@ -46,6 +61,10 @@ namespace RNR
         m_runService = (RunService*)m_datamodel->getService("RunService");
         m_players = (Players*)m_datamodel->getService("Players");
 
+        m_runPhysics = true;
+        m_physicsTimer = new Ogre::Timer();
+        m_physicsThread = std::thread(physicsThread, this);
+
         m_tmb = new TopMenuBar(this);
 
         Camera* start_cam = new Camera();
@@ -55,7 +74,8 @@ namespace RNR
 
     World::~World()
     {
-        //
+        m_runPhysics = false;
+        m_physicsThread.join();
     }
 
     void World::xmlAddItem(pugi::xml_node node, Instance* parent)
@@ -142,11 +162,27 @@ namespace RNR
         m_workspace->build();
     }
 
-    void World::preStep()
+    void World::preRender(float timestep)
     {
         if(m_inputManager)
             m_inputManager->frame();
         m_tmb->frame();
+        m_lastDelta = timestep;
+        physicsIterateLock.lock();
+        for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+        {
+            btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+            if(!obj->isActive())
+                continue;
+            PartInstance* part = (PartInstance*)obj->getUserPointer();
+            part->updateMatrix();
+        }
+        physicsIterateLock.unlock();
+    }
+
+    void World::preStep()
+    {
+
     }
 
     double World::step(float timestep)
@@ -154,8 +190,9 @@ namespace RNR
         if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
             m_runService->step(timestep);
-            m_dynamicsWorld->stepSimulation(timestep, 4, 1.0/60.0);
+            m_dynamicsWorld->stepSimulation(timestep, 2);
 
+            physicsIterateLock.lock();
             for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
             {
                 btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
@@ -177,10 +214,10 @@ namespace RNR
                 Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
                 transOgre.ToRotationMatrix(partRot);
                 part->getCFrame().setRotation(partRot);
-                part->updateMatrix();
             }
+            physicsIterateLock.unlock();
         }
-        m_lastDelta = timestep;
+        m_lastPhysicsDelta = timestep;
         return 0.0;
     }
 
@@ -206,6 +243,7 @@ namespace RNR
         btVector3 localInertia = btVector3(0,0,0);        
         if(mass)
             partShape->calculateLocalInertia(mass, localInertia);
+            
         btDefaultMotionState* partMotionState = new btDefaultMotionState(partTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, partMotionState, partShape, localInertia);
         btRigidBody* body = new btRigidBody(rbInfo);
