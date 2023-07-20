@@ -13,7 +13,7 @@ namespace RNR
         m_reflectance = 0.0;
 
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        setObject(world->getOgreSceneManager()->createEntity("meshes/cube.mesh"));
+        setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
         getNode()->attachObject(getObject());
 
         updateMatrix();
@@ -24,9 +24,23 @@ namespace RNR
         m_matrix = m_cframe.getMatrix(); 
         m_position = m_cframe.getPosition();
 
-        getNode()->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
-        getNode()->setPosition(m_position);
-        getNode()->setScale(m_size);
+        if(getNode())
+        {
+            getNode()->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
+            getNode()->setPosition(m_position);
+            getNode()->setScale(m_size);
+        }
+
+        if(getObject() && dynamic_cast<Ogre::InstancedEntity*>(getObject()))
+        {
+            Ogre::InstancedEntity* object = (Ogre::InstancedEntity*)getObject();
+
+            object->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
+            object->setPosition(m_position);
+            object->setScale(m_size);
+
+            object->updateTransforms();
+        }
 
         Ogre::Entity* entity = (Ogre::Entity*)getObject();
         for(auto& subentity : entity->getSubEntities())

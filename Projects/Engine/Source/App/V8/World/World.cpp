@@ -64,6 +64,7 @@ namespace RNR
         m_runPhysics = true;
         m_physicsTimer = new Ogre::Timer();
         m_physicsThread = std::thread(physicsThread, this);
+        m_physicsTime = 0.0;
 
         m_tmb = new TopMenuBar(this);
 
@@ -168,16 +169,20 @@ namespace RNR
             m_inputManager->frame();
         m_tmb->frame();
         m_lastDelta = timestep;
-        physicsIterateLock.lock();
-        for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+        if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
-            btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-            if(!obj->isActive())
-                continue;
-            PartInstance* part = (PartInstance*)obj->getUserPointer();
-            part->updateMatrix();
+            physicsIterateLock.lock();
+            for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+            {
+                btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+                if(!obj->isActive())
+                    continue;
+                PartInstance* part = (PartInstance*)obj->getUserPointer();
+                part->updateMatrix();
+            }
+            update();
+            physicsIterateLock.unlock();
         }
-        physicsIterateLock.unlock();
     }
 
     void World::preStep()
@@ -243,7 +248,7 @@ namespace RNR
         btVector3 localInertia = btVector3(0,0,0);        
         if(mass)
             partShape->calculateLocalInertia(mass, localInertia);
-            
+
         btDefaultMotionState* partMotionState = new btDefaultMotionState(partTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, partMotionState, partShape, localInertia);
         btRigidBody* body = new btRigidBody(rbInfo);
