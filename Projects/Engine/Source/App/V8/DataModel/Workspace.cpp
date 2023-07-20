@@ -8,7 +8,7 @@ namespace RNR
     Workspace::Workspace() : ModelInstance()
     {
         setName("Workspace");
-        m_batchMode = BATCH_DONT;
+        m_batchMode = BATCH_STATIC_GEOMETRY;
 
         m_worldspawn = world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode();    
         
