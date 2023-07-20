@@ -19,7 +19,7 @@ namespace RNR
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
-                m_geom->setRegionDimensions(Ogre::Vector3(2048,2048,2048));
+                m_geom->setRegionDimensions(Ogre::Vector3(4096, 4096, 4096));
                 m_geom->setCastShadows(true);
                 break;
             case BATCH_DONT:
