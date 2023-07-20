@@ -76,7 +76,7 @@ namespace RNR
             if (!std::filesystem::is_directory("ShaderCache") || !std::filesystem::exists("ShaderCache")) {
                 std::filesystem::create_directory("ShaderCache");
             }
-            
+
             ogreShaderGen->setShaderCachePath("ShaderCache/");
             ogreShaderGen->addSceneManager(ogreSceneManager);
 
@@ -220,7 +220,11 @@ namespace RNR
 
     void OgreWidget::closeEvent(QCloseEvent* event)
     {
+        delete world;
+
         ogreWindow->destroy();
+        ogreRoot->destroySceneManager(ogreSceneManager);
+        ogreRoot->shutdown();
     }
 
     QPaintEngine* OgreWidget::paintEngine() const

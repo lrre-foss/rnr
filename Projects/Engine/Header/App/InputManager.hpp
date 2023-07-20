@@ -15,6 +15,8 @@ namespace RNR
     {
         World* m_world;
         std::vector<int> scancodes_down;
+        float m_mouseDX;
+        float m_mouseDY;
     protected:
         MouseState state;
     public:

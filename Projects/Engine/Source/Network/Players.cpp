@@ -12,8 +12,8 @@ namespace RNR
     {
         if(m_localPlayer)
         {
-            printf("Players::createLocalPlayer: attempt to create another local player\n", userId);
-            return m_localPlayer;
+            printf("Players::createLocalPlayer: attempt to create another local player %i\n", userId);
+            return 0;
         }
         printf("Players::createLocalPlayer: created player %i\n", userId);
         m_localPlayer = new Player();

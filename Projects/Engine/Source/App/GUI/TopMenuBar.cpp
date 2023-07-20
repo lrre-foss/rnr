@@ -115,6 +115,7 @@ namespace RNR
     void TopMenuBar::frame()
     {
         Workspace* workspace = m_world->getWorkspace();
+        btDiscreteDynamicsWorld* dynamicsWorld = m_world->getDynamicsWorld();
 
         char debugtext[512];
         char render_debugtext[255];
@@ -127,7 +128,11 @@ namespace RNR
                 snprintf(render_debugtext, 255, "using BATCH_STATIC_GEOMETRY\nGeom Regions: %i", workspace->m_geom->getRegions().size());
                 break;
         }
-        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n",m_world->getLastDelta(),render_debugtext,m_world->getOgreSceneManager());
+        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n\nPhysics\n%i objects, %i constraints",
+                 m_world->getLastDelta(),
+                 render_debugtext,
+                 m_world->getOgreSceneManager(),
+                 dynamicsWorld->getNumCollisionObjects(), dynamicsWorld->getNumConstraints());
         m_debugText->setCaption(debugtext);
 
         Players* players = (Players*)m_world->getDatamodel()->getService("Players");

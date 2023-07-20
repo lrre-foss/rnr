@@ -37,7 +37,7 @@ namespace RNR
         
         public:
             Instance();
-            ~Instance();
+            virtual ~Instance();
             
             virtual std::vector<ReflectionProperty> getProperties();
             void deserializeXmlProperty(pugi::xml_node prop); // TODO: eventually replace this with a method that uses getProperties

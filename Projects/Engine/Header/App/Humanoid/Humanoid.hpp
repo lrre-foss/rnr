@@ -20,6 +20,7 @@ namespace RNR
             PartInstance* getTorso();
             PartInstance* getHead(); 
             
+            void inputFrame(float dx, float dy);
             void createHealthBar();
 
             float getHealth() { return m_health; };

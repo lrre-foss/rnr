@@ -15,6 +15,13 @@ namespace RNR
     {
         Instance::setWorld(this);
 
+        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+        btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+        m_dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+        m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+
         m_inputManager = 0;
 
         m_instanceFactory = new InstanceFactory();
@@ -112,7 +119,7 @@ namespace RNR
                 m_undeserialized.pop();
 
                 s.instance->setParent(s.parent);
-                
+
                 pugi::xml_node props = s.node.child("Properties");
                 for(pugi::xml_node prop : props.children())
                 {
@@ -143,7 +150,10 @@ namespace RNR
     double World::step(float timestep)
     {
         if(m_runService && m_runService->getRunning())
+        {
             m_runService->step(timestep);
+            m_dynamicsWorld->stepSimulation(timestep);
+        }
         m_lastDelta = timestep;
         return 0.0;
     }

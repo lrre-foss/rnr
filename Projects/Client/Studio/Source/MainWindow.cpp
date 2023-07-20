@@ -138,6 +138,8 @@ void MainWindow::playSolo()
 
     RNR::Players* players = (RNR::Players*)this->ogreWidget->world->getDatamodel()->getService("Players");
     RNR::Player* player = players->createLocalPlayer(0);
+    if(!player) 
+        return;
     player->setName(QInputDialog::getText(this, "Player Name", "Enter your player name").toLocal8Bit().data());
     player->loadCharacter();
 

@@ -34,6 +34,7 @@ jobs:
             mingw-w64-${{ matrix.env }}-pugixml
             mingw-w64-${{ matrix.env }}-ogre3d
             mingw-w64-${{ matrix.env }}-qt6
+            mingw-w64-${{ matrix.env }}-bullet
       
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .

@@ -11,6 +11,9 @@
 #include <OGRE/Ogre.h>
 #include <pugixml.hpp>
 #include <stack>
+#include "LinearMath/btVector3.h"
+#include "btBulletDynamicsCommon.h"
+
 
 namespace RNR
 {
@@ -28,6 +31,7 @@ namespace RNR
         private:
             std::map<std::string, Instance*> m_refs;
             std::stack<WorldUndeserialized> m_undeserialized;
+            btDiscreteDynamicsWorld* m_dynamicsWorld;
             DataModel* m_datamodel;
             Workspace* m_workspace;
             RunService* m_runService;
@@ -52,6 +56,7 @@ namespace RNR
             double step(float timestep);
             void update();
 
+            btDiscreteDynamicsWorld* getDynamicsWorld() { return m_dynamicsWorld; }
             float getLastDelta() { return m_lastDelta; }
             DataModel* getDatamodel() { return m_datamodel; }
             void setInputManager(IInputManager* inputManager) { m_inputManager = inputManager; }

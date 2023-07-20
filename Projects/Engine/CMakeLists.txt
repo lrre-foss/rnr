@@ -67,5 +67,7 @@ add_library(Engine STATIC
     Source/Rendering/Adorn.cpp
 )
 
-target_include_directories(Engine PUBLIC ${Boost_INCLUDE_DIRS} Header/)
-target_link_libraries(Engine PUBLIC ${Boost_LIBRARIES} pugixml OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)
+target_include_directories(Engine PUBLIC ${Boost_INCLUDE_DIRS} ${BULLET_ROOT_DIR}/${BULLET_INCLUDE_DIR} Header/)
+target_compile_definitions(Engine PUBLIC ${BULLET_DEFINITIONS})
+target_link_directories(Engine PUBLIC ${Bullet_DIR}/${BULLET_ROOT_DIR}/${BULLET_LIBRARY_DIRS})
+target_link_libraries(Engine PUBLIC ${Boost_LIBRARIES} ${RNR_BULLET_LIBRARIES} pugixml OgreBites Luau.Analysis Luau.Ast Luau.Compiler Luau.VM)

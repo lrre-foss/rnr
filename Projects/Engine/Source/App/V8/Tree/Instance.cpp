@@ -15,6 +15,17 @@ namespace RNR
     Instance::~Instance()
     {
         setParent(NULL);
+        if(getNode())
+        {
+            getNode()->removeAndDestroyAllChildren();
+            delete getNode();
+        }
+        if(getObject())
+        {
+            if(getObject()->getParentNode() != 0)
+                getObject()->detachFromParent();
+            delete getObject();
+        }
     }
 
     std::vector<ReflectionProperty> Instance::getProperties()
