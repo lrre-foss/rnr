@@ -97,7 +97,7 @@ namespace RNR
         pFont->setTrueTypeSize(16);
         pFont->load();
         
-        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_MODULATIVE);
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
         ogreSceneManager->setShadowFarDistance(500.f);
 
         ogreSceneLight = ogreSceneManager->createLight("SunLight");

@@ -18,6 +18,7 @@
 namespace RNR
 {
     class IInputManager;
+    class PartInstance;
 
     struct WorldUndeserialized
     {
@@ -68,5 +69,8 @@ namespace RNR
             void setRunService(RunService* runService) { m_runService = runService; }
             Ogre::Root* getOgreRoot() { return m_ogreRoot; }
             Ogre::SceneManager* getOgreSceneManager() { return m_ogreSceneManager; }
+
+            void registerPhysicsPart(PartInstance* partRegistered);
+            void deletePhysicsPart(PartInstance* partDelete);
     };
 }

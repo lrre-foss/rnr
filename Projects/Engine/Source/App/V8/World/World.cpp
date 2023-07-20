@@ -8,6 +8,7 @@
 #include <Network/Player.hpp>
 #include <stdexcept>
 #include <pugixml.hpp>
+#include <Helpers/Bullet.hpp>
 
 namespace RNR
 {
@@ -20,7 +21,7 @@ namespace RNR
         btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
         btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
         m_dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        m_dynamicsWorld->setGravity(btVector3(0, -10, 0));
+        m_dynamicsWorld->setGravity(btVector3(0, -64, 0));
 
         m_inputManager = 0;
 
@@ -118,13 +119,14 @@ namespace RNR
                 WorldUndeserialized s = m_undeserialized.top();
                 m_undeserialized.pop();
 
-                s.instance->setParent(s.parent);
 
                 pugi::xml_node props = s.node.child("Properties");
                 for(pugi::xml_node prop : props.children())
                 {
                     s.instance->deserializeXmlProperty(prop);
                 }
+
+                s.instance->setParent(s.parent);
 
                 if(s.instance->getClassName() == "Model")
                 {
@@ -149,10 +151,34 @@ namespace RNR
 
     double World::step(float timestep)
     {
-        if(m_runService && m_runService->getRunning())
+        if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
             m_runService->step(timestep);
-            m_dynamicsWorld->stepSimulation(timestep);
+            m_dynamicsWorld->stepSimulation(timestep, 4, 1.0/60.0);
+
+            for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
+            {
+                btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
+                if(!obj->isActive())
+                    continue;
+                btRigidBody* body = btRigidBody::upcast(obj);
+                btTransform trans;
+                if(body && body->getMotionState())
+                {
+                    body->getMotionState()->getWorldTransform(trans);
+                }
+                else
+                {
+                    trans = obj->getWorldTransform();
+                }
+                PartInstance* part = (PartInstance*)obj->getUserPointer();
+                part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
+                Ogre::Matrix3 partRot;
+                Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
+                transOgre.ToRotationMatrix(partRot);
+                part->getCFrame().setRotation(partRot);
+                part->updateMatrix();
+            }
         }
         m_lastDelta = timestep;
         return 0.0;
@@ -161,5 +187,35 @@ namespace RNR
     void World::update()
     {
         m_workspace->buildGeom();
+    }
+
+    void World::registerPhysicsPart(PartInstance* partRegistered)
+    {
+        btCollisionShape* partShape = new btBoxShape(Bullet::v3ToBullet(partRegistered->getSize() / 2.f));
+        partShape->setUserPointer(partRegistered);
+
+        btTransform partTransform;
+        partTransform.setIdentity();
+        partTransform.setOrigin(Bullet::v3ToBullet(partRegistered->getPosition()));
+        partTransform.setRotation(Bullet::qtToBullet(partRegistered->getRotation()));
+        
+        btScalar mass = partRegistered->getSize().length();
+        if(partRegistered->getAnchored())
+            mass = 0;
+        
+        btVector3 localInertia = btVector3(0,0,0);        
+        if(mass)
+            partShape->calculateLocalInertia(mass, localInertia);
+        btDefaultMotionState* partMotionState = new btDefaultMotionState(partTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, partMotionState, partShape, localInertia);
+        btRigidBody* body = new btRigidBody(rbInfo);
+        body->setUserPointer(partRegistered);
+
+        m_dynamicsWorld->addRigidBody(body);
+    }
+
+    void World::deletePhysicsPart(PartInstance* partDelete)
+    {
+
     }
 }

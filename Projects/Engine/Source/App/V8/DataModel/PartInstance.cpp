@@ -33,7 +33,9 @@ namespace RNR
         {
             subentity->setMaterial(BrickColor::material(m_brickColor));
             subentity->getMaterial()->setShininess(64);
+            subentity->getMaterial()->setLightingEnabled(true);
         }
+        entity->setCastShadows(true);
     }
 
     void PartInstance::deserializeProperty(char* prop_name, pugi::xml_node node)
@@ -57,6 +59,10 @@ namespace RNR
         else if(prop_name == std::string("Transparency"))
         {
             setTransparency(node.text().as_float());
+        }
+        else if(prop_name == std::string("Anchored"))
+        {
+            setAnchored(node.text().as_bool());
         }
         else
             PVInstance::deserializeProperty(prop_name, node);

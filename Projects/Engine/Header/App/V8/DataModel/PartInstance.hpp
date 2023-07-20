@@ -13,6 +13,7 @@ namespace RNR
         int m_brickColor;
         float m_transparency;
         float m_reflectance;
+        bool m_anchored;
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
         Ogre::Vector3 m_size;
@@ -34,6 +35,8 @@ namespace RNR
         float getReflectance() { return m_reflectance; }
         void setTransparency(float transparency) { m_transparency = transparency; }
         float getTransparency() { return m_transparency; }
+        void setAnchored(bool anchored) { m_anchored = anchored; }
+        bool getAnchored() { return m_anchored; }
 
         Ogre::Vector3 getOgreCenter() { return m_position + (m_size / 2.f); }
 

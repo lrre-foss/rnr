@@ -57,6 +57,7 @@ namespace RNR
                 case BATCH_DONT:
                     break;
             }
+            world->registerPhysicsPart(part);
         }
     }
 
@@ -75,6 +76,9 @@ namespace RNR
 
     void Workspace::onDescendantRemoved(Instance* childRemoved)
     {
+        PartInstance* part = dynamic_cast<PartInstance*>(childRemoved);
+        if(part)
+            world->deletePhysicsPart(part);
         m_geomDirty = true;        
     }
 
