@@ -2,6 +2,9 @@
 #include <App/V8/World/World.hpp>
 #include <App/V8/World/Weld.hpp>
 #include <App/InputManager.hpp>
+#include "btBulletCollisionCommon.h"
+#include "BulletCollision/CollisionDispatch/btGhostObject.h"
+#include <Helpers/Bullet.hpp>
 
 namespace RNR
 {
@@ -11,6 +14,15 @@ namespace RNR
 
         m_maxHealth = 100.f;
         m_health = 100.f;
+        
+        btBoxShape* playerShape = new btBoxShape(btVector3(1,2,0.5));
+        m_playerGhostObject = new btPairCachingGhostObject();
+        world->getDynamicsWorld()->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+
+        m_playerGhostObject->setCollisionShape(playerShape);
+        m_playerGhostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+
+        m_characterController = new btKinematicCharacterController(m_playerGhostObject, playerShape, 0.5, btVector3(0.0, 1.0, 0.0));
     }
 
     Humanoid::~Humanoid()
@@ -31,6 +43,18 @@ namespace RNR
             headWeld->weld(getTorso(), getHead());
             headWeld->create();
             headWeld->setParent(getTorso());
+        }
+
+        if(getTorso())
+        {
+            btTransform ghostTransform;
+            ghostTransform.setIdentity();
+            ghostTransform.setOrigin(Bullet::v3ToBullet(getTorso()->getPosition()));
+            ghostTransform.setRotation(Bullet::qtToBullet(getTorso()->getRotation()));
+            m_playerGhostObject->setWorldTransform(ghostTransform);
+
+            world->getDynamicsWorld()->addCollisionObject(m_playerGhostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
+            world->getDynamicsWorld()->addAction(m_characterController);
         }
     }
 
@@ -120,9 +144,11 @@ namespace RNR
             if(inputManager->isKeyDown('W'))
                 forward = 16;
 
-            Ogre::Vector3 move = Ogre::Vector3(0, 0, -forward);
+            Ogre::Vector3 move = Ogre::Vector3(0, 0, forward);
             move = direction * move;
-            move *= world->getLastDelta();
+            move *= world->getComPlicitNgine()->getLastPhysicsDelta();
+
+            m_characterController->playerStep(world->getDynamicsWorld(), forward);
 
             bool move_valid = true;
 
@@ -136,13 +162,14 @@ namespace RNR
                 PartInstance* bp = dynamic_cast<PartInstance*>(child);
                 if(bp)
                 {
-                    Ogre::Vector3 bp_p = bp->getPosition();
-                    bp_p += move;
-                    bp->getCFrame().setPosition(bp_p);
+                    Ogre::Vector3 bp_p = bp->getRelativePosition(getTorso());
+
+                    bp->getCFrame().setPosition(bp_p + Bullet::v3ToOgre(m_characterController->getGhostObject()->getWorldTransform().getOrigin()));
                     Ogre::Matrix3 new_rotation_matrix;
                     new_direction.ToRotationMatrix(new_rotation_matrix);
                     bp->getCFrame().setRotation(new_rotation_matrix);
                     bp->updateMatrix();
+                    world->getComPlicitNgine()->updatePhysicsPart(bp);
                     world->getWorkspace()->setDirty();
                 }
             }

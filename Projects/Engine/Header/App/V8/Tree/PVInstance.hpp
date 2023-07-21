@@ -18,6 +18,7 @@ namespace RNR
         Ogre::Vector3 relativePositionTo(PVInstance* point);
         virtual std::string getClassName() { return "PVInstance"; }
 
+        Ogre::Vector3 getRelativePosition(PVInstance* other) { return other->getPosition() - getPosition(); }
         Ogre::Vector3 getPosition() { return m_cframe.getPosition(); }
         Ogre::Matrix3 getRotation() { return m_cframe.getRotation(); }
     };
