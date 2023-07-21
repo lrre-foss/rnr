@@ -40,7 +40,6 @@ namespace RNR
 
     void ComPlicitNgine::updateTreeRender()
     {
-        m_world->physicsIterateLock.lock();
         for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
         {
             btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
@@ -48,8 +47,7 @@ namespace RNR
                 continue;
             PartInstance* part = (PartInstance*)obj->getUserPointer();
             part->updateMatrix();
-        }
-        m_world->physicsIterateLock.unlock();        
+        }   
     }
 
     void ComPlicitNgine::updateTree()
