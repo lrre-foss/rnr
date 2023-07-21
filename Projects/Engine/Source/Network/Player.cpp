@@ -49,6 +49,7 @@ namespace RNR
         torso->getCFrame().setPosition(Ogre::Vector3(0, 0, 0));
         torso->updateMatrix();
         torso->setParent(m_character);
+        torso->setAnchored(true);
         
         Humanoid* character_humanoid = new Humanoid();
         character_humanoid->setParent(m_character);        

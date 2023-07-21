@@ -25,9 +25,17 @@ namespace RNR
     void Weld::create()
     {
         if(!m_aBody || !m_bBody)
+        {
+            printf("Weld::create: invalid body\n");
             return;
+        }
         
-        m_constraint = new btFixedConstraint(*m_aBody, *m_bBody, m_aBody->getWorldTransform(), m_bBody->getWorldTransform());
+		btTransform frameInA, frameInB;
+		frameInA = btTransform::getIdentity();
+		frameInB = btTransform::getIdentity();
+
+        m_constraint = new btFixedConstraint(*m_aBody, *m_bBody, frameInA, frameInB);
+        printf("Weld::create: welded\n");
     }
 
     void Weld::destroy()

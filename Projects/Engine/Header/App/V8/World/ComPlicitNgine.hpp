@@ -20,6 +20,9 @@ namespace RNR
         World* m_world;
         std::map<PartInstance*, btRigidBody*> m_physicsParts;
 
+        int m_sleepingObjects;
+        int m_activeObjects;
+
         void thread();
     public:
         ComPlicitNgine(World* world);
@@ -35,6 +38,10 @@ namespace RNR
         btRigidBody* getBody(PartInstance* part) { return m_physicsParts[part]; };
 
         void registerPhysicsPart(PartInstance* partRegistered);
+        void updatePhysicsPart(PartInstance* partUpdate);
         void deletePhysicsPart(PartInstance* partDelete);
+
+        int getSleepingObjects() { return m_sleepingObjects; }
+        int getActiveObjects() { return m_activeObjects; }
     };
 }

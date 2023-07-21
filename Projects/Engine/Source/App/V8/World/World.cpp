@@ -53,6 +53,14 @@ namespace RNR
         Camera* start_cam = new Camera();
         start_cam->setParent(m_workspace);
         m_workspace->setCurrentCamera(start_cam);
+
+        PartInstance* baseplate = new PartInstance();
+        baseplate->setName("Baseplate");
+        baseplate->getCFrame().setPosition(Ogre::Vector3(0, -64, 0));
+        baseplate->setSize(Ogre::Vector3(512, 1, 512));
+        baseplate->setBrickColor(2);
+        baseplate->setAnchored(true);
+        baseplate->setParent(m_workspace);
     }
 
     World::~World()
@@ -166,7 +174,9 @@ namespace RNR
         if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
             m_runService->step(timestep);
-            m_dynamicsWorld->stepSimulation(timestep, 1);
+            dynamicWorldLock.lock();
+            m_dynamicsWorld->stepSimulation(std::max(timestep, 0.000001f), 1);
+            dynamicWorldLock.unlock();
             m_ngine->updateTree();
         }
         return 0.0;

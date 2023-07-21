@@ -16,6 +16,9 @@ namespace RNR
             
             m_lastPhysicsDelta = delta;
             m_physicsTime = time;
+
+            if(m_lastPhysicsDelta == 0)
+                std::this_thread::sleep_for(std::chrono::milliseconds(1));
             
             m_world->preStep();
             m_world->step(delta);
@@ -43,20 +46,25 @@ namespace RNR
         for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
         {
             btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-            if(!obj->isActive())
+            if(obj->getActivationState() != ACTIVE_TAG)
                 continue;
             PartInstance* part = (PartInstance*)obj->getUserPointer();
-            part->updateMatrix();
+            if(part)
+            {
+                part->updateMatrix();
+            }
         }   
     }
 
     void ComPlicitNgine::updateTree()
     {
+        m_activeObjects = 0;
+        m_sleepingObjects = 0;
         for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
         {
             btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-            if(!obj->isActive())
-                continue;
+            if(obj->getActivationState() != ACTIVE_TAG) { m_sleepingObjects++; continue; }
+            m_activeObjects++;
             btRigidBody* body = btRigidBody::upcast(obj);
             btTransform trans;
             if(body && body->getMotionState())
@@ -68,11 +76,14 @@ namespace RNR
                 trans = obj->getWorldTransform();
             }
             PartInstance* part = (PartInstance*)obj->getUserPointer();
-            part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
-            Ogre::Matrix3 partRot;
-            Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
-            transOgre.ToRotationMatrix(partRot);
-            part->getCFrame().setRotation(partRot);
+            if(part)
+            {
+                part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
+                Ogre::Matrix3 partRot;
+                Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
+                transOgre.ToRotationMatrix(partRot);
+                part->getCFrame().setRotation(partRot);
+            }
         }
     }
 
@@ -99,11 +110,23 @@ namespace RNR
         btRigidBody* body = new btRigidBody(rbInfo);
         body->setUserPointer(partRegistered);
 
-        m_world->physicsIterateLock.lock();
+        m_world->dynamicWorldLock.lock();
         m_dynamicsWorld->addRigidBody(body);        
-        m_world->physicsIterateLock.unlock();
+        m_world->dynamicWorldLock.unlock();
 
         m_physicsParts[partRegistered] = body;
+    }
+
+    void ComPlicitNgine::updatePhysicsPart(PartInstance* partUpdate)
+    {
+        btRigidBody* toUpdate = m_physicsParts[partUpdate];
+        if(toUpdate)
+        {
+            btTransform& bodytf = toUpdate->getWorldTransform();
+            bodytf.setIdentity();
+            bodytf.setOrigin(Bullet::v3ToBullet(partUpdate->getPosition()));
+            bodytf.setRotation(Bullet::qtToBullet(partUpdate->getRotation()));
+        }
     }
 
     void ComPlicitNgine::deletePhysicsPart(PartInstance* partDelete)

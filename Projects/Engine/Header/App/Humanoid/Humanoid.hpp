@@ -2,6 +2,10 @@
 
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
+#include <App/V8/World/ComPlicitNgine.hpp>
+#include "BulletDynamics/Character/btKinematicCharacterController.h"
+#include "LinearMath/btVector3.h"
+#include "btBulletDynamicsCommon.h"
 
 namespace RNR
 {
@@ -33,5 +37,7 @@ namespace RNR
             float m_health;
             float m_maxHealth;
             float m_walkRotationalVelocity;
+            btKinematicCharacterController* m_characterController;
+            btPairCachingGhostObject* m_playerGhostObject; 
     };
 }
