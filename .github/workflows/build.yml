@@ -19,21 +19,11 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 1.0.1
+          version: 1.0.2
           packages: >-
             build-essential
             cmake
             ninja-build
-            libboost-all-dev
-            libgles2-mesa-dev
-            libvulkan-dev
-            glslang-dev
-            libxrandr-dev
-            libsdl2-dev
-            libxt-dev
-            libxaw7-dev
-            libpugixml-dev
-            libbullet-dev
         
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -41,11 +31,14 @@ jobs:
           version: 6.*
           cache: true
       
-      - name: Install Ogre
-        run: git clone https://github.com/OGRECave/ogre && cd ogre && cmake --configure . && cmake --build . --config Release --target install && cd ../
-        
+      - name: Install vcpkg
+        run: git clone https://github.com/Microsoft/vcpkg.git && ./vcpkg/bootstrap-vcpkg.sh && ./vcpkg/vcpkg integrate install
+      
+      - name: Install development packages via vcpkg
+        run: ./vcpkg/vcpkg install ogre3d:x64-linux bullet3:x64-linux boost:x64-linux pugixml:x64-linux 
+
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake  .
       
       - name: Run Ninja build
         run: ninja -C build
@@ -103,12 +96,12 @@ jobs:
             mingw-w64-${{ matrix.env }}-${{ matrix.sys == 'clang64' && 'clang' || 'gcc' }}
             mingw-w64-${{ matrix.env }}-cmake
             mingw-w64-${{ matrix.env }}-ninja
+            mingw-w64-${{ matrix.env }}-ogre3d
+            mingw-w64-${{ matrix.env }}-bullet
+            mingw-w64-${{ matrix.env }}-qt6
             mingw-w64-${{ matrix.env }}-boost
             mingw-w64-${{ matrix.env }}-pugixml
-            mingw-w64-${{ matrix.env }}-ogre3d
-            mingw-w64-${{ matrix.env }}-qt6
-            mingw-w64-${{ matrix.env }}-bullet
-      
+            
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
       
