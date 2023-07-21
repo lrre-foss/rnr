@@ -91,6 +91,10 @@ namespace RNR
 
     void IInputManager::mouseSecondaryState(bool down)
     {
+        if(down)
+            grab();
+        else if(!down)
+            ungrab();
         state.mouse_secondary = down;
     }
 
