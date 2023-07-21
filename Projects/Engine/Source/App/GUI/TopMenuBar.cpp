@@ -125,6 +125,7 @@ namespace RNR
     {
         Workspace* workspace = m_world->getWorkspace();
         btDiscreteDynamicsWorld* dynamicsWorld = m_world->getDynamicsWorld();
+        ComPlicitNgine* ngine = m_world->getComPlicitNgine();
 
         char debugtext[512];
         char render_debugtext[255];
@@ -137,11 +138,11 @@ namespace RNR
                 snprintf(render_debugtext, 255, "using BATCH_STATIC_GEOMETRY\nGeom Regions: %i", workspace->m_geom->getRegions().size());
                 break;
         }
-        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n\nPhysics\nDT = %f\n%i objects, %i constraints\nRunService: running = %s, paused = %s",
+        snprintf(debugtext, 512, "Render\nLast DT = %f\n%s\n\nPhysics\nDT = %f\n%i objects (%i active, %i sleeping), %i constraints\nRunService: running = %s, paused = %s",
                  m_world->getLastDelta(),
                  render_debugtext,
                  m_world->getLastPhysicsDelta(),
-                 dynamicsWorld->getNumCollisionObjects(), dynamicsWorld->getNumConstraints(),
+                 dynamicsWorld->getNumCollisionObjects(), ngine->getActiveObjects(), ngine->getSleepingObjects(), dynamicsWorld->getNumConstraints(),
                  m_world->getRunService()->getRunning() ? "true" : "false",
                  m_world->getRunService()->getPaused() ? "true" : "false");
         m_debugText->setCaption(debugtext);

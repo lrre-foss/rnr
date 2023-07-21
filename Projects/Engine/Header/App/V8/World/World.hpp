@@ -76,6 +76,6 @@ namespace RNR
             Ogre::SceneManager* getOgreSceneManager() { return m_ogreSceneManager; }
             bool getPhysicsShouldBeRunningPleaseStopIfItIsStillRunning() { return m_runPhysics; }
 
-            Lock physicsIterateLock;
+            Lock dynamicWorldLock;
     };
 }
