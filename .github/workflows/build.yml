@@ -19,20 +19,31 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 5.0
+          version: 1.0.1
           packages: >-
+            git
             build-essential
             cmake
             ninja-build
             libboost-all-dev
-            libogre-1.12-dev
+            libgles2-mesa-dev
+            libvulkan-dev
+            glslang-dev
+            libxrandr-dev
+            libsdl2-dev
+            libxt-dev
+            libxaw7-dev
             libpugixml-dev
+            libbullet-dev
         
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
         with:
           version: 6.*
           cache: true
+      
+      - name: Install Ogre
+        run: git clone https://github.com/OGRECave/ogre && cd ogre && cmake --build . --config Release --target install
         
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
