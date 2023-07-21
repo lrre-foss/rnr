@@ -21,7 +21,6 @@ jobs:
         with:
           version: 1.0.1
           packages: >-
-            git
             build-essential
             cmake
             ninja-build
@@ -43,7 +42,7 @@ jobs:
           cache: true
       
       - name: Install Ogre
-        run: git clone https://github.com/OGRECave/ogre && cd ogre && cmake --configre . && cmake --build . --config Release --target install && cd ../
+        run: git clone https://github.com/OGRECave/ogre && cd ogre && cmake --configure . && cmake --build . --config Release --target install && cd ../
         
       - name: Generate Ninja build files
         run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
