@@ -6,10 +6,11 @@
 
 namespace RNR
 {
-    FaceInstance::FaceInstance() : Ogre::ManualObject(Strings::random_hex(8))
+    FaceInstance::FaceInstance()
     {
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        getNode()->attachObject(this);
+
+        
         build();
     }
 }

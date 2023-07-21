@@ -60,7 +60,7 @@ namespace RNR
                     child_node->setVisible(true);
                     break;
             }
-            world->registerPhysicsPart(part);
+            world->getComPlicitNgine()->registerPhysicsPart(part);
         }
     }
 
@@ -81,7 +81,7 @@ namespace RNR
     {
         PartInstance* part = dynamic_cast<PartInstance*>(childRemoved);
         if(part)
-            world->deletePhysicsPart(part);
+            world->getComPlicitNgine()->deletePhysicsPart(part);
         m_geomDirty = true;        
     }
 

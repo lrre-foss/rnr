@@ -12,6 +12,8 @@ namespace RNR
     {
     private:
         QPointF last_position;
+        QPoint grab_position;
+        bool m_grabbed;
         OgreWidget* widget;
         bool reset;
     public:
@@ -21,5 +23,7 @@ namespace RNR
         void mouseEvent(QMouseEvent* e);
 
         virtual void resetMouse();
+        virtual void grab();
+        virtual void ungrab();
     };
 }

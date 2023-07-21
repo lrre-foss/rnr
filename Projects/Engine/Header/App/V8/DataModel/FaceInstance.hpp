@@ -5,7 +5,7 @@
 
 namespace RNR
 {
-    class FaceInstance : public Instance, Ogre::ManualObject
+    class FaceInstance : public Instance
     {
     private:
         NormalId m_face;

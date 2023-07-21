@@ -3,8 +3,17 @@
 
 namespace RNR
 {
+    // sub_60D330
     TopMenuBar::TopMenuBar(World* world)
     {
+        /*
+            if ( v30 )
+            {
+                *(float *)(v30 + 260) = 100.0;
+                *(float *)(v30 + 264) = 20.0;
+            }
+        */
+       
         m_world = world;
 
         m_overlayManager = Ogre::OverlayManager::getSingletonPtr();
@@ -20,53 +29,53 @@ namespace RNR
         Ogre::OverlayContainer* panel = static_cast<Ogre::OverlayContainer*>(m_overlayManager->createOverlayElement("Panel", "TopMenuBarPanel"));
         panel->setMetricsMode(Ogre::GMM_PIXELS);
         panel->setPosition(0,0);
-        panel->setDimensions(128 * 5, 20);
+        panel->setDimensions(100 * 5, 20);
         panel->setMaterial(material);
 
-        Ogre::ColourValue text_color = Ogre::ColourValue(0.25, 0.25, 0.25);
+        Ogre::ColourValue text_color = Ogre::ColourValue(0.25, 0.25, 0.25, 0.95);
 
         Ogre::TextAreaOverlayElement* toolsTextArea = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "TopMenuBarTools"));
         toolsTextArea->setMetricsMode(Ogre::GMM_PIXELS);
         toolsTextArea->setPosition(0, 0);
-        toolsTextArea->setDimensions(128, 24);
+        toolsTextArea->setDimensions(100, 20);
         toolsTextArea->setCaption("Tools");
-        toolsTextArea->setCharHeight(24);
+        toolsTextArea->setCharHeight(20);
         toolsTextArea->setFontName("ComicSans");
         toolsTextArea->setColour(text_color);
 
         Ogre::TextAreaOverlayElement* insertTextArea = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "TopMenuBarInsert"));
         insertTextArea->setMetricsMode(Ogre::GMM_PIXELS);
-        insertTextArea->setPosition(128, 0);
-        insertTextArea->setDimensions(128, 24);
+        insertTextArea->setPosition(100, 0);
+        insertTextArea->setDimensions(100, 20);
         insertTextArea->setCaption("Insert");
-        insertTextArea->setCharHeight(24);
+        insertTextArea->setCharHeight(20);
         insertTextArea->setFontName("ComicSans");
         insertTextArea->setColour(text_color);
 
         Ogre::TextAreaOverlayElement* fullscreenTextArea = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "TopMenuBarFullscreen"));
         fullscreenTextArea->setMetricsMode(Ogre::GMM_PIXELS);
-        fullscreenTextArea->setPosition(128*2, 0);
-        fullscreenTextArea->setDimensions(128, 24);
+        fullscreenTextArea->setPosition(100*2, 0);
+        fullscreenTextArea->setDimensions(100, 20);
         fullscreenTextArea->setCaption("Fullscreen");
-        fullscreenTextArea->setCharHeight(24);
+        fullscreenTextArea->setCharHeight(20);
         fullscreenTextArea->setFontName("ComicSans");
         fullscreenTextArea->setColour(text_color);
 
         Ogre::TextAreaOverlayElement* helpTextArea = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "TopMenuBarHelp"));
         helpTextArea->setMetricsMode(Ogre::GMM_PIXELS);
-        helpTextArea->setPosition(128*3, 0);
-        helpTextArea->setDimensions(128, 24);
+        helpTextArea->setPosition(100*3, 0);
+        helpTextArea->setDimensions(100, 20);
         helpTextArea->setCaption("Help...");
-        helpTextArea->setCharHeight(24);
+        helpTextArea->setCharHeight(20);
         helpTextArea->setFontName("ComicSans");
         helpTextArea->setColour(text_color);
 
         Ogre::TextAreaOverlayElement* exitTextArea = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "TopMenuBarExit"));
         exitTextArea->setMetricsMode(Ogre::GMM_PIXELS);
-        exitTextArea->setPosition(128*4, 0);
-        exitTextArea->setDimensions(128, 24);
-        exitTextArea->setCaption("Exit");
-        exitTextArea->setCharHeight(24);
+        exitTextArea->setPosition(100*4, 0);
+        exitTextArea->setDimensions(100, 20);
+        exitTextArea->setCaption("   Exit"); // ... apparently spacing is how it was done in the original client
+        exitTextArea->setCharHeight(20);
         exitTextArea->setFontName("ComicSans");
         exitTextArea->setColour(text_color);
 
@@ -89,7 +98,7 @@ namespace RNR
 
         m_playerPanel = static_cast<Ogre::OverlayContainer*>(m_overlayManager->createOverlayElement("Panel", "PlayerListPanel"));
         m_playerPanel->setMetricsMode(Ogre::GMM_PIXELS);
-        m_playerPanel->setDimensions(128, 20);
+        m_playerPanel->setDimensions(100, 20);
         m_playerPanel->setMaterial(material);
         
         m_playerList = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "PlayerListTextArea"));
@@ -97,7 +106,7 @@ namespace RNR
         m_playerList->setPosition(0, 0);
         m_playerList->setDimensions(1000, 1000);
         m_playerList->setCaption("Player List");
-        m_playerList->setCharHeight(24);
+        m_playerList->setCharHeight(20);
         m_playerList->setFontName("ComicSans");
         m_playerList->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f));
 
@@ -146,14 +155,14 @@ namespace RNR
         else
         {
             m_playerPanel->setVisible(true);
-            m_playerPanel->setPosition(m_overlayManager->getViewportWidth() - 128 - 5,5);
+            m_playerPanel->setPosition(m_overlayManager->getViewportWidth() - 100 - 5,5);
             std::string player_list_text = "Player List\n";
             for(auto player : *player_list)
             {
                 player_list_text += player->getName() + "\n";
             }            
             m_playerList->setCaption(player_list_text);
-            m_playerPanel->setDimensions(128, 20 * (player_list->size() + 1));
+            m_playerPanel->setDimensions(100, 20 * (player_list->size() + 1));
         }
     }
 }

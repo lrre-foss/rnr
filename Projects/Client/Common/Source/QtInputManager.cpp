@@ -7,6 +7,7 @@ namespace RNR
     {
         last_position = QPointF();
         this->widget = widget;
+        m_grabbed = false;
     }
 
     void QtInputManager::keyEvent(QKeyEvent* e)
@@ -56,10 +57,30 @@ namespace RNR
     void QtInputManager::resetMouse()
     {
         widget->clearFocus();
-        QPoint glob = widget->mapToGlobal(QPoint(widget->width()/2,widget->height()/2));
-        QCursor::setPos(glob);
-        last_position = QPoint(widget->width()/2,widget->height()/2);
-        widget->setFocus();
+        if(!m_grabbed)
+        {
+            QPoint glob = widget->mapToGlobal(QPoint(widget->width()/2,widget->height()/2));
+            QCursor::setPos(glob);
+            last_position = QPoint(widget->width()/2,widget->height()/2);
+        }
+        else
+        {
+            QCursor::setPos(widget->mapToGlobal(grab_position));
+            last_position = grab_position;
+        }
         reset = true;
+        widget->setFocus();
+    }
+
+    void QtInputManager::grab()
+    {
+        grab_position = widget->mapFromGlobal(QCursor::pos());
+        last_position = grab_position;
+        m_grabbed = true;
+    }
+
+    void QtInputManager::ungrab()
+    {
+        m_grabbed = false;
     }
 }

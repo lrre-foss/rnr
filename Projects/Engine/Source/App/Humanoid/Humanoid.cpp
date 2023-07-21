@@ -1,5 +1,6 @@
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/V8/World/World.hpp>
+#include <App/V8/World/Weld.hpp>
 #include <App/InputManager.hpp>
 
 namespace RNR
@@ -24,7 +25,13 @@ namespace RNR
 
     void Humanoid::buildJoints()
     {
-        //
+        if(getTorso() && getHead())
+        {
+            Weld* headWeld = new Weld();
+            headWeld->weld(getTorso(), getHead());
+            headWeld->create();
+            headWeld->setParent(getTorso());
+        }
     }
 
     void Humanoid::checkForJointDeath()
@@ -118,7 +125,7 @@ namespace RNR
             move *= world->getLastDelta();
 
             bool move_valid = true;
-    
+
             // TODO: collision checking
 
             if(!move_valid)

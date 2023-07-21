@@ -23,6 +23,8 @@ namespace RNR
         IInputManager();
 
         virtual void resetMouse() {};
+        virtual void grab() {};
+        virtual void ungrab() {};
 
         void setWorld(World* world) { m_world = world; world->setInputManager(this); }
 
