@@ -166,10 +166,10 @@ namespace RNR
         if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
         {
             m_runService->step(timestep);
-            physicsIterateLock.lock();
             m_dynamicsWorld->stepSimulation(timestep, 2);
-            physicsIterateLock.unlock();
+            physicsIterateLock.lock();
             m_ngine->updateTree();
+            physicsIterateLock.unlock();
         }
         return 0.0;
     }
