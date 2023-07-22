@@ -5,7 +5,7 @@
 
 **R**NR's **N**ot **R**oblox (RNR) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
 
-Interested in contributing? [Feel free to make a pull request](https://github.com/lrre-foss/RNR/pulls), [create a new issue for a feature request or to report a bug](https://github.com/lrre-foss/rnr/issues), [join the Discord to report bugs and communicate directly with the developers](https://discord.gg/2tj4TREby3), or [check out the RNR GitHub Project](https://github.com/orgs/lrre-foss/projects/1) to see what we're working on and have done so far.
+Interested in contributing? Feel free to [make a pull request](https://github.com/lrre-foss/RNR/pulls), [create a new issue](https://github.com/lrre-foss/rnr/issues) for a feature request or to report a bug, [join the Discord](https://discord.gg/2tj4TREby3) to report bugs and communicate directly with the developers, or check out the [RNR GitHub Project](https://github.com/orgs/lrre-foss/projects/1) to see what we're working on and have done so far.
 
 Check out our current progress on YouTube:
 - [Block Town showcase](https://www.youtube.com/watch?v=-V2VUjxpNLs)
