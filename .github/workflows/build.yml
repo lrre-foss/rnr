@@ -35,6 +35,7 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           runVcpkgInstall: true
+          vcpkgGitCommitId: 9d47b24 # hardcoded because the idiot who made this action didn't make it possible to use the latest commit by default
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
 
       - name: Generate Ninja build files
