@@ -2,10 +2,11 @@
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/World/ComPlicitNgine.hpp>
+#include <App/V8/World/JointInstance.hpp>
 
 namespace RNR
 {
-    class Weld : public Instance
+    class Weld : public JointInstance
     {
         btRigidBody* m_aBody;
         PartInstance* m_aInstance;
@@ -14,9 +15,6 @@ namespace RNR
         PartInstance* m_bInstance;
         
         btFixedConstraint* m_constraint;
-
-        virtual void addProperties(std::vector<ReflectionProperty>& properties);
-        virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
     public:
         Weld();
         ~Weld();
