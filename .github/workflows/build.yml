@@ -61,7 +61,7 @@ jobs:
       
       # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
       - name: Organize binaries
-        run: mkdir packaged && find build -perm /a+x -exec mv {} packaged \;
+        run: mkdir packaged && mv build/RNR.* packaged
 
       - name: Add RNR resources
         run: cp -R Content/RNR packaged/content && cp LICENSE packaged
