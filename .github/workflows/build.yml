@@ -19,17 +19,25 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 1.0.3
+          version: 1.0.5
           packages: >-
             build-essential
             cmake
             ninja-build
             libxi-dev
+            libx11-dev
+            libxft-dev
+            libxkbcommon-dev
+            libegl1-mesa-dev
             libgl1-mesa-dev
             libglu1-mesa-dev
             mesa-common-dev
             libxrandr-dev
             libxxf86vm-dev
+            libxaw7-dev
+            libxext-dev
+            libwayland-dev
+            libibus-1.0-dev
       
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -45,7 +53,7 @@ jobs:
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
 
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake  .
+        run: cmake -S . -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
       
       - name: Run Ninja build
         run: ninja -C build
@@ -110,7 +118,7 @@ jobs:
             mingw-w64-${{ matrix.env }}-pugixml
             
       - name: Generate Ninja build files
-        run: cmake -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} .
+        run: cmake -S . -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }}
       
       - name: Run Ninja build
         run: ninja -C build
