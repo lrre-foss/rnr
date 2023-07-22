@@ -109,6 +109,13 @@ namespace RNR
     {
         m_refs.clear();
 
+        Instance* baseplate = findFirstChild("Baseplate");
+        if(baseplate)
+        {
+            baseplate->setParent(NULL);
+            delete baseplate;
+        }
+
         JointsService* joints = (JointsService*)m_datamodel->getService("JointsService");
         Camera* old_camera = m_workspace->getCurrentCamera();
         if(old_camera)
