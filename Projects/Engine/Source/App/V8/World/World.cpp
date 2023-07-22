@@ -109,7 +109,7 @@ namespace RNR
     {
         m_refs.clear();
 
-        Instance* baseplate = findFirstChild("Baseplate");
+        Instance* baseplate = m_workspace->findFirstChild("Baseplate");
         if(baseplate)
         {
             baseplate->setParent(NULL);
