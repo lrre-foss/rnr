@@ -9,8 +9,8 @@ Interested in contributing? Feel free to [make a pull request](https://github.co
 
 Check out our current progress on YouTube:
 - [Block Town showcase](https://www.youtube.com/watch?v=-V2VUjxpNLs)
-- [Doomspires 3.4k parts physics demo](https://www.youtube.com/watch?v=EW6G_R6lx_Q)
-- [Angel of Truth 8k+ parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
+- [Doomspires 3.4k parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
+- [Angel of Truth 8k+ parts physics demo](https://www.youtube.com/watch?v=EW6G_R6lx_Q)
 
 P.S.: You can check our [GitHub actions page](https://github.com/lrre-foss/rnr/actions) to browse packaged Windows builds automatically generated for each commit. :-) 
 
