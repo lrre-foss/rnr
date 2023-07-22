@@ -19,7 +19,7 @@ jobs:
       - name: Install required packages
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          version: 1.0.5
+          version: 1.1.0
           packages: >-
             build-essential
             cmake
@@ -38,6 +38,7 @@ jobs:
             libxext-dev
             libwayland-dev
             libibus-1.0-dev
+            libraw-dev
       
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
@@ -49,27 +50,27 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           runVcpkgInstall: true
-          vcpkgGitCommitId: 9d47b24eacbd1cd94f139457ef6cd35e5d92cc84 # hardcoded because the idiot who made this action didn't make it possible to use the latest commit by default
+          vcpkgGitCommitId: 9d47b24eacbd1cd94f139457ef6cd35e5d92cc84
           vcpkgDirectory: ${{ github.workspace }}/vcpkg
 
       - name: Generate Ninja build files
-        run: cmake -S . -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
+        run: cmake -S . -G Ninja -B build -DCI=ON -DCMAKE_BUILD_TYPE=${{ matrix.configuration == 'Release' && 'MinSizeRel' || matrix.configuration }} -DOpenGL_GL_PREFERENCE=GLVND -DCMAKE_TOOLCHAIN_FILE=./vcpkg/scripts/buildsystems/vcpkg.cmake
       
       - name: Run Ninja build
         run: ninja -C build
       
       # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
       - name: Organize binaries
-        run: mkdir build/dist && find build -perm /a+x -exec mv {} build/dist \;
+        run: mkdir packaged && find build -perm /a+x -exec mv {} packaged \;
 
       - name: Add RNR resources
-        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+        run: cp -R Content/RNR packaged/content && cp LICENSE packaged
 
       - name: Add OGRE plugins
-        run: cp -R build/plugins build/dist && cp Content/linux_plugins.cfg build/dist/plugins.cfg
+        run: cp -R build/plugins packaged && cp Content/linux_plugins.cfg packaged/plugins.cfg
       
       - name: Add OGRE shaders
-        run: cp -R build/shaders build/dist
+        run: cp -R build/shaders packaged && mv packaged/shaders/GLSL/* packaged/shaders && rm -rf packaged/shaders/GLSL
 
       - name: Set output variables
         id: vars
@@ -81,7 +82,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: rnr-${{ steps.vars.outputs.hash }}-linux_x64-${{ steps.vars.outputs.configuration }}
-          path: build/dist
+          path: packaged
   
   windows:
     strategy:
@@ -125,22 +126,22 @@ jobs:
       
       # ouch - unless and until we start using CMake's install command, these next few steps are a necessary evil
       - name: Organize binaries
-        run: mkdir build/dist && mv build/*.exe build/dist
+        run: mkdir packaged && mv build/*.exe packaged
 
       - name: Add RNR resources
-        run: cp -R Content/RNR build/dist/content && cp LICENSE build/dist
+        run: cp -R Content/RNR packaged/content && cp LICENSE packaged
 
       - name: Add Qt plugins and dependencies
-        run: windeployqt6 build/dist/*.exe
+        run: windeployqt6 packaged/*.exe
 
       - name: Add OGRE plugins
-        run: cp Content/win32_plugins.cfg build/dist/plugins.cfg && mkdir build/dist/plugins/ && cat build/dist/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/${{ matrix.sys }}/bin/{}.dll' build/dist/plugins/
+        run: cp Content/win32_plugins.cfg packaged/plugins.cfg && mkdir packaged/plugins/ && cat packaged/plugins.cfg | grep "Plugin=" | sed -e "s/Plugin=//" | xargs -I '{}' cp -v '/${{ matrix.sys }}/bin/{}.dll' packaged/plugins
       
       - name: Add OGRE shaders
-        run: mkdir build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main/* build/dist/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib/* build/dist/shaders && mv build/dist/shaders/GLSL/* build/dist/shaders && rm -rf build/dist/shaders/GLSL
+        run: mkdir packaged/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/Main/* packaged/shaders && cp -R /${{ matrix.sys }}/share/OGRE/Media/RTShaderLib/* packaged/shaders && mv packaged/shaders/GLSL/* packaged/shaders && rm -rf packaged/shaders/GLSL
     
       - name: Add additional runtime dependencies
-        run: ldd build/dist/*.exe | grep "=> /" | awk '{print $3}' | grep "${{ matrix.sys }}" | xargs -I '{}' cp -v '{}' build/dist
+        run: ldd packaged/*.exe | grep "=> /${{ matrix.sys }}/" | awk '{print $3}' | xargs -I '{}' cp -v '{}' packaged
       
       - name: Set output variables
         id: vars
@@ -152,4 +153,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: rnr-${{ steps.vars.outputs.hash }}-win_x64-${{ steps.vars.outputs.configuration }}
-          path: build/dist
+          path: packaged
