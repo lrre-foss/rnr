@@ -9,6 +9,8 @@ namespace RNR
         ModelInstance();
 
         virtual void build();
+        void makeJoints();
+        void breakJoints();
         Ogre::AxisAlignedBox getBoundingBox() { return m_boundingbox; }
         virtual std::string getClassName() { return "Model"; }
         virtual void onChildAdded(Instance* instance);

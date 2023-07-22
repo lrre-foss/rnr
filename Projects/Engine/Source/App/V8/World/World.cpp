@@ -159,7 +159,6 @@ namespace RNR
             printf("World::load: XML parsed with errors, description '%s', offset %i\n", result.description(), result.offset);
         }        
         m_workspace->build();
-        joints->fixWelds();
     }
 
     void World::preRender(float timestep)

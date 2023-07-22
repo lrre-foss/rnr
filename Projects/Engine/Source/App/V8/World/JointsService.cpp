@@ -20,8 +20,9 @@ namespace RNR
     {
         for(auto& child : *getChildren())
         {
-            Weld* weld = dynamic_cast<Weld*>(child);
-            weld->create();
+            JointInstance* weld = dynamic_cast<JointInstance*>(child);
+            if(weld->getDirty())
+                weld->link();
         }
     }
 
@@ -45,8 +46,6 @@ namespace RNR
                     NormalId n_opp = normalIdOpposite(n);
                     PartSurfaceInfo n_surf = p->getSurface(n);
                     PartSurfaceInfo n_opp_surf = child_p->getSurface(n_opp);
-                    if(n_surf.plane != n_opp_surf.plane)
-                        continue;
                     if(n_surf.intersects(n_opp_surf))
                     {
                         if(n_surf.links(n_opp_surf))
@@ -68,6 +67,43 @@ namespace RNR
         }
     }
 
+    void JointsService::makeModelJoints(ModelInstance* m)
+    {
+        ModelInstance* parent_model = m;
+
+        if(world->getWorkspace()->isAncestorOf(m))
+        {
+            parent_model = world->getWorkspace();
+        }
+
+        for(auto& child : *m->getChildren())
+        {
+            if(dynamic_cast<PartInstance*>(child))
+                makeJoints(parent_model, (PartInstance*)child);            
+        }
+    }
+
+    void JointsService::breakModelJoints(ModelInstance* m)
+    {
+        for(auto& child : *getChildren())
+        {
+            JointInstance* snap = dynamic_cast<JointInstance*>(child);
+            if(snap)
+            {
+                bool brk = false;
+                if(m->isAncestorOf(snap->getABody()))
+                    brk = true;
+                else if(m->isAncestorOf(snap->getBBody()))
+                    brk = true;
+                if(brk)
+                {
+                    snap->setParent(NULL);
+                    delete snap;
+                }
+            }
+        }
+    }
+
     void JointsService::makeJoints(PartInstance* p)
     {
         p->updateSurfaces();
@@ -78,13 +114,13 @@ namespace RNR
     {
         for(auto& child : *getChildren())
         {
-            Snap* snap = dynamic_cast<Snap*>(child);
+            JointInstance* snap = dynamic_cast<JointInstance*>(child);
             if(snap)
             {
                 bool brk = false;
-                if(snap->getPartA() == p)
+                if(snap->getABody() == p)
                     brk = true;
-                else if(snap->getPartB() == p)
+                else if(snap->getBBody() == p)
                     brk = true;
                 if(brk)
                 {
@@ -101,9 +137,9 @@ namespace RNR
             Weld* snap = dynamic_cast<Weld*>(child);
             if(snap)
             {
-                if(snap->getPartA() == a && snap->getPartB() == b)
+                if(snap->getABody() == a && snap->getBBody() == b)
                     return true;
-                else if(snap->getPartA() == b && snap->getPartB() == a)
+                else if(snap->getABody() == b && snap->getBBody() == a)
                     return true;
             }
         }

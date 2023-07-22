@@ -41,7 +41,7 @@ namespace RNR
         {
             Weld* headWeld = new Weld();
             headWeld->setBodies(getTorso(), getHead());
-            headWeld->create();
+            headWeld->link();
             headWeld->setParent(getTorso());
         }
 

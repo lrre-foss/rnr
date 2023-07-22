@@ -105,7 +105,7 @@ namespace RNR
         {
             m_surfaces[i].face = (NormalId)i;
             PartSurfaceInfo& surf = m_surfaces[i];
-            Ogre::Vector3 size = ((getSize() / 2.f) * getRotation());
+            Ogre::Vector3 size = ((getSize()) * getRotation());
             Ogre::Vector3 pos = getPosition();
             switch(m_surfaces[i].face)
             {

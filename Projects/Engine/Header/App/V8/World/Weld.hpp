@@ -8,25 +8,10 @@ namespace RNR
 {
     class Weld : public JointInstance
     {
-        btRigidBody* m_aBody;
-        PartInstance* m_aInstance;
-
-        btRigidBody* m_bBody;
-        PartInstance* m_bInstance;
-        
-        btFixedConstraint* m_constraint;
+        virtual btTypedConstraint* constraint();
     public:
         Weld();
-        ~Weld();
         virtual std::string getClassName() { return "Weld"; }
-
-        void weld(PartInstance* a, PartInstance* b);
-        bool create();
-        void destroy();
-
-        bool getBroken();
-        PartInstance* getPartA() { return m_aInstance; }
-        PartInstance* getPartB() { return m_bInstance; }
     };
 
     class Snap : public Weld

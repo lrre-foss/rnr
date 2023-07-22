@@ -1,45 +1,25 @@
 #include <App/V8/World/Weld.hpp>
 #include <App/V8/World/World.hpp>
+#include <Helpers/Bullet.hpp>
 
 namespace RNR
 {
     Weld::Weld() : JointInstance()
     {
         setName("Weld");
+        m_collidesWithSelf = true;
     }
 
-    Weld::~Weld()
+    btTypedConstraint* Weld::constraint()
     {
-        destroy();
-    }
-
-    bool Weld::create()
-    {
-        if(!m_aBody || !m_bBody)
-        {
-            printf("Weld::create: invalid body\n");
-            return false;
-        }
-        
         btTransform frameInA, frameInB;
         frameInA = btTransform::getIdentity();
+        frameInA.setOrigin(Bullet::v3ToBullet(m_c0.getPosition()));
+        frameInA.setRotation(Bullet::qtToBullet(m_c0.getRotation()));
         frameInB = btTransform::getIdentity();
+        frameInB.setOrigin(Bullet::v3ToBullet(m_c1.getPosition()));
+        frameInB.setRotation(Bullet::qtToBullet(m_c1.getRotation()));
 
-        m_constraint = new btFixedConstraint(*m_aBody, *m_bBody, frameInA, frameInB);
-        printf("Weld::create: welded\n");
-        return true;
-    }
-
-    void Weld::destroy()
-    {
-        delete m_constraint;        
-    }
-
-    bool Weld::getBroken()
-    {
-        if(!m_constraint)
-            return true;
-            
-        return false;
+        return new btFixedConstraint(*m_aBody, *m_bBody, frameInA, frameInB);
     }
 }
