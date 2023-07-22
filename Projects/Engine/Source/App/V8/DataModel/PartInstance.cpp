@@ -66,6 +66,11 @@ namespace RNR
         updateMatrix();
     }
 
+    PartInstance::~PartInstance()
+    {
+        getNode()->removeAndDestroyAllChildren();
+    }
+
     void PartInstance::updateMatrix()
     {
         m_matrix = m_cframe.getMatrix(); 

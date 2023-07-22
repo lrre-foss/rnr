@@ -84,7 +84,14 @@ namespace RNR
     {
         PartInstance* part = dynamic_cast<PartInstance*>(childRemoved);
         if(part)
+        {
+            if(m_batchMode == BATCH_INSTANCED)
+            {
+                Ogre::InstancedEntity* entity = (Ogre::InstancedEntity*)part->getObject();
+                world->getOgreSceneManager()->destroyInstancedEntity(entity);
+            }
             world->getComPlicitNgine()->deletePhysicsPart(part);
+        }
         m_geomDirty = true;        
     }
 

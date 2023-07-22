@@ -54,6 +54,7 @@ namespace RNR
         std::string mesh_id;
     public:
         PartInstance();
+        ~PartInstance();
 
         void updateMatrix();
         PartSurfaceInfo& getSurface(NormalId normal) { return m_surfaces[normal]; };

@@ -56,13 +56,13 @@ namespace RNR
         start_cam->setParent(m_workspace);
         m_workspace->setCurrentCamera(start_cam);
 
-        PartInstance* baseplate = new PartInstance();
+        /*PartInstance* baseplate = new PartInstance();
         baseplate->setName("Baseplate");
         baseplate->getCFrame().setPosition(Ogre::Vector3(0, -64, 0));
         baseplate->setSize(Ogre::Vector3(512, 1, 512));
         baseplate->setBrickColor(2);
         baseplate->setAnchored(true);
-        baseplate->setParent(m_workspace);
+        baseplate->setParent(m_workspace);*/
     }
 
     World::~World()
@@ -108,13 +108,6 @@ namespace RNR
     void World::load(char* path)
     {
         m_refs.clear();
-
-        Instance* baseplate = m_workspace->findFirstChild("Baseplate");
-        if(baseplate)
-        {
-            baseplate->setParent(NULL);
-            delete baseplate;
-        }
 
         JointsService* joints = (JointsService*)m_datamodel->getService("JointsService");
         Camera* old_camera = m_workspace->getCurrentCamera();
