@@ -24,6 +24,7 @@ jobs:
             build-essential
             cmake
             ninja-build
+            libxi-dev
       
       - name: Install Qt
         uses: jurplel/install-qt-action@v3
