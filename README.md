@@ -11,7 +11,9 @@ Check out our current progress on YouTube:
 - [Block Town showcase](https://www.youtube.com/watch?v=-V2VUjxpNLs)
 - [Angel of Truth 8k+ parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
 - [Doomspires 3.4k parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
-  
+
+P.S.: You can check our [GitHub actions page](https://github.com/lrre-foss/rnr/actions) to browse packaged Windows builds automatically generated for each commit. :-) 
+
 ## Features and Goals
 There are several goals that RNR seeks to accomplish, them being;
 - Full native x64 support on Windows and Linux
@@ -38,8 +40,6 @@ For Windows:
 Additionally, you must also acquire the content folder of the Roblox client you would like to use its resources from and place it in the root of the repository. Proprietary Roblox assets are not included with RNR.
 
 Finally, you may run `cmake --build .` in the path of the folder you've cloned the repository to so that you may configure and then finally build RNR.
-
-P.S.: You can check our [GitHub actions page](https://github.com/lrre-foss/rnr/actions) to browse automatic ready-to-run Windows (and soon Linux) builds for each commit. :-) 
 
 # License
 RNR is licensed under two separate licenses:
