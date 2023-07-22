@@ -39,4 +39,6 @@ int main(int argc, char** argv)
         window.ogreWidget->render();
         world->update();
     }
+
+    app.exit();
 }

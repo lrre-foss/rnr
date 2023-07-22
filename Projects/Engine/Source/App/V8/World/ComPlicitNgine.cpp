@@ -1,5 +1,6 @@
 #include <App/V8/World/ComPlicitNgine.hpp>
 #include <App/V8/World/World.hpp>
+#include <App/V8/World/JointsService.hpp>
 #include <Helpers/Bullet.hpp>
 
 namespace RNR
@@ -20,8 +21,14 @@ namespace RNR
             if(m_lastPhysicsDelta == 0)
                 std::this_thread::sleep_for(std::chrono::milliseconds(1));
             
-            m_world->preStep();
-            m_world->step(delta);
+            if(m_world->getRunService()->getRunning())
+            {
+                m_world->preStep();
+                m_world->step(delta);
+            }
+
+            JointsService* joints = (JointsService*)m_world->getDatamodel()->getService("JointsService");
+            joints->fixWelds();
 
             m_lastPhysicsDelta = delta;
         }

@@ -48,20 +48,31 @@ namespace RNR
         getCFrame().setRotation(rotation);  
 
         if(!movement_disable)
-        {        
+        {
+            IInputManager* input = world->getInputManager();
+
             float speed = 50;
+
+            if(input->isKeyDown(0x01000020)) // Scan code for Shift
+                speed = speed / 2;
+
             Ogre::Vector3 position = getCFrame().getPosition();
             Ogre::Vector3 movement = Ogre::Vector3(0, 0, 0);
 
-            IInputManager* input = world->getInputManager();
             if(input->isKeyDown('W'))
                 movement.z = -speed;
             else if(input->isKeyDown('S'))
                 movement.z = speed;
+            
             if(input->isKeyDown('A'))
                 movement.x = -speed;
             else if(input->isKeyDown('D'))
                 movement.x = speed;
+            
+            if(input->isKeyDown('E'))
+                movement.y = speed;
+            else if(input->isKeyDown('Q'))
+                movement.y = -speed;
 
             movement = rotation * movement;
             position += movement * world->getLastDelta();

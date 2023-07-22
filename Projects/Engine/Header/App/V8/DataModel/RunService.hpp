@@ -14,7 +14,7 @@ namespace RNR
         virtual void addProperties(std::vector<ReflectionProperty>& properties);
     public:
         RunService();
-        
+
         virtual std::string getClassName() { return "RunService"; }
 
         bool getRunning() { return m_running; }

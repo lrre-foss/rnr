@@ -1,5 +1,6 @@
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
+#include <App/V8/World/World.hpp>
 #include <App/Humanoid/Humanoid.hpp>
 
 namespace RNR
@@ -14,6 +15,16 @@ namespace RNR
         m_boundingbox.setNull();
         for(auto& child : *getChildren())
             childAddBoundingBox(child);
+    }
+
+    void ModelInstance::makeJoints()
+    {
+
+    }
+
+    void ModelInstance::breakJoints()
+    {
+        
     }
 
     void ModelInstance::childAddBoundingBox(Instance* child)

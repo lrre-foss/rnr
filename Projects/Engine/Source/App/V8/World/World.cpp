@@ -1,4 +1,5 @@
 #include <App/V8/World/World.hpp>
+#include <App/V8/World/JointsService.hpp>
 #include <App/V8/Tree/InstanceFactory.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/DataModel/Lighting.hpp>
@@ -37,6 +38,7 @@ namespace RNR
         m_instanceFactory->registerInstance("Players", InstanceFactory::instanceBuilder<Players>);
         m_instanceFactory->registerInstance("Player", InstanceFactory::instanceBuilder<Player>);
         m_instanceFactory->registerInstance("Lighting", InstanceFactory::instanceBuilder<Lighting>);
+        m_instanceFactory->registerInstance("JointsService", InstanceFactory::instanceBuilder<JointsService>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -54,13 +56,13 @@ namespace RNR
         start_cam->setParent(m_workspace);
         m_workspace->setCurrentCamera(start_cam);
 
-        PartInstance* baseplate = new PartInstance();
+        /*PartInstance* baseplate = new PartInstance();
         baseplate->setName("Baseplate");
         baseplate->getCFrame().setPosition(Ogre::Vector3(0, -64, 0));
         baseplate->setSize(Ogre::Vector3(512, 1, 512));
         baseplate->setBrickColor(2);
         baseplate->setAnchored(true);
-        baseplate->setParent(m_workspace);
+        baseplate->setParent(m_workspace);*/
     }
 
     World::~World()
@@ -107,6 +109,7 @@ namespace RNR
     {
         m_refs.clear();
 
+        JointsService* joints = (JointsService*)m_datamodel->getService("JointsService");
         Camera* old_camera = m_workspace->getCurrentCamera();
         if(old_camera)
         {
@@ -144,12 +147,17 @@ namespace RNR
                     ModelInstance* m = (ModelInstance*)s.instance;
                     m->build();
                 }
+                else if(s.instance->getClassName() == "Part")
+                {
+                    PartInstance* p = (PartInstance*)s.instance;
+                    joints->makeJoints(p);
+                }
             }
         }
         else
         {
             printf("World::load: XML parsed with errors, description '%s', offset %i\n", result.description(), result.offset);
-        }
+        }        
         m_workspace->build();
     }
 

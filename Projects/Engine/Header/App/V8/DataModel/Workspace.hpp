@@ -25,11 +25,13 @@ namespace RNR
     public:
         Workspace();
 
+        WorkspaceBatchingMode getBatchMode() { return m_batchMode; }
         virtual std::string getClassName() { return "Workspace"; }
         virtual void onDescendantAdded(RNR::Instance* childAdded);
         virtual void onDescendantRemoved(RNR::Instance* childRemoved);
 
         void buildGeom();
+        void makeJoints();
         
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 

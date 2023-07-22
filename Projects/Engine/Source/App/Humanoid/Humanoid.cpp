@@ -37,14 +37,6 @@ namespace RNR
 
     void Humanoid::buildJoints()
     {
-        if(getTorso() && getHead())
-        {
-            Weld* headWeld = new Weld();
-            headWeld->weld(getTorso(), getHead());
-            headWeld->create();
-            headWeld->setParent(getTorso());
-        }
-
         if(getTorso())
         {
             btTransform ghostTransform;
@@ -147,8 +139,6 @@ namespace RNR
             Ogre::Vector3 move = Ogre::Vector3(0, 0, forward);
             move = direction * move;
             move *= world->getComPlicitNgine()->getLastPhysicsDelta();
-
-            m_characterController->playerStep(world->getDynamicsWorld(), forward);
 
             bool move_valid = true;
 

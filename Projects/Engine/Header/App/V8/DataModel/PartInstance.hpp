@@ -1,12 +1,42 @@
 #pragma once
 #include <App/V8/Tree/PVInstance.hpp>
 #include <App/BrickColor.hpp>
+#include <Helpers/NormalId.hpp>
 #include <OGRE/Ogre.h>
 
 #define STUD_HEIGHT 1.18
 
 namespace RNR
 {
+    enum PartSurfaceType
+    {
+        SURFACE_SMOOTH,
+        SURFACE_GLUE,
+        SURFACE_WELD,
+        SURFACE_STUDS,
+        SURFACE_INLET,
+        SURFACE_UNIVERSAL,
+        SURFACE_HINGE,
+        SURFACE_MOTOR,
+        SURFACE_STEPPINGMOTOR,
+        SURFACE_UNJOINABLE,
+        __SURFACE_COUNT,
+    };
+
+    struct PartSurfaceInfo
+    {
+    public:
+        NormalId face;
+        PartSurfaceType type;
+
+        Ogre::Vector2 start;
+        Ogre::Vector2 end;
+        float plane;
+
+        bool intersects(PartSurfaceInfo other);
+        bool links(PartSurfaceInfo other);
+    };
+
     class PartInstance : public PVInstance
     {
     protected:
@@ -14,6 +44,7 @@ namespace RNR
         float m_transparency;
         float m_reflectance;
         bool m_anchored;
+        PartSurfaceInfo m_surfaces[__NORM_COUNT];
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
         Ogre::Vector3 m_size;
@@ -23,11 +54,14 @@ namespace RNR
         std::string mesh_id;
     public:
         PartInstance();
+        ~PartInstance();
 
         void updateMatrix();
+        PartSurfaceInfo& getSurface(NormalId normal) { return m_surfaces[normal]; };
+        void setSurface(NormalId normal, PartSurfaceInfo surface) { m_surfaces[normal] = surface; }
 
         virtual std::string getClassName() { return "Part"; }
-        void setSize(Ogre::Vector3 size) { m_size = size; }
+        void setSize(Ogre::Vector3 size) { m_size = size; updateSurfaces(); }
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }
 
@@ -37,6 +71,10 @@ namespace RNR
         float getTransparency() { return m_transparency; }
         void setAnchored(bool anchored) { m_anchored = anchored; }
         bool getAnchored() { return m_anchored; }
+
+        void makeJoints();
+        void breakJoints();
+        void updateSurfaces();
 
         Ogre::Vector3 getOgreCenter() { return m_position + (m_size / 2.f); }
 

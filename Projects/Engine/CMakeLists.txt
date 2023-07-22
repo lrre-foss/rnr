@@ -28,6 +28,8 @@ add_library(Engine STATIC
     Header/App/V8/Tree/ModelInstance.hpp
     Header/App/V8/World/World.hpp
     Header/App/V8/World/Weld.hpp
+    Header/App/V8/World/JointsService.hpp
+    Header/App/V8/World/JointInstance.hpp    
     Header/App/V8/World/ComPlicitNgine.hpp
     Header/App/CoordinateFrame.hpp
     Header/App/BrickColor.hpp
@@ -67,6 +69,8 @@ add_library(Engine STATIC
     Source/App/InputManager.cpp
     Source/App/V8/World/World.cpp
     Source/App/V8/World/Weld.cpp
+    Source/App/V8/World/JointsService.cpp
+    Source/App/V8/World/JointInstance.cpp    
     Source/App/V8/World/ComPlicitNgine.cpp
     Source/Network/GUID.cpp
     Source/Network/Player.cpp
