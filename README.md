@@ -1,13 +1,18 @@
-# RNR
+# RNR's Not Roblox
 [![GitHub CI Status](https://img.shields.io/github/actions/workflow/status/lrre-foss/rnr/build.yml?branch=trunk&label=builds)](https://github.com/lrre-foss/rnr/actions)
 [![Discord](https://img.shields.io/discord/1130992923329175552?style=social&logo=discord)](https://discord.gg/2tj4TREby3)
 [![Star](https://img.shields.io/github/stars/lrre-foss/RNR?style=social)](https://github.com/lrre-foss/RNR/stargazers)
 
-RNR (**R**NR's **N**ot **R**oblox) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
+**R**NR's **N**ot **R**oblox (RNR) is a project that aims to recreate the look and feel of classic Roblox with new features while remaining fully compatible with clients from that era. It is built upon an engine that closely resembles Roblox's own at the time, referencing disassemblies of legacy client binaries.
 
-Interested in contributing? [Feel free to make a pull request!](https://github.com/lrre-foss/RNR/pulls)
+Interested in contributing? [Feel free to make a pull request](https://github.com/lrre-foss/RNR/pulls), [create a new issue for a feature request or to report a bug](https://github.com/lrre-foss/rnr/issues), [join the Discord to report bugs and communicate directly with the developers](https://discord.gg/2tj4TREby3), or [check out the RNR GitHub Project](https://github.com/orgs/lrre-foss/projects/1) to see what we're working on and have done so far.
 
-# Goals
+Check out our current progress on YouTube:
+- [Block Town showcase](https://www.youtube.com/watch?v=-V2VUjxpNLs)
+- [Angel of Truth 8k+ parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
+- [Doomspires 3.4k parts physics demo](https://www.youtube.com/watch?v=M0nn658uZ34)
+  
+## Features and Goals
 There are several goals that RNR seeks to accomplish, them being;
 - Full native x64 support on Windows and Linux
 - Easy-to-use (simple CLI options to launch and host games, as well as a level editor with a modern UI)
@@ -18,7 +23,7 @@ There are several goals that RNR seeks to accomplish, them being;
 - As free and open-source as possible (with client code licensed under the GPL and the engine itself being released into the public domain, void of any copyright)
 - Patching all the security vulnerabilities and fixing bugs/inefficiencies that legacy Roblox clients had
 
-# Building
+## Building
 RNR uses [CMake](https://cmake.org/) as its build system and [GCC](https://gcc.gnu.org/) as its compiler. To build RNR, you must first have the following packages installed:
 - [Boost](https://www.boost.org/)
 - [OGRE](https://github.com/OGRECave/ogre)
