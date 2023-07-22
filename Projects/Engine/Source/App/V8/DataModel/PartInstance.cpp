@@ -94,14 +94,14 @@ namespace RNR
             object->updateTransforms();
         }
 
-        Ogre::Entity* entity = (Ogre::Entity*)getObject();
+        /*Ogre::Entity* entity = (Ogre::Entity*)getObject();
         for(auto& subentity : entity->getSubEntities())
         {
             subentity->setMaterial(BrickColor::material(m_brickColor));
             subentity->getMaterial()->setShininess(64);
             subentity->getMaterial()->setLightingEnabled(true);
         }
-        entity->setCastShadows(true);
+        entity->setCastShadows(true);*/
     }
 
     void PartInstance::updateSurfaces()

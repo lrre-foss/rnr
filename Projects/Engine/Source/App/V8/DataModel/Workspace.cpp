@@ -16,7 +16,7 @@ namespace RNR
         {
             case BATCH_INSTANCED:
                 m_instanceManager = world->getOgreSceneManager()->createInstanceManager("workspaceInstanceManager", "meshes/Cube_Instanced.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
-                m_instanceManager->setNumCustomParams(2);
+                m_instanceManager->setNumCustomParams(1);
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
@@ -38,13 +38,20 @@ namespace RNR
             {
                 case BATCH_INSTANCED:
                     {
-                        Ogre::InstancedEntity* replica = m_instanceManager->createInstancedEntity(BrickColor::material(part->getBrickColor())->getName());
+                        Ogre::InstancedEntity* replica;
+                        if(part->getTransparency() != 0.0)
+                        {
+                            replica = m_instanceManager->createInstancedEntity("InstancedMaterialTransparent");
+                            replica->setRenderQueueGroup(Ogre::RenderQueueGroupID::RENDER_QUEUE_TRANSPARENTS);
+                        }
+                        else
+                            replica = m_instanceManager->createInstancedEntity("InstancedMaterial");
                         part->updateMatrix();
                         replica->setPosition(part->getCFrame().getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
                         replica->setScale(part->getSize());
-                        replica->setCastShadows(true);
-                        replica->setCustomParam(0, Ogre::Vector4f(part->getSize().x, part->getSize().y, part->getSize().z, 0));
+                        Ogre::Vector3 brickColor = BrickColor::color(part->getBrickColor());
+                        replica->setCustomParam(0, Ogre::Vector4f(brickColor.x, brickColor.y, brickColor.z, 1.0-part->getTransparency()));
                         m_worldspawn->attachObject(replica);
                         childAdded->setObject(replica);
                         child_node->setVisible(false);

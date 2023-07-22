@@ -23,12 +23,12 @@ namespace RNR
             
             if(m_world->getRunService()->getRunning())
             {
+                JointsService* joints = (JointsService*)m_world->getDatamodel()->getService("JointsService");
+                joints->fixWelds();
                 m_world->preStep();
                 m_world->step(delta);
             }
 
-            JointsService* joints = (JointsService*)m_world->getDatamodel()->getService("JointsService");
-            joints->fixWelds();
 
             m_lastPhysicsDelta = delta;
         }

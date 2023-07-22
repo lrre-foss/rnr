@@ -97,8 +97,12 @@ namespace RNR
         pFont->setTrueTypeSize(16);
         pFont->load();
         
-        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_STENCIL_ADDITIVE);
+        Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512");
+
+        ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_NONE);
         ogreSceneManager->setShadowFarDistance(500.f);
+        Ogre::MaterialManager::getSingletonPtr()->reloadAll();
 
         ogreSceneLight = ogreSceneManager->createLight("SunLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();
@@ -106,14 +110,10 @@ namespace RNR
         lightNode->setDirection(-0.25, -0.5, -0.5);
         lightNode->attachObject(ogreSceneLight);
 
-        ogreSceneLight->setCastShadows(true);
+        ogreSceneLight->setCastShadows(false);
         ogreSceneLight->setDiffuseColour(0.9, 0.9, 1.0);
         ogreSceneLight->setSpecularColour(1.0, 1.0, 1.0);
         ogreSceneLight->setType(Ogre::Light::LT_DIRECTIONAL);
-
-        Ogre::MaterialManager::getSingletonPtr()->reloadAll();
-        Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512");
 
         this->render_time = 0.0;
     }
