@@ -11,7 +11,7 @@ namespace RNR
     Snap* JointsService::snap(PartInstance* a, PartInstance* b)
     {
         Snap* snap = new Snap();
-        snap->weld(a, b);
+        snap->setBodies(a, b);
         snap->setParent(this);
         return snap;
     }

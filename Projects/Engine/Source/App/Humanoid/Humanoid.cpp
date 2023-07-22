@@ -40,7 +40,7 @@ namespace RNR
         if(getTorso() && getHead())
         {
             Weld* headWeld = new Weld();
-            headWeld->weld(getTorso(), getHead());
+            headWeld->setBodies(getTorso(), getHead());
             headWeld->create();
             headWeld->setParent(getTorso());
         }
