@@ -4,6 +4,36 @@
 
 namespace RNR
 {
+    bool PartSurfaceInfo::intersects(PartSurfaceInfo other)
+    {
+        if(other.plane != plane)
+            return false;
+        if(start.x > other.end.x || other.start.x > end.x)
+            return false;
+        if(end.y > other.start.y || other.end.y > start.y)
+            return false;
+        return true;
+    }
+
+    bool PartSurfaceInfo::links(PartSurfaceInfo other)
+    {
+        bool allowed_surf[__SURFACE_COUNT][__SURFACE_COUNT] = {
+            // SMOOTH, GLUE,  WELD,  STUDS, INLET, UNIVERSAL, HINGE, MOTOR, STEPPINGMOTOR, UNJOINABLE
+            {  false,  false, false, false, false, false,     false, false, false,         false  }, // SMOOTH
+            {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // GLUE
+            {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // WELD
+            {  false,  false, false, false, true,  true,      false, false, false,         false  }, // STUDS
+            {  false,  false, false, true,  false, true,      false, false, false,         false  }, // INLET
+            {  false,  false, true,  true,  true,  true,      false, false, false,         false  }, // UNIVERSAL
+            {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // HINGE
+            {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // MOTOR
+            {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // STEPPINGMOTOR
+            {  false,  false, false, false, false, false,     false, false, false,         false  }, // UNJOINABLE
+        };
+
+        return allowed_surf[type][other.type];
+    }
+
     PartInstance::PartInstance() : m_matrix(), PVInstance(),  m_size(2.f, STUD_HEIGHT, 4.f)
     {
         setName("Part");
@@ -15,6 +45,23 @@ namespace RNR
         setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
         setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
         getNode()->attachObject(getObject());
+
+        for(int i = 0; i < __NORM_COUNT; i++)
+        {
+            NormalId n = (NormalId)i;
+            switch(n)
+            {
+                case NORM_UP:
+                    m_surfaces[i].type = SURFACE_STUDS;
+                    break;
+                case NORM_DOWN:
+                    m_surfaces[i].type = SURFACE_INLET;
+                    break;
+                default:
+                    m_surfaces[i].type = SURFACE_SMOOTH;
+                    break;
+            }
+        }
 
         updateMatrix();
     }
@@ -50,6 +97,51 @@ namespace RNR
             subentity->getMaterial()->setLightingEnabled(true);
         }
         entity->setCastShadows(true);
+    }
+
+    void PartInstance::updateSurfaces()
+    {
+        for(int i = 0; i < __NORM_COUNT; i++)
+        {
+            m_surfaces[i].face = (NormalId)i;
+            PartSurfaceInfo& surf = m_surfaces[i];
+            Ogre::Vector3 size = ((getSize() / 2.f) * getRotation());
+            Ogre::Vector3 pos = getPosition();
+            switch(m_surfaces[i].face)
+            {
+                case NORM_DOWN:
+                    surf.start = Ogre::Vector2(pos.x-size.x,pos.z-size.z);
+                    surf.end =   Ogre::Vector2(pos.x+size.x,pos.z+size.z);
+                    surf.plane = pos.y - size.y;
+                    break;
+                case NORM_UP:
+                    surf.start = Ogre::Vector2(pos.x-size.x,pos.z-size.z);
+                    surf.end =   Ogre::Vector2(pos.x+size.x,pos.z+size.z);
+                    surf.plane = pos.y + size.y;
+                    break;
+                case NORM_LEFT:
+                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
+                    surf.plane = pos.z - size.z;
+                    break;
+                case NORM_RIGHT:
+                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
+                    surf.plane = pos.z + size.z;
+                    break;
+                case NORM_FRONT:
+                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
+                    surf.plane = pos.x + size.x;
+                    break;
+                case NORM_BACK:
+                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
+                    surf.plane = pos.x - size.x;
+                    break;
+            }
+        }
+
     }
 
     void PartInstance::deserializeProperty(char* prop_name, pugi::xml_node node)

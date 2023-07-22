@@ -5,13 +5,14 @@
 namespace RNR {
     enum NormalId
     {
-        NORM_X,
-        NORM_Y,
-        NORM_Z,
-        NORM_X_NEG,
-        NORM_Y_NEG,
-        NORM_Z_NEG,
-        NORM_UNDEFINED
+        NORM_X, NORM_RIGHT = NORM_X,
+        NORM_Y, NORM_UP = NORM_Y,
+        NORM_Z, NORM_BACK = NORM_Z,
+        NORM_X_NEG, NORM_LEFT = NORM_X_NEG,
+        NORM_Y_NEG, NORM_DOWN = NORM_Y_NEG,
+        NORM_Z_NEG, NORM_FRONT = NORM_Z_NEG,
+        __NORM_COUNT,
+        NORM_UNDEFINED,
     };
 
     bool validNormalId(NormalId normalId);
