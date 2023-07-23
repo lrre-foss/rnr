@@ -28,4 +28,15 @@ namespace RNR
         res.m_rotation = m_rotation * frame.m_rotation;
         return res;
     }
+
+    void CoordinateFrame::lookAt(Ogre::Vector3 point)
+    {
+        Ogre::Vector3 dir = m_position - point;
+        dir.normalise();
+        Ogre::Vector3 right = Ogre::Vector3(dir.z,0,-dir.x);
+        right.normalise();
+        Ogre::Vector3 up = dir.crossProduct(right);
+        Ogre::Quaternion orientation = Ogre::Quaternion(right, up, dir);
+        orientation.ToRotationMatrix(m_rotation);
+    }
 }

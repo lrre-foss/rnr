@@ -36,28 +36,29 @@ namespace RNR
 
     Ogre::Vector3 PartSurfaceInfo::position()
     {
-        Ogre::Vector3 pos;
+        Ogre::Vector3 pos = Ogre::Vector3(0,0,0);
         switch(face)
         {
         case NORM_UP:
-            pos.y = (plane + part->getPosition().y);
-            break;
-        case NORM_DOWN:
             pos.y = (plane - part->getPosition().y);
             break;
+        case NORM_DOWN:
+            pos.y = (part->getPosition().y - plane);
+            break;
         case NORM_LEFT:
-            pos.x = (plane - part->getPosition().x);
+            pos.y = (part->getPosition().x - plane);
             break;
         case NORM_RIGHT:
-            pos.x = (plane + part->getPosition().x);
+            pos.x = (plane - part->getPosition().x);
             break;
         case NORM_FRONT:
-            pos.z = (plane + part->getPosition().z);
-            break;
-        case NORM_BACK:
             pos.z = (plane - part->getPosition().z);
             break;
+        case NORM_BACK:
+            pos.z = (part->getPosition().z - plane);
+            break;
         }
+        //printf("%f,%f,%f (%f, %i)\n",pos.x,pos.y,pos.z,plane,face);
         return pos;
     }
 
@@ -82,10 +83,10 @@ namespace RNR
                     m_surfaces[i].type = SURFACE_STUDS;
                     break;
                 case NORM_DOWN:
-                    m_surfaces[i].type = SURFACE_INLET;
+                    m_surfaces[i].type = SURFACE_STUDS;
                     break;
                 default:
-                    m_surfaces[i].type = SURFACE_SMOOTH;
+                    m_surfaces[i].type = SURFACE_STUDS;
                     break;
             }
             m_surfaces[i].surf = 0;
@@ -99,6 +100,17 @@ namespace RNR
     PartInstance::~PartInstance()
     {
         getNode()->removeAndDestroyAllChildren();
+    }
+
+    void PartInstance::uploadInstancedProperties()
+    {
+        if(getObject() && dynamic_cast<Ogre::InstancedEntity*>(getObject()))
+        {
+            Ogre::InstancedEntity* object = (Ogre::InstancedEntity*)getObject();
+
+            Ogre::Vector3 brickColor = BrickColor::color(getBrickColor());
+            object->setCustomParam(0, Ogre::Vector4f(brickColor.x, brickColor.y, brickColor.z, 1.0-getTransparency()));
+        }
     }
 
     void PartInstance::updateMatrix()
@@ -196,11 +208,11 @@ namespace RNR
             switch(surf.type)
             {
             case SURFACE_STUDS:
-                surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
-                surfaceNode->attachObject(surf.surf);
-                surfaceNode->setDirection(f, Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Y);
-                surfaceNode->setPosition(surf.position());
-                surfaceNode->setScale(Ogre::Vector3(surf.size.x, surf.size.y, 1));
+                //surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
+                //surfaceNode->attachObject(surf.surf);
+                //surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
+                //surfaceNode->setPosition(surf.position());
+                //surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
                 break;
             default:
                 break;

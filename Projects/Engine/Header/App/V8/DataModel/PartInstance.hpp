@@ -62,6 +62,7 @@ namespace RNR
         Ogre::Vector4 m_color;
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
         virtual void addProperties(std::vector<ReflectionProperty>& properties);
+        void uploadInstancedProperties();
         std::string mesh_id;
     public:
         PartInstance();
@@ -76,9 +77,9 @@ namespace RNR
         Ogre::Vector3 getSize() { return m_size; }
         Ogre::Vector4 getColor() { return m_color; }
 
-        void setReflectance(float reflectance) { m_reflectance = reflectance; }
+        void setReflectance(float reflectance) { m_reflectance = reflectance; uploadInstancedProperties(); }
         float getReflectance() { return m_reflectance; }
-        void setTransparency(float transparency) { m_transparency = transparency; }
+        void setTransparency(float transparency) { m_transparency = transparency; uploadInstancedProperties(); }
         float getTransparency() { return m_transparency; }
         void setAnchored(bool anchored) { m_anchored = anchored; }
         bool getAnchored() { return m_anchored; }
@@ -89,7 +90,7 @@ namespace RNR
 
         Ogre::Vector3 getOgreCenter() { return m_position + (m_size / 2.f); }
 
-        void setBrickColor(int brickcolor) { m_brickColor = brickcolor; }
+        void setBrickColor(int brickcolor) { m_brickColor = brickcolor; uploadInstancedProperties(); }
         int getBrickColor() { return m_brickColor; }
     };
 }

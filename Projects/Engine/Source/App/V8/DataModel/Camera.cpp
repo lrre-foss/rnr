@@ -9,6 +9,8 @@ namespace RNR
     Camera::Camera()
     {
         setName("Camera");
+        m_type = CAMERA_FOLLOW;
+        m_lookMat = Ogre::Matrix3::IDENTITY;
     }
 
     Camera::~Camera()
@@ -32,20 +34,48 @@ namespace RNR
     {
         Ogre::Radian pitch = Ogre::Radian(yd);
         Ogre::Radian yaw = Ogre::Radian(xd);
-
         Ogre::Radian old_pitch;
         Ogre::Radian old_yaw;
         Ogre::Radian old_roll;
 
-        getCFrame().getRotation().ToEulerAnglesYXZ(old_yaw, old_pitch, old_roll);
+        Ogre::Matrix3 rotation = getCFrame().getRotation();
 
-        pitch = old_pitch + pitch;
-        yaw = old_yaw - yaw;
-        m_yaw = yaw;
+        Players* players = (Players*)world->getDatamodel()->getService("Players");
 
-        Ogre::Matrix3 rotation;
-        rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
-        getCFrame().setRotation(rotation);  
+        if(players->getLocalPlayer())
+        {
+            ModelInstance* character = players->getLocalPlayer()->getCharacter();
+            if(character)
+            {
+                PartInstance* head = dynamic_cast<PartInstance*>(character->findFirstChild("Head"));
+                if(head)
+                {
+                    switch(m_type)
+                    {
+                    case CAMERA_FOLLOW:
+                        m_lookMat.ToEulerAnglesXYZ(old_pitch, old_yaw, old_roll);
+                        pitch = old_pitch + pitch;
+                        yaw = old_yaw + yaw;
+                        m_yaw = yaw;
+                        m_lookMat.FromEulerAnglesXYZ(pitch, yaw, Ogre::Radian(0));
+                        getCFrame().setPosition(Ogre::Vector3(0,0,-5) * m_lookMat);
+                        getCFrame().lookAt(getFocus().getPosition());
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            getCFrame().getRotation().ToEulerAnglesYXZ(old_yaw, old_pitch, old_roll);
+
+            pitch = old_pitch + pitch;
+            yaw = old_yaw - yaw;
+            m_yaw = yaw;
+
+            rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
+            getCFrame().setRotation(rotation);
+        }
 
         if(!movement_disable)
         {

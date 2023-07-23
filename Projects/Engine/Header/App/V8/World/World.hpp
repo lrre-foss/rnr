@@ -7,6 +7,7 @@
 #include <App/V8/DataModel/RunService.hpp>
 #include <App/V8/DataModel/DataModel.hpp>
 #include <App/V8/World/ComPlicitNgine.hpp>
+#include <App/V8/World/JointsService.hpp>
 #include <Network/Players.hpp>
 #include <App/GUI/TopMenuBar.hpp>
 #include <OGRE/Ogre.h>
@@ -52,6 +53,7 @@ namespace RNR
             Workspace* m_workspace;
             RunService* m_runService;
             Players* m_players;
+            JointsService* m_joints;
             Ogre::Root* m_ogreRoot;
             Ogre::SceneManager* m_ogreSceneManager;
             TopMenuBar* m_tmb;
@@ -79,6 +81,7 @@ namespace RNR
             double step(float timestep);
             void update();
 
+            JointsService* getJointsService() { return m_joints; }
             btDiscreteDynamicsWorld* getDynamicsWorld() { return m_dynamicsWorld; }
             ComPlicitNgine* getComPlicitNgine() { return m_ngine; }
             float getLastDelta() { return m_lastDelta; }

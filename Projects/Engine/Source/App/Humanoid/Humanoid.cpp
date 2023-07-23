@@ -130,38 +130,25 @@ namespace RNR
             Ogre::Matrix3 camera_rotation;
             camera_rotation.FromEulerAnglesYXZ(camera->getYaw(), Ogre::Radian(0), Ogre::Radian(0)); // we only want yaw because otherwise the movement target will go through the ground/in the air
             Ogre::Quaternion direction = torso->getRotation();
-            Ogre::Quaternion new_direction = Ogre::Quaternion::nlerp(0.5f, direction, camera_rotation);
+            Ogre::Quaternion new_direction = direction;
             float forward = 0;
 
             if(inputManager->isKeyDown('W'))
+            {
+                new_direction = Ogre::Quaternion::nlerp(0.5f, direction, camera_rotation);
                 forward = 16;
+            }
 
             Ogre::Vector3 move = Ogre::Vector3(0, 0, forward);
             move = direction * move;
             move *= world->getComPlicitNgine()->getLastPhysicsDelta();
+            m_characterController->setLinearVelocity(Bullet::v3ToBullet(move));
 
-            bool move_valid = true;
+            m_playerGhostObject->getWorldTransform().setRotation(Bullet::qtToBullet(direction));
 
-            // TODO: collision checking
-
-            if(!move_valid)
-                return;
-
-            for(auto& child : *getParent()->getChildren())
+            if(getTorso())
             {
-                PartInstance* bp = dynamic_cast<PartInstance*>(child);
-                if(bp)
-                {
-                    Ogre::Vector3 bp_p = bp->getRelativePosition(getTorso());
-
-                    bp->getCFrame().setPosition(bp_p + Bullet::v3ToOgre(m_characterController->getGhostObject()->getWorldTransform().getOrigin()));
-                    Ogre::Matrix3 new_rotation_matrix;
-                    new_direction.ToRotationMatrix(new_rotation_matrix);
-                    bp->getCFrame().setRotation(new_rotation_matrix);
-                    bp->updateMatrix();
-                    world->getComPlicitNgine()->updatePhysicsPart(bp);
-                    world->getWorkspace()->setDirty();
-                }
+                getTorso()->getCFrame().setPosition(Bullet::v3ToOgre(m_playerGhostObject->getWorldTransform().getOrigin()));
             }
 
             camera->getCFrame().setPosition(camera->getCFrame().getPosition() + move);

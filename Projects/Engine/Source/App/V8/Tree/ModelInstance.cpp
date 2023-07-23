@@ -1,6 +1,7 @@
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/World/World.hpp>
+#include <App/V8/World/JointsService.hpp>
 #include <App/Humanoid/Humanoid.hpp>
 
 namespace RNR
@@ -19,12 +20,16 @@ namespace RNR
 
     void ModelInstance::makeJoints()
     {
-
+        JointsService* joints = world->getJointsService();
+        if(joints)
+            joints->makeModelJoints(this);
     }
 
     void ModelInstance::breakJoints()
     {
-        
+        JointsService* joints = world->getJointsService();
+        if(joints)
+            joints->breakModelJoints(this);
     }
 
     void ModelInstance::childAddBoundingBox(Instance* child)

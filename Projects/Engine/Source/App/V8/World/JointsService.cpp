@@ -6,12 +6,18 @@ namespace RNR
     JointsService::JointsService()
     {
         setName("JointsService");
+        m_jointsToDo = 0;
+        m_jointsDone = 0;
     }
 
     Snap* JointsService::snap(PartInstance* a, PartInstance* b)
     {
         Snap* snap = new Snap();
         snap->setBodies(a, b);
+        CoordinateFrame c0;
+        c0.setRotation(a->getRotation().inverse() * b->getRotation());
+        c0.setPosition(-a->getPosition() * b->getPosition());
+        snap->setC0(c0);
         snap->setParent(this);
         return snap;
     }
@@ -28,11 +34,14 @@ namespace RNR
 
     void JointsService::makeJoints(Instance* w, PartInstance* p)
     {
-        int chk_child = 0;
-        int child_sz = w->getChildren()->size();
+        m_jointsToDo += w->getChildren()->size();
         for(auto& child : *w->getChildren())
         {
-            chk_child++;
+            world->setLoadProgress(m_jointsDone);
+            world->setMaxLoadProgress(m_jointsToDo);
+            if(world->getLoadListener())
+                world->getLoadListener()->updateWorldLoad();
+            m_jointsDone++;
             if(child == p)
                 continue;
             PartInstance* child_p = dynamic_cast<PartInstance*>(child);
@@ -49,9 +58,9 @@ namespace RNR
                     NormalId n_opp = normalIdOpposite(n);
                     PartSurfaceInfo n_surf = p->getSurface(n);
                     PartSurfaceInfo n_opp_surf = child_p->getSurface(n_opp);
-                    if(n_surf.intersects(n_opp_surf))
+                    if(n_surf.links(n_opp_surf))
                     {
-                        if(n_surf.links(n_opp_surf))
+                        if(n_surf.intersects(n_opp_surf))
                         {
                             // determine link
                             switch(n_surf.type)
@@ -66,7 +75,9 @@ namespace RNR
                     }
                 }
             }
-            makeJoints(child, p);
+            ModelInstance* child_m = dynamic_cast<ModelInstance*>(child);
+            if(child_m)
+                makeJoints(child_m, p);
         }
     }
 
@@ -127,7 +138,8 @@ namespace RNR
                     brk = true;
                 if(brk)
                 {
-
+                    snap->setParent(NULL);
+                    delete snap;
                 }
             }
         }

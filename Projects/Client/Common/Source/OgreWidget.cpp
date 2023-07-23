@@ -97,8 +97,7 @@ namespace RNR
         pFont->setTrueTypeSize(16);
         pFont->load();
         
-        Ogre::MaterialManager::getSingletonPtr()->load("sky/null_plainsky512", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512");
+        ogreSceneManager->setSkyBox(true, "sky/null_plainsky512", 500);
 
         ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_NONE);
         ogreSceneManager->setShadowFarDistance(500.f);

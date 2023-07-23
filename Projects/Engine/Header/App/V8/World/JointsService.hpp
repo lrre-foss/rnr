@@ -8,11 +8,13 @@ namespace RNR
 {
     class JointsService : public Instance
     {
+        int m_jointsToDo;
+        int m_jointsDone;
     public:
         JointsService();
         virtual std::string getClassName() { return "JointsService"; }
         Snap* snap(PartInstance* a, PartInstance* b);
-        
+
         void makeJoints(Instance* w, PartInstance* p);
         void makeJoints(PartInstance* p);
         void breakJoints(PartInstance* b);

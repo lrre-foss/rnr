@@ -41,15 +41,13 @@ namespace RNR
                     {
                         Ogre::InstancedEntity* replica;
                         if(part->getTransparency() != 0.0)
-                        {
                             replica = m_instanceManager->createInstancedEntity("InstancedMaterialTransparent");
-                        }
                         else
                             replica = m_instanceManager->createInstancedEntity("InstancedMaterial");
                         part->updateMatrix();
+                        replica->setScale(part->getSize());
                         replica->setPosition(part->getCFrame().getPosition());
                         replica->setOrientation(part->getCFrame().getRotation());
-                        replica->setScale(part->getSize());
                         Ogre::Vector3 brickColor = BrickColor::color(part->getBrickColor());
                         replica->setCustomParam(0, Ogre::Vector4f(brickColor.x, brickColor.y, brickColor.z, 1.0-part->getTransparency()));
                         m_worldspawn->attachObject(replica);

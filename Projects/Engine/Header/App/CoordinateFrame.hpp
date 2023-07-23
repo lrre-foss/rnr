@@ -10,6 +10,8 @@ namespace RNR
 public:
         CoordinateFrame();
 
+        void lookAt(Ogre::Vector3 point);
+
         void setRotation(Ogre::Matrix3 rotation) { m_rotation = rotation; }
         void setPosition(Ogre::Vector3 position) { m_position = position; }
         Ogre::Matrix3 getRotation() { return m_rotation; }

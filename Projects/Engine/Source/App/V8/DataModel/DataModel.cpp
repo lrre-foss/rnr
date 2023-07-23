@@ -12,11 +12,19 @@ namespace RNR
     {
         Instance* service = findFirstChildOfType(service_name);
         if(!service)
+            service = findFirstChild(service_name);
+        if(!service)
         {
-            service = InstanceFactory::singleton()->build(service_name);
-            if(service)
+            try{
+                service = InstanceFactory::singleton()->build(service_name);
+                if(service)
+                {
+                    service->setParent(this);
+                }
+            }
+            catch(std::runtime_error e)
             {
-                service->setParent(this);
+                printf("DataModel::getService: InstanceFactory::build failed  '%s'\n", e.what());
             }
         }
         return service;

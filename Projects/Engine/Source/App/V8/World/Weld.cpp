@@ -7,7 +7,7 @@ namespace RNR
     Weld::Weld() : JointInstance()
     {
         setName("Weld");
-        m_collidesWithSelf = true;
+        m_collidesWithSelf = false;
     }
 
     btTypedConstraint* Weld::constraint()

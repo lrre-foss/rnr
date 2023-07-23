@@ -25,6 +25,7 @@ namespace RNR
         m_dynamicsWorld->setGravity(btVector3(0, -64, 0));
 
         m_inputManager = 0;
+        m_loadListener = 0;
 
         m_instanceFactory = new InstanceFactory();
 
@@ -48,6 +49,9 @@ namespace RNR
         m_runService = (RunService*)m_datamodel->getService("RunService");
         m_players = (Players*)m_datamodel->getService("Players");
 
+        m_joints = new JointsService();
+        m_joints->setParent(m_datamodel);
+
         m_runPhysics = true;
         m_ngine = new ComPlicitNgine(this);
         m_tmb = new TopMenuBar(this);
@@ -56,13 +60,14 @@ namespace RNR
         start_cam->setParent(m_workspace);
         m_workspace->setCurrentCamera(start_cam);
 
-        /*PartInstance* baseplate = new PartInstance();
+        PartInstance* baseplate = new PartInstance();
         baseplate->setName("Baseplate");
-        baseplate->getCFrame().setPosition(Ogre::Vector3(0, -64, 0));
+        baseplate->getCFrame().setPosition(Ogre::Vector3(5, -64, 5));
         baseplate->setSize(Ogre::Vector3(512, 1, 512));
         baseplate->setBrickColor(2);
         baseplate->setAnchored(true);
-        baseplate->setParent(m_workspace);*/
+        baseplate->updateSurfaces();
+        baseplate->setParent(m_workspace);
     }
 
     World::~World()
@@ -162,12 +167,6 @@ namespace RNR
                     ModelInstance* m = (ModelInstance*)s.instance;
                     m->build();
                 }
-                else if(s.instance->getClassName() == "Part")
-                {
-                    PartInstance* p = (PartInstance*)s.instance;
-                    m_loadState = LOADING_MAKEJOINTS;
-                    joints->makeJoints(p);
-                }
             }
         }
         else
@@ -177,7 +176,10 @@ namespace RNR
             m_loadListener = 0;
         }        
         m_workspace->build();
+        m_loadState = LOADING_MAKEJOINTS;
+        m_workspace->makeJoints();
         m_loadState = LOADING_FINISHED;
+        m_loadListener->updateWorldLoad();
         m_loadListener = 0;
     }
 

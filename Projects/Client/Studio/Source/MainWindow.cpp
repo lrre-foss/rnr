@@ -111,6 +111,9 @@ void MainWindow::updateWorldLoad()
         case RNR::LOADING_DATAMODEL_PROPERTIES:
             curr_progress->setLabelText("Loading datamodel properties");
             break;
+        case RNR::LOADING_MAKEJOINTS:
+            curr_progress->setLabelText("Making joints");
+            break;
     }
 }
 

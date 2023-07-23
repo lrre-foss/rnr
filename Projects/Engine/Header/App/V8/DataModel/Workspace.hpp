@@ -31,7 +31,6 @@ namespace RNR
         virtual void onDescendantRemoved(RNR::Instance* childRemoved);
 
         void buildGeom();
-        void makeJoints();
         
         Camera* getCurrentCamera() const;
 	    void setCurrentCamera(Camera *value); 
