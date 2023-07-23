@@ -1,0 +1,10 @@
+{
+    "name": "rnr",
+    "version": "1.0.0",
+    "dependencies": [
+        "ogre",
+        "bullet3",
+        "boost",
+        "pugixml"
+    ]
+}
