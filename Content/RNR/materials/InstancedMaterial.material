@@ -20,6 +20,7 @@ material InstancedMaterialTransparent
     technique {
         pass {
 			specular	1 1 1 1 12.5
+            depth_write off
             scene_blend alpha_blend
 
             fragment_program_ref InstancedMaterial/FragmentProgram 
@@ -37,6 +38,7 @@ abstract material InstancedMaterialSurf
 {
     technique {
         pass {
+            depth_write off
             scene_blend alpha_blend
 
             rtshader_system
