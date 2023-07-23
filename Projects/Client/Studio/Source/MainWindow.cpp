@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QProgressDialog>
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/Light.hpp>
 
@@ -98,9 +99,34 @@ void MainWindow::updateTree(RNR::Instance* root_instance)
     }
 }
 
+void MainWindow::updateWorldLoad()
+{
+    curr_progress->setMaximum(ogreWidget->world->getMaxLoadProgress());
+    curr_progress->setValue(ogreWidget->world->getLoadProgress());
+    switch(ogreWidget->world->getLoadState())
+    {
+        case RNR::LOADING_DATAMODEL:
+            curr_progress->setLabelText("Loading datamodel");
+            break;
+        case RNR::LOADING_DATAMODEL_PROPERTIES:
+            curr_progress->setLabelText("Loading datamodel properties");
+            break;
+    }
+}
+
 void MainWindow::loadDatamodel()
 {
-    this->ogreWidget->world->load(QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("XML RBXLs (*.rbxl *.rbxlx)")).toLocal8Bit().data());
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open RBXL"), tr(""), tr("XML RBXLs (*.rbxl *.rbxlx)"));
+    curr_progress = new QProgressDialog("Loading DataModel", "Cancel", 0, 1, this);
+    curr_progress->setWindowModality(Qt::WindowModal);
+    curr_progress->setAutoClose(false);
+
+    ogreWidget->world->load(filename.toLocal8Bit().data(), this);
+
+    curr_progress->close();
+    delete curr_progress;
+
+    printf("MainWindow::loadDataModel: done waiting\n");
 
     updateTree(ogreWidget->world->getDatamodel());
 }

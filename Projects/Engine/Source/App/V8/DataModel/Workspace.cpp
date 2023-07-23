@@ -2,6 +2,7 @@
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/DataModel/Camera.hpp>
+#include <OGRE/Ogre.h>
 
 namespace RNR
 {
@@ -42,7 +43,8 @@ namespace RNR
                         if(part->getTransparency() != 0.0)
                         {
                             replica = m_instanceManager->createInstancedEntity("InstancedMaterialTransparent");
-                            replica->setRenderQueueGroup(Ogre::RenderQueueGroupID::RENDER_QUEUE_TRANSPARENTS);
+                            replica->setRenderQueueGroup(Ogre::RENDER_QUEUE_TRANSPARENTS);
+                            replica->_getOwner()->setRenderQueueGroup(Ogre::RENDER_QUEUE_TRANSPARENTS);
                         }
                         else
                             replica = m_instanceManager->createInstancedEntity("InstancedMaterial");

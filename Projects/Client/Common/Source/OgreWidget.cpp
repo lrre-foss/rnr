@@ -115,6 +115,10 @@ namespace RNR
         ogreSceneLight->setSpecularColour(1.0, 1.0, 1.0);
         ogreSceneLight->setType(Ogre::Light::LT_DIRECTIONAL);
 
+        Ogre::MeshManager::getSingletonPtr()->load("meshes/Cube.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        Ogre::MeshManager::getSingletonPtr()->load("meshes/Cube_Instanced.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+        Ogre::MeshManager::getSingletonPtr()->load("meshes/Stud.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
         this->render_time = 0.0;
     }
 

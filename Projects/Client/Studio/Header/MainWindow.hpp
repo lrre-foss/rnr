@@ -1,6 +1,7 @@
 #pragma once
 
 #include <App/V8/Tree/Instance.hpp>
+#include <App/V8/World/World.hpp>
 
 #include <QMainWindow>
 #include <QTreeWidget>
@@ -10,6 +11,7 @@
 #include <QGridLayout>
 #include <QTreeView>
 #include <QVariant>
+#include <QProgressDialog>
 #include <PropertyViewer.hpp>
 
 #include <OGRE/Bites/OgreBitesConfigDialog.h>
@@ -17,7 +19,7 @@
 
 #include "Resource/Studio.hpp"
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow, public RNR::ILoadListener
 {
     Q_OBJECT
 
@@ -33,7 +35,7 @@ class MainWindow : public QMainWindow
 
         void createToolbar();
         void updateTree(RNR::Instance* root_instance);
-
+        virtual void updateWorldLoad();
     public slots:
         void loadDatamodel();
         void selectInstance(QTreeWidgetItem *item, int column);
@@ -47,4 +49,6 @@ class MainWindow : public QMainWindow
         void recurseTreeAddInstance(QTreeWidgetItem* parent, RNR::Instance* instance);
         void closeEvent(QCloseEvent* event);
         void resizeEvent(QResizeEvent* event);
+
+        QProgressDialog* curr_progress;
 };

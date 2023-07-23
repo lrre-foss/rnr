@@ -68,6 +68,11 @@ namespace RNR {
         }
     }
 
+    const Ogre::Vector3& normalIdToVector3(NormalId id)
+    {
+        return normalIdVectors[id];
+    }
+
 
     // UVW to Object
     template<>

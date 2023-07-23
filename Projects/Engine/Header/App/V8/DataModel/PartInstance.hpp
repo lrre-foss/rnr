@@ -23,18 +23,28 @@ namespace RNR
         __SURFACE_COUNT,
     };
 
+    class PartInstance;
+
     struct PartSurfaceInfo
     {
+    private:
+        friend class PartInstance;
+
+        Ogre::Entity* surf; 
+        PartInstance* part;
     public:
         NormalId face;
         PartSurfaceType type;
 
         Ogre::Vector2 start;
         Ogre::Vector2 end;
+        Ogre::Vector2 size;
         float plane;
 
         bool intersects(PartSurfaceInfo other);
         bool links(PartSurfaceInfo other);
+
+        Ogre::Vector3 position(); // relative to center of part
     };
 
     class PartInstance : public PVInstance
@@ -45,6 +55,7 @@ namespace RNR
         float m_reflectance;
         bool m_anchored;
         PartSurfaceInfo m_surfaces[__NORM_COUNT];
+        Ogre::SceneNode *m_surfaceNode[__NORM_COUNT];
         Ogre::Matrix4 m_matrix;
         Ogre::Vector3 m_position;
         Ogre::Vector3 m_size;

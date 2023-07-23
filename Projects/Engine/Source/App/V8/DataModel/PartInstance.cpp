@@ -34,6 +34,33 @@ namespace RNR
         return allowed_surf[type][other.type];
     }
 
+    Ogre::Vector3 PartSurfaceInfo::position()
+    {
+        Ogre::Vector3 pos;
+        switch(face)
+        {
+        case NORM_UP:
+            pos.y = (plane + part->getPosition().y);
+            break;
+        case NORM_DOWN:
+            pos.y = (plane - part->getPosition().y);
+            break;
+        case NORM_LEFT:
+            pos.x = (plane - part->getPosition().x);
+            break;
+        case NORM_RIGHT:
+            pos.x = (plane + part->getPosition().x);
+            break;
+        case NORM_FRONT:
+            pos.z = (plane + part->getPosition().z);
+            break;
+        case NORM_BACK:
+            pos.z = (plane - part->getPosition().z);
+            break;
+        }
+        return pos;
+    }
+
     PartInstance::PartInstance() : m_matrix(), PVInstance(),  m_size(2.f, STUD_HEIGHT, 4.f)
     {
         setName("Part");
@@ -61,6 +88,9 @@ namespace RNR
                     m_surfaces[i].type = SURFACE_SMOOTH;
                     break;
             }
+            m_surfaces[i].surf = 0;
+            m_surfaces[i].part = this;
+            m_surfaceNode[i] = 0;
         }
 
         updateMatrix();
@@ -110,40 +140,70 @@ namespace RNR
         {
             m_surfaces[i].face = (NormalId)i;
             PartSurfaceInfo& surf = m_surfaces[i];
-            Ogre::Vector3 size = ((getSize()) * getRotation());
+            Ogre::Vector3 size = ((getSize() / 2.f) );
             Ogre::Vector3 pos = getPosition();
-            switch(m_surfaces[i].face)
+            switch(surf.face)
             {
                 case NORM_DOWN:
+                    surf.size  = Ogre::Vector2(size.x, size.z);
                     surf.start = Ogre::Vector2(pos.x-size.x,pos.z-size.z);
                     surf.end =   Ogre::Vector2(pos.x+size.x,pos.z+size.z);
                     surf.plane = pos.y - size.y;
                     break;
                 case NORM_UP:
+                    surf.size  = Ogre::Vector2(size.x, size.z);
                     surf.start = Ogre::Vector2(pos.x-size.x,pos.z-size.z);
                     surf.end =   Ogre::Vector2(pos.x+size.x,pos.z+size.z);
                     surf.plane = pos.y + size.y;
                     break;
                 case NORM_LEFT:
-                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
-                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
-                    surf.plane = pos.z - size.z;
-                    break;
-                case NORM_RIGHT:
-                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
-                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
-                    surf.plane = pos.z + size.z;
-                    break;
-                case NORM_FRONT:
-                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
-                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
-                    surf.plane = pos.x + size.x;
-                    break;
-                case NORM_BACK:
+                    surf.size  = Ogre::Vector2(size.x, size.y);
                     surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
                     surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
                     surf.plane = pos.x - size.x;
                     break;
+                case NORM_RIGHT:
+                    surf.size  = Ogre::Vector2(size.x, size.y);
+                    surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
+                    surf.plane = pos.x + size.x;
+                    break;
+                case NORM_FRONT:
+                    surf.size  = Ogre::Vector2(size.z, size.y);
+                    surf.start = Ogre::Vector2(pos.x-size.x,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.x+size.x,pos.y+size.y);
+                    surf.plane = pos.z + size.z;
+                    break;
+                case NORM_BACK:
+                    surf.size  = Ogre::Vector2(size.z, size.y);
+                    surf.start = Ogre::Vector2(pos.x-size.x,pos.y-size.y);
+                    surf.end =   Ogre::Vector2(pos.x+size.x,pos.y+size.y);
+                    surf.plane = pos.z - size.z;
+                    break;
+            }
+            if(surf.surf)
+            {
+                surf.surf->detachFromParent();
+                delete surf.surf;
+            }
+            Ogre::SceneNode* surfaceNode = m_surfaceNode[i];
+            if(!surfaceNode)
+            {
+                surfaceNode = getNode()->createChildSceneNode();
+                m_surfaceNode[i] = surfaceNode;
+            }  
+            Ogre::Vector3 f = normalIdToVector3(surf.face);
+            switch(surf.type)
+            {
+            case SURFACE_STUDS:
+                surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
+                surfaceNode->attachObject(surf.surf);
+                surfaceNode->setDirection(f, Ogre::Node::TS_PARENT, Ogre::Vector3::UNIT_Y);
+                surfaceNode->setPosition(surf.position());
+                surfaceNode->setScale(Ogre::Vector3(surf.size.x, surf.size.y, 1));
+                break;
+            default:
+                break;
             }
         }
 

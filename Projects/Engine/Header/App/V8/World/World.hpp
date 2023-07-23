@@ -27,6 +27,20 @@ namespace RNR
         pugi::xml_node node;
     };
 
+    enum WorldLoadState
+    {
+        LOADING_DATAMODEL,
+        LOADING_DATAMODEL_PROPERTIES,
+        LOADING_MAKEJOINTS,
+        LOADING_FINISHED
+    };
+
+    class ILoadListener
+    {
+    public:
+        virtual void updateWorldLoad() = 0;
+    };
+
     class World
     {
         private:
@@ -45,6 +59,10 @@ namespace RNR
             IInputManager* m_inputManager;
             float m_lastDelta;
             ComPlicitNgine* m_ngine;
+            enum WorldLoadState m_loadState;
+            int m_maxLoadProgress;
+            int m_loadProgress;
+            ILoadListener* m_loadListener;
 
             void xmlAddItem(pugi::xml_node node, Instance* parent);
         public:
@@ -53,7 +71,8 @@ namespace RNR
             World(Ogre::Root* ogre, Ogre::SceneManager* ogreScene);
             ~World();
 
-            void load(char* path);
+            void load(char* path, ILoadListener* loadListener = NULL);
+            ILoadListener* getLoadListener() { return m_loadListener; }
 
             void preRender(float timestep);
             void preStep();
@@ -75,6 +94,11 @@ namespace RNR
             Ogre::Root* getOgreRoot() { return m_ogreRoot; }
             Ogre::SceneManager* getOgreSceneManager() { return m_ogreSceneManager; }
             bool getPhysicsShouldBeRunningPleaseStopIfItIsStillRunning() { return m_runPhysics; }
+            enum WorldLoadState getLoadState() { return m_loadState; }
+            int getMaxLoadProgress() { return m_maxLoadProgress; }
+            void setMaxLoadProgress(int p) { m_maxLoadProgress = p; }
+            int getLoadProgress() { return m_loadProgress; }
+            void setLoadProgress(int p) { m_loadProgress = p; }
 
             Lock dynamicWorldLock;
     };

@@ -28,8 +28,11 @@ namespace RNR
 
     void JointsService::makeJoints(Instance* w, PartInstance* p)
     {
+        int chk_child = 0;
+        int child_sz = w->getChildren()->size();
         for(auto& child : *w->getChildren())
         {
+            chk_child++;
             if(child == p)
                 continue;
             PartInstance* child_p = dynamic_cast<PartInstance*>(child);

@@ -105,8 +105,10 @@ namespace RNR
             xmlAddItem(item, instance);
     }
 
-    void World::load(char* path)
+    void World::load(char* path, ILoadListener* loadListener)
     {
+        m_loadState = LOADING_DATAMODEL;
+        m_loadListener = loadListener;
         m_refs.clear();
 
         JointsService* joints = (JointsService*)m_datamodel->getService("JointsService");
@@ -123,16 +125,29 @@ namespace RNR
         {
             printf("World::load: XML parsed without errors\n");
 
+            int children = 0;            
             pugi::xml_node root = rbxl_doc.child("roblox");
             for(pugi::xml_node item = root.child("Item"); item; item = item.next_sibling("Item"))
             {
+                m_loadState = LOADING_DATAMODEL;
+                m_loadProgress = children;
+                m_maxLoadProgress = children+1;
+                children++;
+                if(loadListener)
+                    loadListener->updateWorldLoad();
                 xmlAddItem(item, m_datamodel);
             }
+            int undeserialized_size = m_undeserialized.size();
             while(!m_undeserialized.empty())
             {
                 WorldUndeserialized s = m_undeserialized.top();
                 m_undeserialized.pop();
-
+                
+                m_loadState = LOADING_DATAMODEL_PROPERTIES;
+                m_maxLoadProgress = undeserialized_size;
+                m_loadProgress = undeserialized_size-m_undeserialized.size();
+                if(loadListener)
+                    loadListener->updateWorldLoad();
 
                 pugi::xml_node props = s.node.child("Properties");
                 for(pugi::xml_node prop : props.children())
@@ -150,6 +165,7 @@ namespace RNR
                 else if(s.instance->getClassName() == "Part")
                 {
                     PartInstance* p = (PartInstance*)s.instance;
+                    m_loadState = LOADING_MAKEJOINTS;
                     joints->makeJoints(p);
                 }
             }
@@ -157,8 +173,12 @@ namespace RNR
         else
         {
             printf("World::load: XML parsed with errors, description '%s', offset %i\n", result.description(), result.offset);
+            m_loadState = LOADING_FINISHED;
+            m_loadListener = 0;
         }        
         m_workspace->build();
+        m_loadState = LOADING_FINISHED;
+        m_loadListener = 0;
     }
 
     void World::preRender(float timestep)

@@ -45,7 +45,7 @@ namespace RNR
         if(instance->getClassName() == "Humanoid")
         {
             Humanoid* instance_humanoid = (Humanoid*)instance;
-            instance_humanoid->createHealthBar();
+            //instance_humanoid->createHealthBar();
         }
     }
 }
