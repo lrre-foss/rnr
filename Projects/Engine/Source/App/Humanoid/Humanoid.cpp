@@ -17,7 +17,7 @@ namespace RNR
         
         btBoxShape* playerShape = new btBoxShape(btVector3(1,2,0.5));
         m_playerGhostObject = new btPairCachingGhostObject();
-        world->getDynamicsWorld()->getPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
+        world->getDynamicsWorld()->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
 
         m_playerGhostObject->setCollisionShape(playerShape);
         m_playerGhostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
@@ -43,6 +43,7 @@ namespace RNR
             ghostTransform.setIdentity();
             ghostTransform.setOrigin(Bullet::v3ToBullet(getTorso()->getPosition()));
             ghostTransform.setRotation(Bullet::qtToBullet(getTorso()->getRotation()));
+            Ogre::Vector3 localInertia;
             m_playerGhostObject->setWorldTransform(ghostTransform);
 
             world->getDynamicsWorld()->addCollisionObject(m_playerGhostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
@@ -139,9 +140,8 @@ namespace RNR
                 forward = 16;
             }
 
-            Ogre::Vector3 move = Ogre::Vector3(0, 0, forward);
+            Ogre::Vector3 move = Ogre::Vector3(forward, 0, 0);
             move = direction * move;
-            move *= world->getComPlicitNgine()->getLastPhysicsDelta();
             m_characterController->setLinearVelocity(Bullet::v3ToBullet(move));
 
             m_playerGhostObject->getWorldTransform().setRotation(Bullet::qtToBullet(direction));
@@ -149,6 +149,7 @@ namespace RNR
             if(getTorso())
             {
                 getTorso()->getCFrame().setPosition(Bullet::v3ToOgre(m_playerGhostObject->getWorldTransform().getOrigin()));
+                getTorso()->updateMatrix();
             }
 
             camera->getCFrame().setPosition(camera->getCFrame().getPosition() + move);

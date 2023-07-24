@@ -1,4 +1,22 @@
 add_library(Engine STATIC
+    # ArkNet
+    Header/Network/ArkNet/ArkSocket.hpp         
+    Header/Network/ArkNet/ArkServer.hpp
+    Header/Network/ArkNet/ArkAddress.hpp
+    Header/Network/ArkNet/ArkPacket.hpp
+    Header/Network/ArkNet/ArkPacketFactory.hpp
+    Header/Network/ArkNet/ArkPeer.hpp
+    Header/Network/ArkNet/Packets.hpp
+
+    Source/Network/ArkNet/ArkSocket.cpp
+    Source/Network/ArkNet/ArkServer.cpp
+    Source/Network/ArkNet/ArkAddress.cpp
+    Source/Network/ArkNet/ArkPacket.cpp
+    Source/Network/ArkNet/ArkPacketFactory.cpp
+    Source/Network/ArkNet/ArkPeer.cpp
+    Source/Network/ArkNet/Packets.cpp
+
+    # Engine
     Header/Helpers/Name.hpp
     Header/Helpers/Strings.hpp
     Header/Helpers/XML.hpp
@@ -34,6 +52,9 @@ add_library(Engine STATIC
     Header/App/CoordinateFrame.hpp
     Header/App/BrickColor.hpp
     Header/App/InputManager.hpp
+    Header/Network/NetworkPeer.hpp
+    Header/Network/NetworkClient.hpp
+    Header/Network/NetworkServer.hpp
     Header/Network/GUID.hpp
     Header/Network/Player.hpp
     Header/Network/Players.hpp
@@ -72,6 +93,9 @@ add_library(Engine STATIC
     Source/App/V8/World/JointsService.cpp
     Source/App/V8/World/JointInstance.cpp    
     Source/App/V8/World/ComPlicitNgine.cpp
+    Source/Network/NetworkPeer.cpp
+    Source/Network/NetworkClient.cpp
+    Source/Network/NetworkServer.cpp
     Source/Network/GUID.cpp
     Source/Network/Player.cpp
     Source/Network/Players.cpp

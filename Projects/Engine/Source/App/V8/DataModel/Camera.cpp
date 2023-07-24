@@ -53,12 +53,14 @@ namespace RNR
                     switch(m_type)
                     {
                     case CAMERA_FOLLOW:
-                        m_lookMat.ToEulerAnglesXYZ(old_pitch, old_yaw, old_roll);
+                        m_focus.setPosition(head->getPosition());
+                        m_lookMat.ToEulerAnglesYXZ(old_yaw, old_pitch, old_roll);
                         pitch = old_pitch + pitch;
                         yaw = old_yaw + yaw;
                         m_yaw = yaw;
-                        m_lookMat.FromEulerAnglesXYZ(pitch, yaw, Ogre::Radian(0));
-                        getCFrame().setPosition(Ogre::Vector3(0,0,-5) * m_lookMat);
+                        m_pitch = pitch;
+                        m_lookMat.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
+                        getCFrame().setPosition(Ogre::Vector3(5,0,0) * m_lookMat);
                         getCFrame().lookAt(getFocus().getPosition());
                         break;
                     }
@@ -72,6 +74,7 @@ namespace RNR
             pitch = old_pitch + pitch;
             yaw = old_yaw - yaw;
             m_yaw = yaw;
+            m_pitch = pitch;
 
             rotation.FromEulerAnglesYXZ(yaw, pitch, Ogre::Radian(0));
             getCFrame().setRotation(rotation);

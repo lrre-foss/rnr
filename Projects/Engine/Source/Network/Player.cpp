@@ -54,6 +54,7 @@ namespace RNR
         Humanoid* character_humanoid = new Humanoid();
         character_humanoid->setParent(m_character);        
         m_character->makeJoints();
+        character_humanoid->buildJoints();
 
         m_character->setParent(world->getWorkspace());
 
