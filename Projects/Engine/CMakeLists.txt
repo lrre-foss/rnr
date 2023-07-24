@@ -7,6 +7,7 @@ add_library(Engine STATIC
     Header/Network/ArkNet/ArkPacketFactory.hpp
     Header/Network/ArkNet/ArkPeer.hpp
     Header/Network/ArkNet/Packets.hpp
+    Header/Network/ArkNet/PlatformNeutralSockets.hpp
 
     Source/Network/ArkNet/ArkSocket.cpp
     Source/Network/ArkNet/ArkServer.cpp

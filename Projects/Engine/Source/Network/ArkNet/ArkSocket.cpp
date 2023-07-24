@@ -4,14 +4,30 @@
 #include <string.h>
 #include <errno.h>
 
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <unistd.h>
+#include <Network/ArkNet/PlatformNeutralSockets.hpp>
 
 namespace ArkNet
 {
+#ifdef _WIN32
+    static bool winsock_ready;
+    static int winsock_count;
+#endif
+
     ArkSocket::ArkSocket()
     {
+#ifdef _WIN32
+        if(!winsock_ready)
+        {
+            WSAData wsaData;
+            int err = WSAStartup(MAKEWORD(2,2), &wsaData);
+            if (err != 0) {
+                printf("WSAStartup failed with error: %i\n", err);                
+            }        
+            winsock_ready = true;
+        }
+        winsock_count++;
+#endif
+
         m_socketStatus = ARKSOCKET_DISCONNECTED;
         m_sockFd = socket(AF_INET, SOCK_DGRAM, 0);
         if(m_sockFd < 0)
@@ -31,6 +47,14 @@ namespace ArkNet
     {
         delete m_localPeer;
         closeSocket();
+        winsock_count--;
+#ifdef _WIN32
+        if(winsock_count == 0 && winsock_ready)
+        {
+            WSACleanup();
+            winsock_ready = false;
+        }
+#endif
     }
 
     void ArkSocket::bindServer(char* ip, int port)
@@ -88,6 +112,10 @@ namespace ArkNet
 
     void ArkSocket::closeSocket()
     {
+#ifdef _WIN32
+        closesocket()
+#else
         close(m_sockFd);
+#endif
     }
 }

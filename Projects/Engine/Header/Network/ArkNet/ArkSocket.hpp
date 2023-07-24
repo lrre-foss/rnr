@@ -1,6 +1,6 @@
 #pragma once
-#include <netinet/in.h>
 #include <Network/ArkNet/ArkAddress.hpp>
+#include <Network/ArkNet/PlatformNeutralSockets.hpp>
 
 namespace ArkNet
 {

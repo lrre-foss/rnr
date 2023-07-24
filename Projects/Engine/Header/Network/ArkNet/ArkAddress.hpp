@@ -1,6 +1,7 @@
 #pragma once
-#include <netinet/in.h>
-#include <arpa/inet.h>
+
+#include <Network/ArkNet/PlatformNeutralSockets.hpp>
+
 #include <string>
 
 namespace ArkNet
