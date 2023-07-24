@@ -37,7 +37,7 @@ namespace ArkNet
 
 #ifdef _WIN32
         unsigned long non_block_mode = 1;
-        ioctlsocket(m_sockFd, FIONBIO, &block_mode);
+        ioctlsocket(m_sockFd, FIONBIO, &non_block_mode);
 #endif
 
         memset(&m_clientAddress, 0, sizeof(ArkAddress));
@@ -118,7 +118,7 @@ namespace ArkNet
     void ArkSocket::closeSocket()
     {
 #ifdef _WIN32
-        closesocket()
+        closesocket(m_sockFd);
 #else
         close(m_sockFd);
 #endif
