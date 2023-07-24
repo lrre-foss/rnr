@@ -5,10 +5,12 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#define sock_errno errno
 #endif
 
 #ifdef _WIN32
-#include <windows.h>
 #include <winsock2.h>
-#define errno WSAGetLastError()
+#include <windows.h>
+#define sock_errno WSAGetLastError()
+typedef int socklen_t;
 #endif

@@ -98,7 +98,7 @@ namespace ArkNet
         socklen_t* len = remote ? (socklen_t*)&(remote->address_size) : NULL;
         int m = recvfrom(m_sockFd, output, bytes, MSG_DONTWAIT | flags, addr, len);
         if(m == -1)
-            printf("ArkSocket::recvFrom: failed, errno: %i (%s)\n", errno, strerror(errno));
+            printf("ArkSocket::recvFrom: failed, errno: %i (%s)\n", sock_errno, strerror(sock_errno));
         return m;
     }
 
@@ -106,7 +106,7 @@ namespace ArkNet
     {
         int m = sendto(m_sockFd, input, bytes, MSG_DONTWAIT | flags, (sockaddr*)&remote->address, (socklen_t)sizeof(remote->address));
         if(m == -1)
-            printf("ArkSocket::sendTo: failed, errno: %i (%s)\n", errno, strerror(errno));
+            printf("ArkSocket::sendTo: failed, errno: %i (%s)\n", sock_errno, strerror(sock_errno));
         return m;
     }
 
