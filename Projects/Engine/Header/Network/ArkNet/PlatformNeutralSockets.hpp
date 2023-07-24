@@ -15,4 +15,5 @@
 typedef int socklen_t;
 
 #define MSG_DONTWAIT 0
+#define INET_ADDRSTRLEN 16
 #endif
