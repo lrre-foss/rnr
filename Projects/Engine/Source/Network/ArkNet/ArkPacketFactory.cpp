@@ -1,7 +1,7 @@
 #include <Network/ArkNet/ArkPacketFactory.hpp>
 #include <stdexcept>
 
-#include <Network/ArkNet/Packets/HelloWorld.hpp>
+#include <Network/ArkNet/Packets.hpp>
 
 namespace ArkNet
 {
@@ -31,6 +31,6 @@ namespace ArkNet
 
     void ArkPacketFactory::registerPackets()
     {
-        registerPacket(72, packetBuilder<Packets::HelloWorld>);
+        registerPacket(0x05, packetBuilder<Packets::OpenConnectionRequestPacket>);
     }
 }

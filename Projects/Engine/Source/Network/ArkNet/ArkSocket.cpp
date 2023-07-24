@@ -47,8 +47,8 @@ namespace ArkNet
     {
         delete m_localPeer;
         closeSocket();
-        winsock_count--;
 #ifdef _WIN32
+        winsock_count--;
         if(winsock_count == 0 && winsock_ready)
         {
             WSACleanup();
