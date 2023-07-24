@@ -13,4 +13,6 @@
 #include <windows.h>
 #define sock_errno WSAGetLastError()
 typedef int socklen_t;
+
+#define MSG_DONTWAIT 0
 #endif

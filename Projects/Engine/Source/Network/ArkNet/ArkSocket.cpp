@@ -35,6 +35,11 @@ namespace ArkNet
             printf("ArkSocket::ArkSocket: m_sockFd creation failed\n");
         }
 
+#ifdef _WIN32
+        unsigned long non_block_mode = 1;
+        ioctlsocket(m_sockFd, FIONBIO, &block_mode);
+#endif
+
         memset(&m_clientAddress, 0, sizeof(ArkAddress));
         m_clientAddress.address_size = sizeof(m_clientAddress.address);
         memset(&m_remoteAddress, 0, sizeof(ArkAddress));
