@@ -208,11 +208,11 @@ namespace RNR
             switch(surf.type)
             {
             case SURFACE_STUDS:
-                //surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
-                //surfaceNode->attachObject(surf.surf);
-                //surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
-                //surfaceNode->setPosition(surf.position());
-                //surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
+                surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
+                surfaceNode->attachObject(surf.surf);
+                surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
+                surfaceNode->setPosition(surf.position());
+                surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
                 break;
             default:
                 break;

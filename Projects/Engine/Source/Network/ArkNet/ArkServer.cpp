@@ -25,6 +25,10 @@ namespace ArkNet
             else
                 peer = m_peers[remote_addr.toString()];
             
+            if(in_packet)
+            {
+
+            }
 
             delete in_packet;
         }

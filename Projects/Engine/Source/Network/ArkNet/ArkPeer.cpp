@@ -62,8 +62,11 @@ namespace ArkNet
         return NULL;
     }
 
-    void sendPacket(ArkPacket* packet)
+    void ArkPeer::sendPacket(ArkPacket* packet)
     {
-
+        char* data = (char*)malloc(packet->readLength()+1);
+        data[0] = packet->packetId();
+        packet->serialize(data+1,packet->readLength());
+        sendTo(packet->readLength(),data,0);
     }
 }
