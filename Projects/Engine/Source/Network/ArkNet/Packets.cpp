@@ -17,12 +17,12 @@ namespace ArkNet::Packets
     void OpenConnectionRequestPacket::serialize(char* output, int length)
     {
         ArkStream stream = ArkStream(output, length);
-        stream.writeString("You are a asshole.");
+        stream.writeString("You are a friend :)\n");
     }
 
     void OpenConnectionRequestPacket::deserialize(char* input, int length)
     {
         ArkStream stream = ArkStream(input, length);
-        printf("%s\n",stream.readString().c_str());
+        printf("%s",stream.readString().c_str());
     }
 };
