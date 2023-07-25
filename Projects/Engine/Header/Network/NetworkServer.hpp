@@ -16,8 +16,8 @@ namespace RNR
         NetworkServer();
         ~NetworkServer();
 
-        void start(int port, int threadSleepTime);
-        void stop(int blockDuration);
+        void start(int port, int threadSleepTime = 20);
+        void stop(int blockDuration = 1000);
         void frame();
 
         bool getRunning() { return m_running; }
