@@ -8,6 +8,11 @@ namespace RNR
         m_running = false;
     }
 
+    NetworkServer::~NetworkServer()
+    {
+        stop();
+    }
+
     void NetworkServer::start(int port, int threadTime)
     {
         // TODO: create network thread that times out
