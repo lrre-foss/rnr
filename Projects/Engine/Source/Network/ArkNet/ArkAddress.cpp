@@ -1,6 +1,10 @@
 #include <Network/ArkNet/ArkAddress.hpp>
 #include <string.h>
 
+#ifdef _WIN32
+#include <ws2tcpip.h>
+#endif
+
 namespace ArkNet
 {
     ArkAddress::ArkAddress()
