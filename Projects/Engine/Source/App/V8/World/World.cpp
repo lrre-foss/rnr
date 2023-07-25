@@ -7,6 +7,8 @@
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/InputManager.hpp>
 #include <Network/Player.hpp>
+#include <Network/NetworkServer.hpp>
+#include <Network/NetworkClient.hpp>
 #include <stdexcept>
 #include <pugixml.hpp>
 #include <Helpers/Bullet.hpp>
@@ -196,7 +198,9 @@ namespace RNR
 
     void World::preStep()
     {
-
+        NetworkServer* server = dynamic_cast<NetworkServer*>(m_workspace->findFirstChild("NetworkServer"));
+        if(server && server->getRunning())
+            server->frame();
     }
 
     double World::step(float timestep)

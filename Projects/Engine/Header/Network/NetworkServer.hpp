@@ -11,13 +11,16 @@ namespace RNR
     protected:
         ArkNet::ArkServer* m_server;
         int m_port;
+        bool m_running;
     public:
         NetworkServer();
         ~NetworkServer();
 
         void start(int port, int threadSleepTime);
         void stop(int blockDuration);
+        void frame();
 
+        bool getRunning() { return m_running; }
         virtual std::string getClassName() { return "NetworkServer"; }
     };
 }

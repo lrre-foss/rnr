@@ -9,6 +9,7 @@ namespace RNR
     protected:
         ArkNet::ArkPeer* m_peer;
         ArkNet::ArkSocket* m_socket;
+        bool m_running;
     public:
         NetworkPeer();
         ~NetworkPeer();
