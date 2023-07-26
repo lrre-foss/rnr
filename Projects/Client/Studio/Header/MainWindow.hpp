@@ -43,6 +43,9 @@ class MainWindow : public QMainWindow, public RNR::ILoadListener
         void pause();
         void playSolo();
 
+        void startServer();
+        void joinClient();
+
         void dbg_pointlight();
     protected:
         void widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance);

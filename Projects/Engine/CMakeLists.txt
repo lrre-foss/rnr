@@ -7,6 +7,7 @@ add_library(Engine STATIC
     Header/Network/ArkNet/ArkPacket.hpp
     Header/Network/ArkNet/ArkPacketFactory.hpp
     Header/Network/ArkNet/ArkPeer.hpp
+    Header/Network/ArkNet/ArkUserData.hpp
     Header/Network/ArkNet/Packets.hpp
     Header/Network/ArkNet/PlatformNeutralSockets.hpp
 
@@ -17,6 +18,7 @@ add_library(Engine STATIC
     Source/Network/ArkNet/ArkPacket.cpp
     Source/Network/ArkNet/ArkPacketFactory.cpp
     Source/Network/ArkNet/ArkPeer.cpp
+    Source/Network/ArkNet/ArkUserData.cpp
     Source/Network/ArkNet/Packets.cpp
 
     # Engine
@@ -58,6 +60,7 @@ add_library(Engine STATIC
     Header/Network/NetworkPeer.hpp
     Header/Network/NetworkClient.hpp
     Header/Network/NetworkServer.hpp
+    Header/Network/NetworkReplicator.hpp
     Header/Network/GUID.hpp
     Header/Network/Player.hpp
     Header/Network/Players.hpp
@@ -99,6 +102,7 @@ add_library(Engine STATIC
     Source/Network/NetworkPeer.cpp
     Source/Network/NetworkClient.cpp
     Source/Network/NetworkServer.cpp
+    Source/Network/NetworkReplicator.cpp
     Source/Network/GUID.cpp
     Source/Network/Player.cpp
     Source/Network/Players.cpp

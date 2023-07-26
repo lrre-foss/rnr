@@ -14,7 +14,7 @@ namespace ArkNet
         typedef std::function<ArkPacket*()> ArkPacketBuilder;
         ArkPacketFactory();
 
-        bool registerPacket(char key, ArkPacketBuilder builder);
+        bool registerPacket(ArkPacketBuilder builder);
         ArkPacket* build(char key);
 
         static ArkPacketFactory* singleton() { return m_singleton; };

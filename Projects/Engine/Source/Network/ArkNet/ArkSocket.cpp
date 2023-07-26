@@ -1,5 +1,6 @@
 #include <Network/ArkNet/ArkSocket.hpp>
 #include <Network/ArkNet/ArkPeer.hpp>
+#include <Network/ArkNet/Packets.hpp>
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>

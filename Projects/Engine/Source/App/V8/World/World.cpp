@@ -42,6 +42,8 @@ namespace RNR
         m_instanceFactory->registerInstance("Player", InstanceFactory::instanceBuilder<Player>);
         m_instanceFactory->registerInstance("Lighting", InstanceFactory::instanceBuilder<Lighting>);
         m_instanceFactory->registerInstance("JointsService", InstanceFactory::instanceBuilder<JointsService>);
+        m_instanceFactory->registerInstance("NetworkClient", InstanceFactory::instanceBuilder<NetworkClient>);
+        m_instanceFactory->registerInstance("NetworkServer", InstanceFactory::instanceBuilder<NetworkServer>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -198,7 +200,7 @@ namespace RNR
 
     void World::preStep()
     {
-        NetworkServer* server = dynamic_cast<NetworkServer*>(m_workspace->findFirstChild("NetworkServer"));
+        NetworkServer* server = dynamic_cast<NetworkServer*>(m_workspace->findFirstChildOfType("NetworkServer"));
         if(server && server->getRunning())
             server->frame();
     }

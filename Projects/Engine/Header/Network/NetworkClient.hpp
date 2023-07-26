@@ -6,6 +6,9 @@ namespace RNR
     {
     public:
         NetworkClient();
+
+        void connect(char* ip, int port);
+        void frame();
                 
         virtual std::string getClassName() { return "NetworkClient"; }
     };

@@ -12,10 +12,12 @@ namespace ArkNet
         m_singleton = this;
     }
 
-    bool ArkPacketFactory::registerPacket(char key, ArkPacketBuilder builder)
+    bool ArkPacketFactory::registerPacket(ArkPacketBuilder builder)
     {
-        printf("ArkPacketFactory::registerPacket: registering packet %02x\n", key);
-        bool ok = m_builders.insert(std::make_pair(key, builder)).second;        
+        ArkPacket* pak = builder();
+        printf("ArkPacketFactory::registerPacket: registering packet %02x\n", pak->packetId());
+        bool ok = m_builders.insert(std::make_pair(pak->packetId(), builder)).second;        
+        delete pak;
         if(!ok)
             printf("ArkPacketFactory::registerPacket: could not register\n");
         return ok;
@@ -31,6 +33,6 @@ namespace ArkNet
 
     void ArkPacketFactory::registerPackets()
     {
-        registerPacket(0x05, packetBuilder<Packets::OpenConnectionRequestPacket>);
+        registerPacket(packetBuilder<Packets::OpenConnectionRequestPacket>);
     }
 }

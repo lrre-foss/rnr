@@ -13,6 +13,7 @@ int main(int argc, char** argv)
     serverSocket.bindServer("127.0.0.1",53641);
     clientSocket.tryConnect("127.0.0.1",53641);
     ArkNet::Packets::OpenConnectionRequestPacket connection = ArkNet::Packets::OpenConnectionRequestPacket();
+    connection.playerName = "The Gamer.Com";
     clientSocket.getLocalPeer()->sendPacket(&connection);
     server.frame();
 }

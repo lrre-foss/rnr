@@ -6,6 +6,8 @@
 #include <QProgressDialog>
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/Light.hpp>
+#include <Network/NetworkServer.hpp>
+#include <Network/NetworkClient.hpp>
 
 MainWindow::MainWindow()
 {
@@ -145,10 +147,28 @@ void MainWindow::createToolbar()
     QAction* pause_action = toolbar->addAction(QIcon("content/textures/studio/icons/pause.png"), "", this, SLOT(pause()));
     QAction* playSolo_action = toolbar->addAction(QIcon("content/textures/studio/icons/play.png"), "", this, SLOT(playSolo()));
 
+    toolbar->addSeparator();
+
+    QAction* host_action = toolbar->addAction(QIcon("content/textures/studio/icons/host.png"), "Start a server", this, SLOT(startServer()));
+    QAction* connect_action = toolbar->addAction(QIcon("content/textures/studio/icons/connect.png"), "Connect to server", this, SLOT(joinClient()));
+
 #ifndef NDEBUG
     toolbar->addSeparator();
     QAction* pointlight = toolbar->addAction(QIcon("content/textures/studio/icons/PointLight.png"), "Debug: Add PointLight to Instance", this, SLOT(dbg_pointlight()));
 #endif
+}
+
+void MainWindow::startServer()
+{
+    RNR::NetworkServer* server = (RNR::NetworkServer*)ogreWidget->world->getDatamodel()->getService("NetworkServer");
+    server->start(53640);
+    printf("Server started on port 53640\n");
+}
+
+void MainWindow::joinClient()
+{
+    RNR::NetworkClient* client = (RNR::NetworkClient*)ogreWidget->world->getDatamodel()->getService("NetworkClient");
+    client->connect("127.0.0.1", 53640);
 }
 
 void MainWindow::run()
