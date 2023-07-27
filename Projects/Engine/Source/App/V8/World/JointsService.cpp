@@ -1,5 +1,6 @@
 #include <App/V8/World/JointsService.hpp>
 #include <App/V8/World/World.hpp>
+#include <App/V8/World/ComPlicitNgine.hpp>
 
 namespace RNR
 {
@@ -12,12 +13,11 @@ namespace RNR
 
     Snap* JointsService::snap(PartInstance* a, PartInstance* b)
     {
+        //if(isWelded(a, b))
+        //    return NULL;
         Snap* snap = new Snap();
         snap->setBodies(a, b);
-        CoordinateFrame c0;
-        c0.setRotation(a->getRotation().inverse() * b->getRotation());
-        c0.setPosition(-a->getPosition() * b->getPosition());
-        snap->setC0(c0);
+        snap->setC0(b->getCFrame().toObjectSpace(a->getCFrame()));
         snap->setParent(this);
         return snap;
     }
@@ -32,99 +32,44 @@ namespace RNR
         }
     }
 
-    void JointsService::makeJoints(Instance* w, PartInstance* p)
+    void JointsService::makeJoints(Instance* w)
     {
-        m_jointsToDo += w->getChildren()->size();
-        for(auto& child : *w->getChildren())
+        btDynamicsWorld* dynamicsWorld = world->getDynamicsWorld();
+        dynamicsWorld->performDiscreteCollisionDetection();
+        m_jointsToDo = dynamicsWorld->getDispatcher()->getNumManifolds();
+        m_jointsDone = 0;
+        for(int i = 0; i < m_jointsToDo; i++)
         {
             world->setLoadProgress(m_jointsDone);
             world->setMaxLoadProgress(m_jointsToDo);
             if(world->getLoadListener())
                 world->getLoadListener()->updateWorldLoad();
             m_jointsDone++;
-            if(child == p)
+
+            btPersistentManifold* contact = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obj0 = contact->getBody0();
+            const btCollisionObject* obj1 = contact->getBody1();
+            PartInstance* part0 = (PartInstance*)obj0->getUserPointer();
+            PartInstance* part1 = (PartInstance*)obj1->getUserPointer();
+
+            if(!w->isAncestorOf(part0) && !w->isAncestorOf(part1))
                 continue;
-            PartInstance* child_p = dynamic_cast<PartInstance*>(child);
-            if(child_p)
+
+            if(part0 && part1)
             {
-                if(isWelded(child_p, p))
-                    continue;
-                if(p == child_p)
-                    continue;
-                child_p->updateSurfaces();
-                for(int i = 0; i < __NORM_COUNT; i++)
+                for(int j = 0; j < contact->getNumContacts(); j++)
                 {
-                    NormalId n = (NormalId)i;
-                    NormalId n_opp = normalIdOpposite(n);
-                    PartSurfaceInfo n_surf = p->getSurface(n);
-                    PartSurfaceInfo n_opp_surf = child_p->getSurface(n_opp);
-                    if(n_surf.links(n_opp_surf))
-                    {
-                        if(n_surf.intersects(n_opp_surf))
-                        {
-                            // determine link
-                            switch(n_surf.type)
-                            {
-                                case SURFACE_WELD:
-                                case SURFACE_STUDS:
-                                case SURFACE_INLET:
-                                    snap(p, child_p);
-                                    break;
-                            }
-                        }
-                    }
-                }
-            }
-            ModelInstance* child_m = dynamic_cast<ModelInstance*>(child);
-            if(child_m)
-                makeJoints(child_m, p);
-        }
-    }
-
-    void JointsService::makeModelJoints(ModelInstance* m)
-    {
-        ModelInstance* parent_model = m;
-
-        if(world->getWorkspace()->isAncestorOf(m))
-        {
-            parent_model = world->getWorkspace();
-        }
-
-        for(auto& child : *m->getChildren())
-        {
-            if(dynamic_cast<PartInstance*>(child))
-                makeJoints(parent_model, (PartInstance*)child);            
-        }
-    }
-
-    void JointsService::breakModelJoints(ModelInstance* m)
-    {
-        for(auto& child : *getChildren())
-        {
-            JointInstance* snap = dynamic_cast<JointInstance*>(child);
-            if(snap)
-            {
-                bool brk = false;
-                if(m->isAncestorOf(snap->getABody()))
-                    brk = true;
-                else if(m->isAncestorOf(snap->getBBody()))
-                    brk = true;
-                if(brk)
-                {
-                    snap->setParent(NULL);
-                    delete snap;
+                    btManifoldPoint& pt = contact->getContactPoint(j);
+                    btVector3 ptA = pt.getPositionWorldOnA();
+                    btVector3 ptB = pt.getPositionWorldOnB();
+                    btVector3 ptN = pt.m_normalWorldOnB;
+                    snap(part0, part1);
                 }
             }
         }
     }
 
-    void JointsService::makeJoints(PartInstance* p)
-    {
-        p->updateSurfaces();
-        makeJoints(world->getWorkspace(), p);
-    }
-
-    void JointsService::breakJoints(PartInstance* p)
+    void JointsService::breakJoints(Instance* p)
     {
         for(auto& child : *getChildren())
         {
@@ -149,7 +94,7 @@ namespace RNR
     {
         for(auto& child : *getChildren())
         {
-            Weld* snap = dynamic_cast<Weld*>(child);
+            JointInstance* snap = dynamic_cast<JointInstance*>(child);
             if(snap)
             {
                 if(snap->getABody() == a && snap->getBBody() == b)

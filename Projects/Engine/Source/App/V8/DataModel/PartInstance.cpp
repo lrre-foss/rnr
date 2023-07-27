@@ -34,34 +34,6 @@ namespace RNR
         return allowed_surf[type][other.type];
     }
 
-    Ogre::Vector3 PartSurfaceInfo::position()
-    {
-        Ogre::Vector3 pos = Ogre::Vector3(0,0,0);
-        switch(face)
-        {
-        case NORM_UP:
-            pos.y = (plane - part->getPosition().y);
-            break;
-        case NORM_DOWN:
-            pos.y = (part->getPosition().y - plane);
-            break;
-        case NORM_LEFT:
-            pos.y = (part->getPosition().x - plane);
-            break;
-        case NORM_RIGHT:
-            pos.x = (plane - part->getPosition().x);
-            break;
-        case NORM_FRONT:
-            pos.z = (plane - part->getPosition().z);
-            break;
-        case NORM_BACK:
-            pos.z = (part->getPosition().z - plane);
-            break;
-        }
-        //printf("%f,%f,%f (%f, %i)\n",pos.x,pos.y,pos.z,plane,face);
-        return pos;
-    }
-
     PartInstance::PartInstance() : m_matrix(), PVInstance(),  m_size(2.f, STUD_HEIGHT, 4.f)
     {
         setName("Part");
@@ -132,7 +104,8 @@ namespace RNR
             object->setOrientation(Ogre::Quaternion(m_cframe.getRotation()));
             object->setPosition(m_position);
             object->setScale(m_size);
-
+            object->setCustomParam(1, Ogre::Vector4f(m_size.x, m_size.y, m_size.z, 0.0));
+            
             object->updateTransforms();
         }
 
@@ -169,25 +142,25 @@ namespace RNR
                     surf.plane = pos.y + size.y;
                     break;
                 case NORM_LEFT:
-                    surf.size  = Ogre::Vector2(size.x, size.y);
+                    surf.size  = Ogre::Vector2(size.z, size.y);
                     surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
                     surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
                     surf.plane = pos.x - size.x;
                     break;
                 case NORM_RIGHT:
-                    surf.size  = Ogre::Vector2(size.x, size.y);
+                    surf.size  = Ogre::Vector2(size.z, size.y);
                     surf.start = Ogre::Vector2(pos.z-size.z,pos.y-size.y);
                     surf.end =   Ogre::Vector2(pos.z+size.z,pos.y+size.y);
                     surf.plane = pos.x + size.x;
                     break;
                 case NORM_FRONT:
-                    surf.size  = Ogre::Vector2(size.z, size.y);
+                    surf.size  = Ogre::Vector2(size.x, size.y);
                     surf.start = Ogre::Vector2(pos.x-size.x,pos.y-size.y);
                     surf.end =   Ogre::Vector2(pos.x+size.x,pos.y+size.y);
                     surf.plane = pos.z + size.z;
                     break;
                 case NORM_BACK:
-                    surf.size  = Ogre::Vector2(size.z, size.y);
+                    surf.size  = Ogre::Vector2(size.x, size.y);
                     surf.start = Ogre::Vector2(pos.x-size.x,pos.y-size.y);
                     surf.end =   Ogre::Vector2(pos.x+size.x,pos.y+size.y);
                     surf.plane = pos.z - size.z;
@@ -208,11 +181,11 @@ namespace RNR
             switch(surf.type)
             {
             case SURFACE_STUDS:
-                surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
-                surfaceNode->attachObject(surf.surf);
-                surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
-                surfaceNode->setPosition(surf.position());
-                surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
+                //surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
+                //surfaceNode->attachObject(surf.surf);
+                //surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
+
+                //surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
                 break;
             default:
                 break;

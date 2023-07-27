@@ -22,14 +22,14 @@ namespace RNR
     {
         JointsService* joints = world->getJointsService();
         if(joints)
-            joints->makeModelJoints(this);
+            joints->makeJoints(this);
     }
 
     void ModelInstance::breakJoints()
     {
         JointsService* joints = world->getJointsService();
         if(joints)
-            joints->breakModelJoints(this);
+            joints->makeJoints(this);
     }
 
     void ModelInstance::childAddBoundingBox(Instance* child)

@@ -23,6 +23,9 @@ if(COMPILE_PLAYER OR COMPILE_STUDIO)
 
     if(NOT CI)
         file(COPY ${CMAKE_SOURCE_DIR}/Content/RNR/ DESTINATION ${CMAKE_BINARY_DIR}/content)
+        if(EXISTS ${CMAKE_SOURCE_DIR}/Content/Roblox)
+            file(COPY ${CMAKE_SOURCE_DIR}/Content/Roblox/ DESTINATION ${CMAKE_BINARY_DIR}/content)
+        endif()
     endif()
 endif()
 

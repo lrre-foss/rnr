@@ -28,6 +28,7 @@ namespace RNR
                 m_world->preStep();
                 m_world->step(delta);
             }
+            updateTree();
 
 
             m_lastPhysicsDelta = delta;
@@ -38,9 +39,10 @@ namespace RNR
     {
         m_physicsTimer = new Ogre::Timer();
         m_physicsTime = 0.0;
-        m_physicsThread = std::thread(&ComPlicitNgine::thread, this);
         m_dynamicsWorld = world->getDynamicsWorld();
         m_world = world;
+
+        m_physicsThread = std::thread(&ComPlicitNgine::thread, this);
     }
 
     ComPlicitNgine::~ComPlicitNgine()
@@ -65,13 +67,39 @@ namespace RNR
 
     void ComPlicitNgine::updateTree()
     {
-        m_activeObjects = 0;
-        m_sleepingObjects = 0;
+        /*int numContacts = 0;
+        m_worldManifolds = m_dynamicsWorld->getDispatcher()->getNumManifolds();
+        JointsService* joints = (JointsService*)m_world->getDatamodel()->getService("JointsService");
+        for(int i = 0; i < m_worldManifolds; i++)
+        {
+            btPersistentManifold* contact = m_dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
+            const btCollisionObject* obj0 = contact->getBody0();
+            const btCollisionObject* obj1 = contact->getBody1();
+            PartInstance* part0 = (PartInstance*)obj0->getUserPointer();
+            PartInstance* part1 = (PartInstance*)obj1->getUserPointer();
+            if(part0 && part1 && !joints->isWelded(part0, part1))
+            {
+                numContacts += contact->getNumContacts();
+                for(int j = 0; j < contact->getNumContacts(); j++)
+                {
+                    btManifoldPoint& pt = contact->getContactPoint(j);
+                    btVector3 ptA = pt.getPositionWorldOnA();
+                    btVector3 ptB = pt.getPositionWorldOnB();
+                    //joints->snap(part0, part1);
+                }
+            }
+        }
+        m_worldContacts = numContacts;*/
+        int sleepingObjects = 0;
+        int activeObjects = 0;
+        int errorObjects = 0;
         for(int j = m_dynamicsWorld->getNumCollisionObjects() - 1; j >= 0; j--)
         {
             btCollisionObject* obj = m_dynamicsWorld->getCollisionObjectArray()[j];
-            if(obj->getActivationState() != ACTIVE_TAG) { m_sleepingObjects++; continue; }
-            m_activeObjects++;
+            if(!obj)
+                continue;
+            if(obj->getActivationState() != ACTIVE_TAG) { sleepingObjects++; continue; }
+            activeObjects++;
             btRigidBody* body = btRigidBody::upcast(obj);
             btTransform trans;
             if(body && body->getMotionState())
@@ -83,7 +111,7 @@ namespace RNR
                 trans = obj->getWorldTransform();
             }
             PartInstance* part = (PartInstance*)obj->getUserPointer();
-            if(part)
+            if(part && m_world->getRunService()->getRunning())
             {
                 part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
                 Ogre::Matrix3 partRot;
@@ -92,6 +120,8 @@ namespace RNR
                 part->getCFrame().setRotation(partRot);
             }
         }
+        m_sleepingObjects = sleepingObjects;
+        m_activeObjects = activeObjects;
     }
 
     void ComPlicitNgine::registerPhysicsPart(PartInstance* partRegistered)

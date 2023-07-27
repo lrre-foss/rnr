@@ -17,7 +17,7 @@ namespace RNR
         {
             case BATCH_INSTANCED:
                 m_instanceManager = world->getOgreSceneManager()->createInstanceManager("workspaceInstanceManager", "meshes/Cube_Instanced.mesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::InstancingTechnique::HWInstancingBasic, 255);
-                m_instanceManager->setNumCustomParams(1);
+                m_instanceManager->setNumCustomParams(2);
                 break;
             case BATCH_STATIC_GEOMETRY:
                 m_geom = world->getOgreSceneManager()->createStaticGeometry("workspaceGeom");
@@ -50,6 +50,7 @@ namespace RNR
                         replica->setOrientation(part->getCFrame().getRotation());
                         Ogre::Vector3 brickColor = BrickColor::color(part->getBrickColor());
                         replica->setCustomParam(0, Ogre::Vector4f(brickColor.x, brickColor.y, brickColor.z, 1.0-part->getTransparency()));
+                        replica->setCustomParam(1, Ogre::Vector4f(part->getSize().x, part->getSize().y, part->getSize().z, 0.0));
                         m_worldspawn->attachObject(replica);
                         childAdded->setObject(replica);
                         child_node->setVisible(false);

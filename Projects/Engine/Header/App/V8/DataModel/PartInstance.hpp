@@ -87,6 +87,7 @@ namespace RNR
         void makeJoints();
         void breakJoints();
         void updateSurfaces();
+        //std::vector<btVector3>& getPartCollisions() { return m_partCollisions; }
 
         Ogre::Vector3 getOgreCenter() { return m_position + (m_size / 2.f); }
 

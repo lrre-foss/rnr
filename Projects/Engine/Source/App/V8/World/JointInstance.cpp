@@ -8,6 +8,8 @@ namespace RNR
         setName("Joint");
         m_collidesWithSelf = true;
         m_dirty = false;
+        m_c0 = CoordinateFrame();
+        m_c1 = CoordinateFrame();
     }
 
     JointInstance::~JointInstance()
@@ -44,7 +46,7 @@ namespace RNR
               REFLECTION_SETTER(JointInstance* instance = (JointInstance*)object;  ) },
             { this, std::string("C1"), std::string(""), 
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_CFRAME,         
-              REFLECTION_GETTER(JointInstance* instance = (JointInstance*)object; return &instance->m_c0; ), 
+              REFLECTION_GETTER(JointInstance* instance = (JointInstance*)object; return &instance->m_c1; ), 
               REFLECTION_SETTER(JointInstance* instance = (JointInstance*)object;  ) },
         };
 

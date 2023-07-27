@@ -14,6 +14,7 @@ public:
 
         void setRotation(Ogre::Matrix3 rotation) { m_rotation = rotation; }
         void setPosition(Ogre::Vector3 position) { m_position = position; }
+        CoordinateFrame toObjectSpace(CoordinateFrame cframe);
         Ogre::Matrix3 getRotation() { return m_rotation; }
         Ogre::Vector3 getPosition() { return m_position; }
 

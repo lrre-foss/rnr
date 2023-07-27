@@ -4,7 +4,8 @@ namespace RNR
 {
     CoordinateFrame::CoordinateFrame() : m_position(0.f,0.f,0.f), m_rotation()
     {
-        m_rotation.FromEulerAnglesXYZ(Ogre::Radian(0.f), Ogre::Radian(0.f), Ogre::Radian(0.f));        
+        Ogre::Quaternion quat(0, 0, 0, 0);
+        quat.ToRotationMatrix(m_rotation);
     }
 
     Ogre::Matrix4 CoordinateFrame::getMatrix()
@@ -38,5 +39,13 @@ namespace RNR
         Ogre::Vector3 up = dir.crossProduct(right);
         Ogre::Quaternion orientation = Ogre::Quaternion(right, up, dir);
         orientation.ToRotationMatrix(m_rotation);
+    }
+
+    CoordinateFrame CoordinateFrame::toObjectSpace(CoordinateFrame other)
+    {
+        CoordinateFrame rel;
+        rel.setPosition(getPosition() - other.getPosition());
+        rel.setRotation(other.getRotation());
+        return rel;
     }
 }

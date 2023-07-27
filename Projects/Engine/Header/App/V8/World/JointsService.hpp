@@ -3,6 +3,7 @@
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/PartInstance.hpp>
 #include <App/V8/World/Weld.hpp>
+#include <Helpers/NormalId.hpp>
 
 namespace RNR
 {
@@ -15,11 +16,8 @@ namespace RNR
         virtual std::string getClassName() { return "JointsService"; }
         Snap* snap(PartInstance* a, PartInstance* b);
 
-        void makeJoints(Instance* w, PartInstance* p);
-        void makeJoints(PartInstance* p);
-        void breakJoints(PartInstance* b);
-        void makeModelJoints(ModelInstance* m);
-        void breakModelJoints(ModelInstance* m);
+        void makeJoints(Instance* m);
+        void breakJoints(Instance* b);
 
         void fixWelds();
 

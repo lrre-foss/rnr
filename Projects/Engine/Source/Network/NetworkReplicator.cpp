@@ -19,6 +19,6 @@ namespace RNR
 
     void NetworkReplicator::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
     {
-
+        
     } 
 }

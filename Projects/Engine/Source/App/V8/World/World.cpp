@@ -213,7 +213,6 @@ namespace RNR
             dynamicWorldLock.lock();
             m_dynamicsWorld->stepSimulation(std::max(timestep, 0.000001f), 1);
             dynamicWorldLock.unlock();
-            m_ngine->updateTree();
         }
         return 0.0;
     }
