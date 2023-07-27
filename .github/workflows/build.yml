@@ -73,7 +73,7 @@ jobs:
         run: cp -R build/shaders packaged && mv packaged/shaders/GLSL/* packaged/shaders && rm -rf packaged/shaders/GLSL
       
       - name: Add additional runtime dependencies
-        run: ldd packaged/RNR.* | grep "=> /lib/x86_64-linux-gnu/" | awk '{print $3}' | xargs -I '{}' cp -v '{}' packaged
+        run: ldd packaged/RNR.* | grep "=> /" | awk '{print $3}' | xargs -I '{}' cp -v '{}' packaged
       
       - name: Set output variables
         id: vars
