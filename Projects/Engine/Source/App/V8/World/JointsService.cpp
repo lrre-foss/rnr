@@ -18,6 +18,7 @@ namespace RNR
         Snap* snap = new Snap();
         snap->setBodies(a, b);
         snap->setC0(b->getCFrame().toObjectSpace(a->getCFrame()));
+        snap->setC1(a->getCFrame() * snap->getC0() * b->getCFrame().inverse());
         snap->setParent(this);
         return snap;
     }
@@ -49,10 +50,12 @@ namespace RNR
             btPersistentManifold* contact = dynamicsWorld->getDispatcher()->getManifoldByIndexInternal(i);
             const btCollisionObject* obj0 = contact->getBody0();
             const btCollisionObject* obj1 = contact->getBody1();
-            PartInstance* part0 = (PartInstance*)obj0->getUserPointer();
-            PartInstance* part1 = (PartInstance*)obj1->getUserPointer();
+            PartInstance* part0 = (PartInstance*)obj0->getUserPointer(); // A
+            PartInstance* part1 = (PartInstance*)obj1->getUserPointer(); // B
 
             if(!w->isAncestorOf(part0) && !w->isAncestorOf(part1))
+                continue;
+            if(isWelded(part0, part1))
                 continue;
 
             if(part0 && part1)
@@ -63,7 +66,44 @@ namespace RNR
                     btVector3 ptA = pt.getPositionWorldOnA();
                     btVector3 ptB = pt.getPositionWorldOnB();
                     btVector3 ptN = pt.m_normalWorldOnB;
-                    snap(part0, part1);
+                    
+                    NormalId bFace = NORM_UNDEFINED;
+                    if(ptN == btVector3(1, 0, 0))
+                        bFace = NORM_RIGHT;
+                    else if(ptN == btVector3(-1, 0, 0))
+                        bFace = NORM_LEFT;
+                    else if(ptN == btVector3(0, 1, 0))
+                        bFace = NORM_UP;
+                    else if(ptN == btVector3(0, -1, 0))
+                        bFace = NORM_DOWN;
+                    else if(ptN == btVector3(0, 0, 1))
+                        bFace = NORM_FRONT;
+                    else if(ptN == btVector3(0, 0, -1))
+                        bFace = NORM_BACK;
+
+                    if(bFace != NORM_UNDEFINED)
+                    {
+                        NormalId oFace = normalIdOpposite(bFace);
+                        PartSurfaceInfo surfB = part1->getSurface(bFace);
+                        PartSurfaceInfo surfA = part0->getSurface(oFace);
+                        bool link = surfB.links(surfA);
+                        if(link)
+                        {
+                            printf("Link\n");
+                            switch(part0->getSurface(bFace).type)
+                            {
+                            case SURFACE_WELD:
+                            case SURFACE_UNIVERSAL:
+                            case SURFACE_INLET:
+                            case SURFACE_STUDS:
+                                snap(part0,part1);
+                                break;
+                            case SURFACE_SMOOTH:
+                            default:
+                                break;
+                            }
+                        }
+                    }
                 }
             }
         }

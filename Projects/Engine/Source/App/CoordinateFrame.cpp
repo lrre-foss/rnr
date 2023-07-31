@@ -15,6 +15,14 @@ namespace RNR
         return res;
     }
 
+    CoordinateFrame CoordinateFrame::inverse()
+    {
+        CoordinateFrame res;
+        res.m_position = -res.m_position;
+        res.m_rotation = res.m_rotation.inverse();
+        return res;
+    }
+
     CoordinateFrame CoordinateFrame::operator+(Ogre::Vector3 vector)
     {
         CoordinateFrame res;

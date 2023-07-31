@@ -2,6 +2,7 @@ list(APPEND SOURCE
     Source/GL/Adorn.cpp
     Source/OgreWidget.cpp
     Source/QtInputManager.cpp
+    Source/SettingsManager.cpp
 )
 
 list(APPEND HEADER
@@ -9,6 +10,7 @@ list(APPEND HEADER
     Header/GL/RenderContext.hpp
     Header/OgreWidget.hpp
     Header/QtInputManager.hpp
+    Header/SettingsManager.hpp
 )
 
 qt_standard_project_setup()

@@ -18,10 +18,8 @@ MainWindow::MainWindow()
     QGridLayout* grid = new QGridLayout();
 
     ogreRoot = new Ogre::Root();
-    Ogre::ConfigDialog* config = OgreBites::getNativeConfigDialog();
-    ogreRoot->showConfigDialog(config);
-
-    ogreRoot->initialise(false);
+    //Ogre::ConfigDialog* config = OgreBites::getNativeConfigDialog();
+    //ogreRoot->showConfigDialog(config);
 
     menubar = new QMenuBar();
     toolbar = new QToolBar();
@@ -48,6 +46,7 @@ MainWindow::MainWindow()
     setWindowIcon(QIcon(pixmap));
     setCentralWidget(content_widget);
 
+    settings = 0;
 }
 
 void MainWindow::widgetItemPrepare(QTreeWidgetItem* item, RNR::Instance* instance)
@@ -140,6 +139,8 @@ void MainWindow::createToolbar()
 {
     QMenu* file_menu = menubar->addMenu("File");
     QAction* load_action = file_menu->addAction("Load", this, SLOT(loadDatamodel()));
+    file_menu->addSeparator();
+    QAction* settings_action = file_menu->addAction("Settings", this, SLOT(showSettings()));
     QMenu* help_menu = menubar->addMenu("Help");
     help_menu->addAction("About...");
 
@@ -156,6 +157,13 @@ void MainWindow::createToolbar()
     toolbar->addSeparator();
     QAction* pointlight = toolbar->addAction(QIcon("content/textures/studio/icons/PointLight.png"), "Debug: Add PointLight to Instance", this, SLOT(dbg_pointlight()));
 #endif
+}
+
+void MainWindow::showSettings()
+{
+    if(!settings)
+        settings = new RNR::SettingsManager();
+    settings->show();
 }
 
 void MainWindow::startServer()

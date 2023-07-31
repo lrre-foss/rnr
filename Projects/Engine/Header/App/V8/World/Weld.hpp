@@ -18,6 +18,7 @@ namespace RNR
     {
         // they're basically the same
     public:
+        Snap();
         virtual std::string getClassName() { return "Snap"; }
         virtual std::string getExplorerIcon() { return "Weld"; }
     };

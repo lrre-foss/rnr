@@ -1,9 +1,23 @@
 #pragma once
+#include <App/Script/Script.hpp>
+#include <App/V8/Tree/Instance.hpp>
+#include <App/V8/DataModel/RunService.hpp>
 
 namespace RNR
 {
-    class ScriptContext
+    class ScriptContext : public Instance
     {
+        lua_State* m_state;
+        std::vector<Script*> m_scripts;
+        std::vector<Script*> m_pendingScripts;
+        RunService* m_runService;
+    public:
+        ScriptContext();
 
+        void addScript(Script* script);
+        void removeScript(Script* script);
+
+        virtual std::string getClassName() { return "ScriptContext"; }
+        lua_State* getInternalState() { return m_state; }
     };
 }

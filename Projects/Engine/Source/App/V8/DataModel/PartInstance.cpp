@@ -22,8 +22,8 @@ namespace RNR
             {  false,  false, false, false, false, false,     false, false, false,         false  }, // SMOOTH
             {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // GLUE
             {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // WELD
-            {  false,  false, false, false, true,  true,      false, false, false,         false  }, // STUDS
-            {  false,  false, false, true,  false, true,      false, false, false,         false  }, // INLET
+            {  false,  false, false, false, true,  false,     false, false, false,         false  }, // STUDS
+            {  false,  false, false, false, false, false,     false, false, false,         false  }, // INLET
             {  false,  false, true,  true,  true,  true,      false, false, false,         false  }, // UNIVERSAL
             {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // HINGE
             {  true,   true,  true,  true,  true,  true,      false, false, false,         false  }, // MOTOR
@@ -197,9 +197,7 @@ namespace RNR
     void PartInstance::deserializeProperty(char* prop_name, pugi::xml_node node)
     {
         if(prop_name == std::string("size"))
-        {
             setSize(XML::getVector3(node));
-        }
         else if(prop_name == std::string("BrickColor"))
         {
             setBrickColor(node.text().as_int());
@@ -209,17 +207,23 @@ namespace RNR
             }
         }
         else if(prop_name == std::string("Reflectance"))
-        {
             setReflectance(node.text().as_float());
-        }
         else if(prop_name == std::string("Transparency"))
-        {
             setTransparency(node.text().as_float());
-        }
         else if(prop_name == std::string("Anchored"))
-        {
             setAnchored(node.text().as_bool());
-        }
+        else if(prop_name == std::string("BackSurface"))
+            getSurface(NORM_BACK).type = (PartSurfaceType)node.text().as_int();            
+        else if(prop_name == std::string("FrontSurface"))
+            getSurface(NORM_FRONT).type = (PartSurfaceType)node.text().as_int();            
+        else if(prop_name == std::string("TopSurface"))
+            getSurface(NORM_UP).type = (PartSurfaceType)node.text().as_int();            
+        else if(prop_name == std::string("BottomSurface"))
+            getSurface(NORM_DOWN).type = (PartSurfaceType)node.text().as_int();            
+        else if(prop_name == std::string("LeftSurface"))
+            getSurface(NORM_LEFT).type = (PartSurfaceType)node.text().as_int();            
+        else if(prop_name == std::string("RightSurface"))
+            getSurface(NORM_RIGHT).type = (PartSurfaceType)node.text().as_int();            
         else
             PVInstance::deserializeProperty(prop_name, node);
         updateMatrix();

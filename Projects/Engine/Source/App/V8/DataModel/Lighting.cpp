@@ -1,4 +1,5 @@
 #include <App/V8/DataModel/Lighting.hpp>
+#include <App/V8/World/World.hpp>
 #include <Helpers/XML.hpp>
 
 namespace RNR
@@ -11,6 +12,56 @@ namespace RNR
         setBottomAmbient(Ogre::Vector3(122.f/255.f,134.f/255.f,120.f/255.f));
         setTopAmbient(Ogre::Vector3(209.f/255.f,208.f/255.f,217.f/255.f));
         setSpotLight(Ogre::Vector3(191.f/255.f,191.f/255.f,191.f/255.f));
+        m_timeOfDay = "14:00:00";
+        m_geographicLatitude = 41.7332993f;
+        Ogre::BillboardSet* sunAndMoonSet = world->getOgreSceneManager()->createBillboardSet("sun&moon");
+        sunAndMoonSet->getMaterial()->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
+        sunAndMoonSet->getMaterial()->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);
+        m_sun = sunAndMoonSet->createBillboard(Ogre::Vector3(0,0,0));
+        m_sun->setDimensions(1,1);
+        m_sunNode = world->getOgreSceneManager()->createSceneNode();
+        m_sunNode->attachObject(sunAndMoonSet);
+        m_sunNode->setInheritOrientation(false);
+        m_sunNode->setInheritScale(false);
+        world->getOgreSceneManager()->getRootSceneNode()->addChild(m_sunNode);
+        Ogre::Light* l = world->getOgreSceneManager()->getLight("SunLight");
+        m_sunOrigin = Ogre::Vector3(0,0,0);
+
+        updateSunPosition();
+    }
+
+    void Lighting::updateSunPosition()
+    {
+        int hours = std::stoi(m_timeOfDay.substr(0,2));
+        int minutes = std::stoi(m_timeOfDay.substr(3,2));
+        int seconds = std::stoi(m_timeOfDay.substr(6,2));
+
+        float time = ((hours * 60 * 60) + (minutes * 60) + seconds) / (float)(24 * 60 * 60 * 60);
+        float sunY = sinf(time);
+        float sunX = sinf(m_geographicLatitude * (M_PI / 180.f));
+        float sunZ = cosf(m_geographicLatitude * (M_PI / 180.f));
+
+        float sundist = 5.f;
+        Ogre::Light* l = world->getOgreSceneManager()->getLight("SunLight");
+        l->getParentSceneNode()->setPosition(sunX,sunY,sunZ);
+        l->getParentSceneNode()->lookAt(Ogre::Vector3(0,0,0), Ogre::Node::TS_PARENT);
+        m_sunNode->setPosition(m_sunOrigin.x + sunX*sundist,m_sunOrigin.y + sunY*sundist,m_sunOrigin.z + sunZ*sundist);
+    }
+
+    void Lighting::setSunOrigin(Ogre::Vector3 vec)
+    {
+        m_sunOrigin = vec;
+        updateSunPosition();
+    }
+
+    void Lighting::setMinutesAfterMidnight(int minutes)
+    {
+        int hours = (minutes / 60) % 24;
+        int minutes2 = minutes % 60;
+        char time[9];
+        snprintf(time,9,"%02i:%02i:00", hours, minutes2);
+        m_timeOfDay = std::string(time);
+        updateSunPosition();
     }
 
     void Lighting::deserializeProperty(char* prop_name, pugi::xml_node node)
@@ -27,13 +78,21 @@ namespace RNR
         {
             setSpotLight(XML::getColor(node));
         }
-        else if(prop_name == std::string("BottomAmbientV9"))
+        else if(prop_name == std::string("BottomAmbientV9") || prop_name == "ColorShift_Bottom")
         {
             setBottomAmbient(XML::getColor(node));
         }
-        else if(prop_name == std::string("TopAmbientV9"))
+        else if(prop_name == std::string("TopAmbientV9") || prop_name == "ColorShift_Top")
         {
             setTopAmbient(XML::getColor(node));
+        }
+        else if(prop_name == std::string("GeographicLatitude"))
+        {
+            setGeographicLatitude(node.text().as_float());
+        }
+        else if(prop_name == std::string("TimeOfDay"))
+        {
+            setTimeOfDay(node.text().as_string());
         }
     }
 
@@ -60,6 +119,14 @@ namespace RNR
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_VECTOR3,         
               REFLECTION_GETTER(Lighting* instance = (Lighting*)object; return &instance->m_spotLight; ), 
               REFLECTION_SETTER(Lighting* instance = (Lighting*)object; instance->setSpotLight(*(Ogre::Vector3*)value); ) },
+            { this, std::string("GeographicLatitude"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_FLOAT,         
+              REFLECTION_GETTER(Lighting* instance = (Lighting*)object; return &instance->m_geographicLatitude; ), 
+              REFLECTION_SETTER(Lighting* instance = (Lighting*)object; instance->setGeographicLatitude(*(float*)value); ) },
+            { this, std::string("TimeOfDay"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_STD_STRING,         
+              REFLECTION_GETTER(Lighting* instance = (Lighting*)object; return &instance->m_timeOfDay; ), 
+              REFLECTION_SETTER(Lighting* instance = (Lighting*)object; instance->setTimeOfDay(*(std::string*)value); ) },
         };
 
         properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));

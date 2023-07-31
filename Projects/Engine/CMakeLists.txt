@@ -31,6 +31,7 @@ add_library(Engine STATIC
     Header/App/Script/ReflectionProperty.hpp
     Header/App/Script/Script.hpp
     Header/App/Script/ScriptContext.hpp
+    Header/App/Script/Plugin.hpp
     Header/App/GUI/GuiBase3d.hpp
     Header/App/GUI/InstanceAdornment.hpp
     Header/App/GUI/SelectionBox.hpp
@@ -57,6 +58,7 @@ add_library(Engine STATIC
     Header/App/CoordinateFrame.hpp
     Header/App/BrickColor.hpp
     Header/App/InputManager.hpp
+    Header/App/Settings.hpp
     Header/Network/NetworkPeer.hpp
     Header/Network/NetworkClient.hpp
     Header/Network/NetworkServer.hpp
@@ -73,6 +75,8 @@ add_library(Engine STATIC
     Source/Helpers/Bullet.cpp
     Source/App/Script/ReflectionProperty.cpp
     Source/App/Script/Script.cpp
+    Source/App/Script/ScriptContext.cpp
+    Source/App/Script/Plugin.cpp
     Source/App/GUI/GuiBase3d.cpp
     Source/App/GUI/InstanceAdornment.cpp
     Source/App/GUI/SelectionBox.cpp
@@ -94,6 +98,7 @@ add_library(Engine STATIC
     Source/App/CoordinateFrame.cpp
     Source/App/BrickColor.cpp
     Source/App/InputManager.cpp
+    Source/App/Settings.cpp
     Source/App/V8/World/World.cpp
     Source/App/V8/World/Weld.cpp
     Source/App/V8/World/JointsService.cpp

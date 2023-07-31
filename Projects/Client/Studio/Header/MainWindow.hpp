@@ -13,6 +13,7 @@
 #include <QVariant>
 #include <QProgressDialog>
 #include <PropertyViewer.hpp>
+#include <SettingsManager.hpp>
 
 #include <OGRE/Bites/OgreBitesConfigDialog.h>
 #include <OgreWidget.hpp>
@@ -37,6 +38,7 @@ class MainWindow : public QMainWindow, public RNR::ILoadListener
         void updateTree(RNR::Instance* root_instance);
         virtual void updateWorldLoad();
     public slots:
+        void showSettings();
         void loadDatamodel();
         void selectInstance(QTreeWidgetItem *item, int column);
         void run();
@@ -54,4 +56,5 @@ class MainWindow : public QMainWindow, public RNR::ILoadListener
         void resizeEvent(QResizeEvent* event);
 
         QProgressDialog* curr_progress;
+        RNR::SettingsManager* settings;
 };

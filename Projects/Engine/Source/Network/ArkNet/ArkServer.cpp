@@ -23,7 +23,7 @@ namespace ArkNet
             if(peer_it == m_peers.end())
             {
                 peer = new ArkPeer(remote_addr, m_peer->getSocket());
-                printf("ArkServer::frame: new ArkPeer incoming\n");
+                printf("ArkServer::frame: new ArkPeer %s incoming\n", remote_addr.toString().c_str());
                 m_peers[remote_addr.toString()] = peer;
                 if(m_serverListener)
                     m_serverListener->onPeerAdding(peer);

@@ -6,6 +6,8 @@
 #include <App/GUI/SelectionBox.hpp>
 #include <App/Humanoid/Humanoid.hpp>
 #include <App/InputManager.hpp>
+#include <App/Script/Script.hpp>
+#include <App/Script/ScriptContext.hpp>
 #include <Network/Player.hpp>
 #include <Network/NetworkServer.hpp>
 #include <Network/NetworkClient.hpp>
@@ -44,6 +46,8 @@ namespace RNR
         m_instanceFactory->registerInstance("JointsService", InstanceFactory::instanceBuilder<JointsService>);
         m_instanceFactory->registerInstance("NetworkClient", InstanceFactory::instanceBuilder<NetworkClient>);
         m_instanceFactory->registerInstance("NetworkServer", InstanceFactory::instanceBuilder<NetworkServer>);
+        m_instanceFactory->registerInstance("Script", InstanceFactory::instanceBuilder<Script>);
+        m_instanceFactory->registerInstance("ScriptContext", InstanceFactory::instanceBuilder<ScriptContext>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -55,6 +59,8 @@ namespace RNR
 
         m_joints = new JointsService();
         m_joints->setParent(m_datamodel);
+        ScriptContext* scriptContext = new ScriptContext();
+        scriptContext->setParent(m_datamodel);
 
         m_runPhysics = true;
         m_ngine = new ComPlicitNgine(this);
@@ -200,7 +206,7 @@ namespace RNR
 
     void World::preStep()
     {
-        NetworkServer* server = dynamic_cast<NetworkServer*>(m_workspace->findFirstChildOfType("NetworkServer"));
+        NetworkServer* server = dynamic_cast<NetworkServer*>(m_datamodel->findFirstChildOfType("NetworkServer"));
         if(server && server->getRunning())
             server->frame();
     }
@@ -219,7 +225,10 @@ namespace RNR
 
     void World::update()
     {
+        Lighting* lighting = dynamic_cast<Lighting*>(m_datamodel->findFirstChildOfType("Lighting"));
+        Camera* camera = m_workspace->getCurrentCamera();
+        if(lighting && camera)
+            lighting->setSunOrigin(camera->getCFrame().getPosition());
         m_workspace->buildGeom();
     }
-
 }

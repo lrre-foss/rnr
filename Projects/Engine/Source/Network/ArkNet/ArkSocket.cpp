@@ -104,7 +104,7 @@ namespace ArkNet
         sockaddr* addr = remote ? (sockaddr*)&(remote->address) : NULL;
         socklen_t* len = remote ? (socklen_t*)&(remote->address_size) : NULL;
         int m = recvfrom(m_sockFd, data_buf, sizeof(data_buf), MSG_DONTWAIT | flags, addr, len);
-        if(m == -1)
+        if(m == -1 && errno != 11)
             printf("ArkSocket::recvFrom: failed, errno: %i (%s)\n", sock_errno, strerror(sock_errno));
         memcpy(output, data_buf, std::min(sizeof(data_buf), bytes));
         return m;

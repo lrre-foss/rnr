@@ -1,5 +1,6 @@
 #include <OgreWidget.hpp>
 #include <QApplication>
+#include <QStandardPaths>
 #include <filesystem>
 
 #include <OGRE/Bites/OgreSGTechniqueResolverListener.h>
@@ -8,6 +9,7 @@
 #include <OGRE/Overlay/OgreOverlayManager.h>
 #include <OGRE/Overlay/OgreFontManager.h>
 #include <App/V8/DataModel/Lighting.hpp>
+#include <App/Settings.hpp>
 
 #ifdef __unix__
 #include <qpa/qplatformnativeinterface.h>
@@ -35,16 +37,33 @@ namespace RNR
 
     void OgreWidget::initializeOgre()
     {
+        QStringList locations = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+        RNR::Settings* settings = new RNR::Settings((QCoreApplication::applicationDirPath() + QString("/settings.xml")).toLocal8Bit().data());
         Ogre::NameValuePairList options = this->getRenderOptions();
 
         printf("OgreWidget::initializeOgre: initializing render window\n");
+        
+        Ogre::RenderSystemList list = ogreRoot->getAvailableRenderers();
+        std::string rendersystem_sel = std::string(settings->getSetting("RenderSystem").text().as_string());
+        if(rendersystem_sel.size() == 0)
+            rendersystem_sel = "OpenGL 3+ Rendering Subsystem";
+        for(auto entry : list)
+        {
+            printf("OgreWidget::initializeOgre: available RenderSystem '%s'\n", entry->getName().c_str());
+            if(entry->getName().compare(rendersystem_sel) == 0)
+            {
+                printf("OgreWidget::initializeOgre: found RenderSystem\n");
+                ogreRoot->setRenderSystem(entry);
+            }
+        }
+        ogreRoot->initialise(false);
+
         Ogre::OverlaySystem* ogreOverlay = new Ogre::OverlaySystem();
 
         ogreWindow = ogreRoot->createRenderWindow("GLWidget-RenderWindow", width(), height(), false, &options);
         ogreWindow->setActive(true);
         ogreWindow->setVisible(true);
         ogreWindow->setAutoUpdated(true);
-        
         
         Ogre::ResourceGroupManager::getSingletonPtr()->addResourceLocation("shaders", "FileSystem", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
@@ -72,12 +91,15 @@ namespace RNR
         if(Ogre::RTShader::ShaderGenerator::initialize())
         {
             ogreShaderGen = Ogre::RTShader::ShaderGenerator::getSingletonPtr();
+            if(settings->getSetting("OGREDiskShaderCacheEnable").text().as_bool())
+            {
+                std::string scPath = (QCoreApplication::applicationDirPath() + tr("/ShaderCache")).toStdString();
+                if (!std::filesystem::is_directory(scPath) || !std::filesystem::exists(scPath)) {
+                    std::filesystem::create_directory(scPath);
+                }
 
-            if (!std::filesystem::is_directory("ShaderCache") || !std::filesystem::exists("ShaderCache")) {
-                std::filesystem::create_directory("ShaderCache");
+                ogreShaderGen->setShaderCachePath(scPath);
             }
-
-            ogreShaderGen->setShaderCachePath("ShaderCache/");
             ogreShaderGen->addSceneManager(ogreSceneManager);
 
             OgreBites::SGTechniqueResolverListener* technique_resolver = new OgreBites::SGTechniqueResolverListener(ogreShaderGen);
@@ -101,7 +123,6 @@ namespace RNR
 
         ogreSceneManager->setShadowTechnique(Ogre::ShadowTechnique::SHADOWTYPE_NONE);
         ogreSceneManager->setShadowFarDistance(500.f);
-        Ogre::MaterialManager::getSingletonPtr()->reloadAll();
 
         ogreSceneLight = ogreSceneManager->createLight("SunLight");
         Ogre::SceneNode* lightNode = ogreSceneManager->getRootSceneNode()->createChildSceneNode();

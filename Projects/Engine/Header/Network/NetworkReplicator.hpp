@@ -12,5 +12,6 @@ namespace RNR
         ~NetworkReplicator();
 
         virtual void onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet);        
+        virtual std::string getClassName() { return "NetworkReplicator"; }
     };
 }
