@@ -113,11 +113,14 @@ namespace RNR
             PartInstance* part = (PartInstance*)obj->getUserPointer();
             if(part && m_world->getRunService()->getRunning())
             {
+/*
                 part->getCFrame().setPosition(Bullet::v3ToOgre(trans.getOrigin()));
                 Ogre::Matrix3 partRot;
                 Ogre::Quaternion transOgre = Bullet::qtToOgre(trans.getRotation());
                 transOgre.ToRotationMatrix(partRot);
                 part->getCFrame().setRotation(partRot);
+                */
+                part->setCFrame(Bullet::tfToCoordinateFrame(trans));
             }
         }
         m_sleepingObjects = sleepingObjects;
@@ -129,11 +132,8 @@ namespace RNR
         btCollisionShape* partShape = new btBoxShape(Bullet::v3ToBullet(partRegistered->getSize() / 2.f));
         partShape->setUserPointer(partRegistered);
 
-        btTransform partTransform;
-        partTransform.setIdentity();
-        partTransform.setOrigin(Bullet::v3ToBullet(partRegistered->getPosition()));
-        partTransform.setRotation(Bullet::qtToBullet(partRegistered->getRotation()));
-        
+        btTransform partTransform = Bullet::cfToTransform(partRegistered->getCFrame());
+
         btScalar mass = partRegistered->getSize().length();
         if(partRegistered->getAnchored())
             mass = 0;

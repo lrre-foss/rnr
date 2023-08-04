@@ -8,6 +8,7 @@ namespace RNR
     {
         float m_brightness;
         float m_geographicLatitude;
+        float m_sunBrightness;
 
         std::string m_timeOfDay;
         Ogre::Vector3 m_bottomAmbient;
@@ -43,6 +44,7 @@ namespace RNR
         float getGeographicLatitude() { return m_geographicLatitude; }
         void setTimeOfDay(std::string time) { m_timeOfDay = time; updateSunPosition(); }
         std::string getTimeOfDay() { return m_timeOfDay; }
+        float getSunBrightness() { return m_sunBrightness; }
 
         virtual std::string getClassName() { return "Lighting"; }
         virtual std::string getExplorerIcon() { return "PointLight"; }

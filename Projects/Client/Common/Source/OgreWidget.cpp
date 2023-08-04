@@ -162,7 +162,8 @@ namespace RNR
 
         RNR::Lighting* lighting = (RNR::Lighting*)world->getDatamodel()->getService("Lighting");
         if(lighting)
-        {
+        {   
+            float sunpower = lighting->getSunBrightness();
             Ogre::Vector3 clearColor = lighting->getClearColor();
             ogreViewport->setBackgroundColour(Ogre::ColourValue(clearColor.x, clearColor.y, clearColor.z));
             Ogre::Vector3 shadowColor = lighting->getShadowColor();
@@ -172,7 +173,7 @@ namespace RNR
             Ogre::Vector3 bottomAmbient = lighting->getBottomAmbient();
             ogreSceneManager->setAmbientLight(Ogre::ColourValue(bottomAmbient.x, bottomAmbient.y, bottomAmbient.z));
             Ogre::Vector3 spotLight = lighting->getSpotLight();
-            ogreSceneLight->setSpecularColour(Ogre::ColourValue(spotLight.x, spotLight.y, spotLight.z));
+            ogreSceneLight->setSpecularColour(Ogre::ColourValue(spotLight.x * sunpower, spotLight.y * sunpower, spotLight.z * sunpower));
         }
         
         if(isVisible())

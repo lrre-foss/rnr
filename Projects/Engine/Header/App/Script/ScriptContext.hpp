@@ -3,7 +3,7 @@
 #include <App/V8/Tree/Instance.hpp>
 #include <App/V8/DataModel/RunService.hpp>
 
-namespace RNR
+namespace RNR::Lua
 {
     class ScriptContext : public Instance
     {
@@ -16,6 +16,8 @@ namespace RNR
 
         void addScript(Script* script);
         void removeScript(Script* script);
+        void registerBridge(IBridge* bridge);
+        void update();
 
         virtual std::string getClassName() { return "ScriptContext"; }
         lua_State* getInternalState() { return m_state; }

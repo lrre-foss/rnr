@@ -55,10 +55,10 @@ namespace RNR
                     m_surfaces[i].type = SURFACE_STUDS;
                     break;
                 case NORM_DOWN:
-                    m_surfaces[i].type = SURFACE_STUDS;
+                    m_surfaces[i].type = SURFACE_INLET;
                     break;
                 default:
-                    m_surfaces[i].type = SURFACE_STUDS;
+                    m_surfaces[i].type = SURFACE_SMOOTH;
                     break;
             }
             m_surfaces[i].surf = 0;

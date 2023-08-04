@@ -36,10 +36,16 @@ namespace RNR
         int minutes = std::stoi(m_timeOfDay.substr(3,2));
         int seconds = std::stoi(m_timeOfDay.substr(6,2));
 
-        float time = ((hours * 60 * 60) + (minutes * 60) + seconds) / (float)(24 * 60 * 60 * 60);
-        float sunY = sinf(time);
-        float sunX = sinf(m_geographicLatitude * (M_PI / 180.f));
-        float sunZ = cosf(m_geographicLatitude * (M_PI / 180.f));
+        float time = ((hours * 60 * 60) + (minutes * 60) + seconds) / (float)(12 * 60 * 60);
+        float sun_offset = ((4 * 60 * 60)) / (float)(12 * 60 * 60); // this is the time that the sun will reach y 0 at
+        float sun_time = time - sun_offset; // adjust for sun time
+        float sun_cycle = sun_time * M_PI;
+        float sunY = sinf(sun_cycle);
+        float sunX = sinf(sun_cycle - (m_geographicLatitude * (M_PI / 180.f)));
+        float sunZ = cosf(sun_cycle - (m_geographicLatitude * (M_PI / 180.f)));
+
+        m_sunBrightness = std::max(0.f,sunY);
+        m_sun->setColour(Ogre::ColourValue(m_sunBrightness,m_sunBrightness,m_sunBrightness,m_sunBrightness));
 
         float sundist = 5.f;
         Ogre::Light* l = world->getOgreSceneManager()->getLight("SunLight");

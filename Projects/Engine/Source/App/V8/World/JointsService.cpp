@@ -1,6 +1,7 @@
 #include <App/V8/World/JointsService.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/V8/World/ComPlicitNgine.hpp>
+#include <Helpers/Bullet.hpp>
 
 namespace RNR
 {
@@ -11,14 +12,16 @@ namespace RNR
         m_jointsDone = 0;
     }
 
-    Snap* JointsService::snap(PartInstance* a, PartInstance* b)
+    Snap* JointsService::snap(PartInstance* a, PartInstance* b, Ogre::Vector3 contact)
     {
         //if(isWelded(a, b))
         //    return NULL;
         Snap* snap = new Snap();
         snap->setBodies(a, b);
-        snap->setC0(b->getCFrame().toObjectSpace(a->getCFrame()));
-        snap->setC1(a->getCFrame() * snap->getC0() * b->getCFrame().inverse());
+        CoordinateFrame contactFrame;
+        contactFrame.setPosition(contact);
+        snap->setC0(a->getCFrame().inverse() * contactFrame);
+        snap->setC1(b->getCFrame().inverse() * contactFrame);
         snap->setParent(this);
         return snap;
     }
@@ -89,14 +92,13 @@ namespace RNR
                         bool link = surfB.links(surfA);
                         if(link)
                         {
-                            printf("Link\n");
                             switch(part0->getSurface(bFace).type)
                             {
                             case SURFACE_WELD:
                             case SURFACE_UNIVERSAL:
                             case SURFACE_INLET:
                             case SURFACE_STUDS:
-                                snap(part0,part1);
+                                snap(part0,part1,Bullet::v3ToOgre(pt.m_positionWorldOnA));
                                 break;
                             case SURFACE_SMOOTH:
                             default:

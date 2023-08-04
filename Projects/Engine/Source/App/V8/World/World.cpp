@@ -33,21 +33,21 @@ namespace RNR
 
         m_instanceFactory = new InstanceFactory();
 
-        m_instanceFactory->registerInstance("Camera", InstanceFactory::instanceBuilder<Camera>);
-        m_instanceFactory->registerInstance("Model", InstanceFactory::instanceBuilder<ModelInstance>);
-        m_instanceFactory->registerInstance("SelectionBox", InstanceFactory::instanceBuilder<SelectionBox>);
-        m_instanceFactory->registerInstance("Part", InstanceFactory::instanceBuilder<PartInstance>);
-        m_instanceFactory->registerInstance("Workspace", InstanceFactory::instanceBuilder<Workspace>);
-        m_instanceFactory->registerInstance("Humanoid", InstanceFactory::instanceBuilder<Humanoid>);
-        m_instanceFactory->registerInstance("RunService", InstanceFactory::instanceBuilder<RunService>);
-        m_instanceFactory->registerInstance("Players", InstanceFactory::instanceBuilder<Players>);
-        m_instanceFactory->registerInstance("Player", InstanceFactory::instanceBuilder<Player>);
-        m_instanceFactory->registerInstance("Lighting", InstanceFactory::instanceBuilder<Lighting>);
+        m_instanceFactory->registerInstance("Camera",        InstanceFactory::instanceBuilder<Camera>);
+        m_instanceFactory->registerInstance("Model",         InstanceFactory::instanceBuilder<ModelInstance>);
+        m_instanceFactory->registerInstance("SelectionBox",  InstanceFactory::instanceBuilder<SelectionBox>);
+        m_instanceFactory->registerInstance("Part",          InstanceFactory::instanceBuilder<PartInstance>);
+        m_instanceFactory->registerInstance("Workspace",     InstanceFactory::instanceBuilder<Workspace>);
+        m_instanceFactory->registerInstance("Humanoid",      InstanceFactory::instanceBuilder<Humanoid>);
+        m_instanceFactory->registerInstance("RunService",    InstanceFactory::instanceBuilder<RunService>);
+        m_instanceFactory->registerInstance("Players",       InstanceFactory::instanceBuilder<Players>);
+        m_instanceFactory->registerInstance("Player",        InstanceFactory::instanceBuilder<Player>);
+        m_instanceFactory->registerInstance("Lighting",      InstanceFactory::instanceBuilder<Lighting>);
         m_instanceFactory->registerInstance("JointsService", InstanceFactory::instanceBuilder<JointsService>);
         m_instanceFactory->registerInstance("NetworkClient", InstanceFactory::instanceBuilder<NetworkClient>);
         m_instanceFactory->registerInstance("NetworkServer", InstanceFactory::instanceBuilder<NetworkServer>);
-        m_instanceFactory->registerInstance("Script", InstanceFactory::instanceBuilder<Script>);
-        m_instanceFactory->registerInstance("ScriptContext", InstanceFactory::instanceBuilder<ScriptContext>);
+        m_instanceFactory->registerInstance("Script",        InstanceFactory::instanceBuilder<Lua::Script>);
+        m_instanceFactory->registerInstance("ScriptContext", InstanceFactory::instanceBuilder<Lua::ScriptContext>);
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
@@ -59,7 +59,7 @@ namespace RNR
 
         m_joints = new JointsService();
         m_joints->setParent(m_datamodel);
-        ScriptContext* scriptContext = new ScriptContext();
+        Lua::ScriptContext* scriptContext = new Lua::ScriptContext();
         scriptContext->setParent(m_datamodel);
 
         m_runPhysics = true;
@@ -133,6 +133,9 @@ namespace RNR
             m_workspace->setCurrentCamera(0);
             old_camera->setParent(NULL);
         }
+        Lua::ScriptContext* scriptctxt = dynamic_cast<Lua::ScriptContext*>(m_datamodel->findFirstChildOfType("ScriptContext"));
+        if(!scriptctxt)
+            printf("World::load: no script context, scripts will not be added\n");
 
         pugi::xml_document rbxl_doc;
         pugi::xml_parse_result result = rbxl_doc.load_file(path);
@@ -176,6 +179,11 @@ namespace RNR
                 {
                     ModelInstance* m = (ModelInstance*)s.instance;
                     m->build();
+                } else if(s.instance->getClassName() == "Script")
+                {
+                    Lua::Script* sc = (Lua::Script*)s.instance;
+                    if(scriptctxt)
+                        sc->setScriptContext(scriptctxt);
                 }
             }
         }
@@ -197,6 +205,9 @@ namespace RNR
     {
         if(m_inputManager)
             m_inputManager->frame();
+        Lua::ScriptContext* scriptctxt = dynamic_cast<Lua::ScriptContext*>(m_datamodel->findFirstChildOfType("ScriptContext"));
+        if(scriptctxt && m_runService && m_runService->getRunning() && !m_runService->getPaused())
+            scriptctxt->update();
         m_tmb->frame();
         m_lastDelta = timestep;
         if(m_runService && m_runService->getRunning() && !m_runService->getPaused())
