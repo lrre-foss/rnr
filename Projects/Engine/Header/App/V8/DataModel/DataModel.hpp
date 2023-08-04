@@ -9,6 +9,7 @@ namespace RNR
         DataModel();
 
         Instance* getService(std::string service_name);
+        virtual std::string getClassName() { return "DataModel"; }
     private:
 
     };

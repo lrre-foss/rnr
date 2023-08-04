@@ -37,6 +37,8 @@ namespace RNR::Lua
         Ogre::Vector3 toVector3(lua_State* l, int index);
         Vector3Bridge() { load(); }
         virtual std::string className() { return "Vector3"; }
+
+        static Vector3Bridge* singleton() { return (Vector3Bridge*)IBridge::bridges["Vector3"]; }
     };
 
     class InstanceBridge : public IBridge
@@ -53,5 +55,7 @@ namespace RNR::Lua
         virtual std::string className() { return "Instance"; }
 
         static const int TAG = 0x1a;
+
+        static InstanceBridge* singleton() { return (InstanceBridge*)IBridge::bridges["Instance"]; }
     };
 }

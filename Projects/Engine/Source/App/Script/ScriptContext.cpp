@@ -65,6 +65,7 @@ namespace RNR::Lua
         auto script_it = std::find(m_scripts.begin(),m_scripts.end(),script);
         if(script_it != m_scripts.end())
         {
+            Script* script = *script_it.base();
             m_scripts.erase(script_it);
         }
         script_it = std::find(m_pendingScripts.begin(), m_pendingScripts.end(), script);

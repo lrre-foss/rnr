@@ -12,6 +12,7 @@
 #include <pugixml.hpp>
 
 #include <App/Script/ReflectionProperty.hpp>
+#include <App/Script/ReflectionFunction.hpp>
 
 namespace RNR
 {
@@ -23,7 +24,7 @@ namespace RNR
             static World* world;
             virtual void deserializeProperty(char* prop_name, pugi::xml_node prop) {};
             virtual void addProperties(std::vector<ReflectionProperty>& properties) {};
-
+            virtual void addFunctions(std::vector<ReflectionFunction>& functions) {};
         private:
 
             Ogre::SceneNode* m_node;
@@ -41,6 +42,7 @@ namespace RNR
             virtual ~Instance();
             
             virtual std::vector<ReflectionProperty> getProperties();
+            virtual std::vector<ReflectionFunction> getFunctions();
             void deserializeXmlProperty(pugi::xml_node prop); // TODO: eventually replace this with a method that uses getProperties
 
             bool contains(RNR::Instance* child);

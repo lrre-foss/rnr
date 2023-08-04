@@ -1,4 +1,6 @@
 #include <App/V8/Tree/Instance.hpp>
+#include <App/Script/Bridge.hpp>
+#include <lua.h>
 
 namespace RNR
 {
@@ -51,6 +53,17 @@ namespace RNR
         addProperties(_properties);
 
         return _properties;
+    }
+
+    std::vector<ReflectionFunction> Instance::getFunctions()
+    {
+        ReflectionFunction functions[] = {
+            { "IsA", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); lua_pushboolean(l, instance->isA(lua_tostring(l, -1))); return 1; } }
+        };
+
+        std::vector<ReflectionFunction> _functions(functions, functions+(sizeof(functions)/sizeof(ReflectionFunction)));
+        addFunctions(_functions);
+        return _functions;
     }
 
     void Instance::deserializeXmlProperty(pugi::xml_node prop)

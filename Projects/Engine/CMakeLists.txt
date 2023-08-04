@@ -29,6 +29,7 @@ add_library(Engine STATIC
     Header/Helpers/Bullet.hpp
     Header/Helpers/Lock.hpp
     Header/App/Script/Bridge.hpp
+    Header/App/Script/ReflectionFunction.hpp
     Header/App/Script/ReflectionProperty.hpp
     Header/App/Script/Script.hpp
     Header/App/Script/ScriptContext.hpp
@@ -75,6 +76,7 @@ add_library(Engine STATIC
     Source/Helpers/NormalId.cpp
     Source/Helpers/Bullet.cpp
     Source/App/Script/Bridge.cpp
+    Source/App/Script/ReflectionFunction.cpp
     Source/App/Script/ReflectionProperty.cpp
     Source/App/Script/Script.cpp
     Source/App/Script/ScriptContext.cpp

@@ -44,6 +44,7 @@ class MainWindow : public QMainWindow, public RNR::ILoadListener
         void run();
         void pause();
         void playSolo();
+        void runScript();
 
         void startServer();
         void joinClient();

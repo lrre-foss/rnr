@@ -4,10 +4,13 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QProgressDialog>
+#include <QStatusBar>
 #include <App/V8/Tree/ModelInstance.hpp>
 #include <App/V8/DataModel/Light.hpp>
 #include <Network/NetworkServer.hpp>
 #include <Network/NetworkClient.hpp>
+#include <App/Script/Script.hpp>
+#include <App/Script/ScriptContext.hpp>
 
 MainWindow::MainWindow()
 {
@@ -141,6 +144,11 @@ void MainWindow::createToolbar()
     QAction* load_action = file_menu->addAction("Load", this, SLOT(loadDatamodel()));
     file_menu->addSeparator();
     QAction* settings_action = file_menu->addAction("Settings", this, SLOT(showSettings()));
+
+    QMenu* run_menu = menubar->addMenu("Run");
+    QAction* run_script_action = run_menu->addAction("Script", this, SLOT(runScript()));
+    QAction* play_solo_action = run_menu->addAction(QIcon("content/textures/studio/icons/play.png"), "Play Solo", this, SLOT(playSolo()));
+
     QMenu* help_menu = menubar->addMenu("Help");
     help_menu->addAction("About...");
 
@@ -201,6 +209,19 @@ void MainWindow::playSolo()
     player->loadCharacter();
 
     updateTree(ogreWidget->world->getDatamodel());
+}
+
+void MainWindow::runScript()
+{    
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open script"), tr(""), tr("Text files (*.txt *.lua)"));
+    QFile file(filename);
+    file.open(QFile::ReadOnly);
+
+    RNR::Lua::ScriptContext* context = (RNR::Lua::ScriptContext*)ogreWidget->world->getDatamodel()->getService("ScriptContext");
+    RNR::Lua::Script* script = new RNR::Lua::Script(context, file.readAll().toStdString());
+
+    file.close();
+    ogreWidget->world->getRunService()->run();
 }
 
 void MainWindow::dbg_pointlight()

@@ -100,6 +100,7 @@ namespace RNR::Lua
         InstanceBridge* bridge = (InstanceBridge*)IBridge::bridges["Instance"];
         Instance* new_instance = bridge->toInstance(l, -2);
         std::vector<ReflectionProperty> properties = new_instance->getProperties();
+        std::vector<ReflectionFunction> functions = new_instance->getFunctions();
         std::string propname = lua_tostring(l, -1);
 
         bool foundprop = false;
@@ -141,9 +142,16 @@ namespace RNR::Lua
             Instance* test = new_instance->findFirstChild(propname);
             if(test)
                 bridge->fromInstance(l, test);
-            else // TODO: not found
+            else
             {
-
+                // check for a function
+                for(auto function : functions)
+                {
+                    if(function.name() == propname)
+                    {
+                        lua_pushcfunction(l, function.function(), function.name().c_str());
+                    }
+                }
             }
         }
 
