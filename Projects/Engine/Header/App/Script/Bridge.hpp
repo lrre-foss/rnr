@@ -46,6 +46,7 @@ namespace RNR::Lua
     private:
         static int lua_new(lua_State* l);
         static int lua_index(lua_State* l);    
+        static int lua_new_index(lua_State* l);
     protected:
         virtual void registerClassLibrary();
     public:

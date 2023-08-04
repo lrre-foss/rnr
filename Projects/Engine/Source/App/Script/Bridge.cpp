@@ -47,7 +47,7 @@ namespace RNR::Lua
 
     void Vector3Bridge::fromVector3(lua_State* l, Ogre::Vector3 vec)
     {
-        lua_createtable(l, 0, 3);
+        lua_createtable(l, 0, 0);
         lua_pushstring(l, "X");
         lua_pushnumber(l, vec.x);   
         lua_settable(l, -3);
@@ -65,14 +65,18 @@ namespace RNR::Lua
     {
         Ogre::Vector3 vec;
         lua_pushstring(l, "X");
-        lua_gettable(l, index);
+        lua_gettable(l, index - 1);
         vec.x = lua_tonumber(l, -1);
+        lua_pop(l, 1);
         lua_pushstring(l, "Y");
-        lua_gettable(l, index);
+        lua_gettable(l, index - 1);
         vec.y = lua_tonumber(l, -1);
+        lua_pop(l, 1);
         lua_pushstring(l, "Z");
-        lua_gettable(l, index);
+        lua_gettable(l, index - 1);
         vec.z = lua_tonumber(l, -1);
+        lua_pop(l, 1);
+        return vec;
     }
 
     int Vector3Bridge::lua_new(lua_State* l)
@@ -92,6 +96,10 @@ namespace RNR::Lua
         
         function.name = "__index";
         function.func = InstanceBridge::lua_index;
+        m_metatableLibrary.push_back(function);
+
+        function.name = "__newindex";
+        function.func = InstanceBridge::lua_new_index;
         m_metatableLibrary.push_back(function);
     }
 
@@ -158,11 +166,86 @@ namespace RNR::Lua
         return 1;
     }
 
-    int InstanceBridge::lua_new(lua_State* l)
+    int InstanceBridge::lua_new_index(lua_State* l)
     {
+        InstanceBridge* bridge = (InstanceBridge*)IBridge::bridges["Instance"];
+        Instance* instance = bridge->toInstance(l, -3);
+        std::vector<ReflectionProperty> properties = instance->getProperties();
+        std::string propname = lua_tostring(l, -2);
+
+        for(auto property : properties)
+        {
+            if(property.name() == propname)
+            {
+                lua_Type type = (lua_Type)lua_type(l, -1);
+                printf("%i %s\n",type,propname.c_str());
+                std::string _s;
+                switch(type)
+                {
+                case LUA_TSTRING:
+                    if(property.type() == PROPERTY_STD_STRING)
+                    {
+                        std::string s = lua_tostring(l, -1);
+                        property.rawSetter(&s);
+                    }
+                    break;
+                case LUA_TUSERDATA:
+                    if(property.type() == PROPERTY_INSTANCE)
+                    {
+                        Instance* instance = bridge->toInstance(l, -1);
+                        property.rawSetter(instance);
+                    }
+                    break;
+                case LUA_TBOOLEAN:
+                    if(property.type() == PROPERTY_BOOL)
+                    {
+                        bool b = lua_toboolean(l, -1);
+                        property.rawSetter(&b);
+                    }
+                    break;
+                case LUA_TNUMBER:
+                    if(property.type() == PROPERTY_INTEGER)
+                    {
+                        int n = lua_tointeger(l, -1);
+                        property.rawSetter(&n);
+                    }
+                    else if(property.type() == PROPERTY_FLOAT)
+                    {
+                        float f = lua_tonumber(l, -1);
+                        property.rawSetter(&f);
+                    }
+                    break;
+                case LUA_TFUNCTION:                    
+                    throw std::runtime_error("Unimplemented");
+                    break;
+                case LUA_TTHREAD:
+                    throw std::runtime_error("Unimplemented");
+                    break;
+                case LUA_TTABLE:
+                    if(property.type() == PROPERTY_VECTOR3)
+                    {
+                        Vector3Bridge* v3b = Vector3Bridge::singleton();
+                        Ogre::Vector3 vec = v3b->toVector3(l, -1);
+                        property.rawSetter(&vec);
+                    }
+                    break;
+                case LUA_TNIL:
+                case LUA_TNONE:
+                default:
+                    throw std::runtime_error("Property is nil, none, or missing");
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    int InstanceBridge::lua_new(lua_State* l)
+    {        
         InstanceBridge* bridge = (InstanceBridge*)IBridge::bridges["Instance"];
         Instance* new_instance = InstanceFactory::singleton()->build(lua_tostring(l, -1));
         bridge->fromInstance(l, new_instance);
+
         return 1;
     }
 

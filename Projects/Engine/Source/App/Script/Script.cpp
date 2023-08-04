@@ -37,17 +37,15 @@ namespace RNR::Lua
     }
 
     void Script::load(lua_State* L)
-    {
-        if(!getScriptThread())
-            setScriptThread(L);
-        if(L == 0)
-            L = getScriptThread();
+    {        
+        if(!m_state)
+            throw new std::runtime_error("attempted to load script with no thread\n");
         if(!m_bytecode)
             throw new std::runtime_error("attempted to load uncompiled script\n");
         try{
-            int result = luau_load(L, getName().c_str(), m_bytecode, m_bytecodeSize, 0);        
+            int result = luau_load(getScriptThread(), getName().c_str(), m_bytecode, m_bytecodeSize, 0);        
             if(result == 0)
-                lua_call(L, 0, 0);
+                lua_resume(getScriptThread(), L, 0);
             else
                 printf("Script::load: failed (%i)\n", lua_gettop(L));
         }catch(std::exception& error)

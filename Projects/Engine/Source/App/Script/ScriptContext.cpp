@@ -13,6 +13,20 @@ namespace RNR::Lua
         return NULL;
     }
 
+    static int lua_wait(lua_State* l)
+    {
+        InstanceBridge* bridge = InstanceBridge::singleton();
+        lua_getglobal(l, "script");
+        Script* script = (Script*)bridge->toInstance(l, -1);
+        lua_pop(l, 1);
+        float time = script->getWorld()->getComPlicitNgine()->getPhysicsTime();
+        if(lua_gettop(l) == 1)
+            script->setResumeTime(time + lua_tonumber(l, -1));
+        else
+            script->setResumeTime(time); // scripts only run when physics is also running atm            
+        return script->pause(l);
+    }
+
     ScriptContext::ScriptContext()
     {
         setName("Script Context");
@@ -32,6 +46,9 @@ namespace RNR::Lua
         lua_pushcclosure(m_state, luaopen_table, "luaopen_table", 0);
         lua_pushstring(m_state, "table");
         lua_call(m_state, 1, 0);
+
+        lua_pushcfunction(m_state, lua_wait, "wait");
+        lua_setglobal(m_state, "wait");
 
         Vector3Bridge* v3b = new Vector3Bridge();
         registerBridge(v3b);
@@ -85,11 +102,23 @@ namespace RNR::Lua
                 lua_State* thread = lua_newthread(m_state);
                 ((InstanceBridge*)IBridge::bridges["InstanceBridge"])->fromInstance(thread, script);
                 lua_setglobal(thread, "script");
+                script->setScriptThread(thread);
                 script->compile();
                 script->load(thread);
                 m_scripts.push_back(script);
             }
             m_pendingScripts.clear();
+        }
+        float time = world->getComPlicitNgine()->getPhysicsTime();
+
+        for(auto script : m_scripts) // TODO: make this better, probably do it in RunService or a Heartbeat idk
+        {
+            if(script->getPaused())
+            {
+                float resume = script->getResumeTime();
+                if(resume <= time)
+                    script->resume(script->getScriptThread());
+            }
         }
     }
 }

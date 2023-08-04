@@ -248,6 +248,10 @@ namespace RNR
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_FLOAT,         
               REFLECTION_GETTER(PartInstance* instance = (PartInstance*)object; return &instance->m_transparency; ), 
               REFLECTION_SETTER(PartInstance* instance = (PartInstance*)object; instance->setTransparency(*(float*)value); ) },
+            { this, std::string("Position"), std::string(""), 
+              ACCESS_NONE, OPERATION_READWRITE, PROPERTY_VECTOR3,         
+              REFLECTION_GETTER(PartInstance* instance = (PartInstance*)object; return &instance->m_position; ), 
+              REFLECTION_SETTER(PartInstance* instance = (PartInstance*)object; instance->getCFrame().setPosition(*(Ogre::Vector3*)value); instance->updateMatrix(); ) },
         };
 
         PVInstance::addProperties(properties);

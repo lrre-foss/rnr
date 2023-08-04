@@ -18,8 +18,7 @@ namespace RNR
             m_lastPhysicsDelta = delta;
             m_physicsTime = time;
 
-            if(m_lastPhysicsDelta == 0)
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
+            std::this_thread::sleep_for(std::chrono::duration<float>(std::max(0.f,1.f/1000.f - m_lastPhysicsDelta)));
             
             if(m_world->getRunService()->getRunning())
             {
