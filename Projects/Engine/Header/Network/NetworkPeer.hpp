@@ -13,6 +13,8 @@ namespace RNR
     public:
         NetworkPeer();
         ~NetworkPeer();
+
+        void authorize();
         
         virtual std::string getClassName() { return "NetworkPeer"; }
     };

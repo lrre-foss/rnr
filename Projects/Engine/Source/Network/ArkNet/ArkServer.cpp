@@ -35,6 +35,8 @@ namespace ArkNet
             {
                 for(auto& listener : m_peer->m_listeners)
                     listener->onPacketReceiving(peer, in_packet);
+                for(auto& listener : peer->m_listeners)
+                    listener->onPacketReceiving(peer, in_packet);
             }
 
             delete in_packet;
@@ -46,7 +48,17 @@ namespace ArkNet
         switch(packet->packetId())
         {
         case 0x05: // connection request
-            
+            {
+                printf("ArkServer::onPacketReceiving: received a OpenConnectionRequestPacket\n");
+                Packets::OpenConnectionRequestPacket* _packet = dynamic_cast<Packets::OpenConnectionRequestPacket*>(packet);
+                bool accept = true;
+                if(m_serverListener)
+                    accept = m_serverListener->onPeerConnectionRequest(peer, _packet);
+                if(accept)
+                {
+                    peer->authorize();
+                }
+            }
             break;
         default:
             break;

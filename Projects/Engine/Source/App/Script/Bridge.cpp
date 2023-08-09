@@ -178,8 +178,6 @@ namespace RNR::Lua
             if(property.name() == propname)
             {
                 lua_Type type = (lua_Type)lua_type(l, -1);
-                printf("%i %s\n",type,propname.c_str());
-                std::string _s;
                 switch(type)
                 {
                 case LUA_TSTRING:

@@ -12,6 +12,8 @@ namespace ArkNet
     {
     public:
         virtual void onPacketReceiving(ArkPeer* peer, ArkPacket* packet) = 0;
+
+        virtual void onConnectionAccepted(ArkPeer* peer) {};
     };
 
     class ArkPeer
@@ -22,6 +24,7 @@ namespace ArkNet
         ArkSocket* m_socket;
         ArkUserData* m_userData;
         std::vector<IArkPeerListener*> m_listeners;
+        bool m_authorized;
     public:
         ArkPeer(ArkSocket* socket);
         ArkPeer(ArkAddress remote, ArkSocket* socket);
@@ -34,6 +37,11 @@ namespace ArkNet
         int sendTo(int bytes, char* data, int flags = 0);
         ArkPacket* recvPacket(ArkAddress* remote);
         void sendPacket(ArkPacket* packet);
+
+        void authorize();
+
+        // read events, client-only, servers should use ArkServer::frame
+        void clientPump(); 
 
         ArkSocket* getSocket() { return m_socket; }
         ArkUserData* getUserData() { return m_userData; }

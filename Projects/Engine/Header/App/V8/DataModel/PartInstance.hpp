@@ -62,6 +62,7 @@ namespace RNR
         Ogre::Vector4 m_color;
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
         virtual void addProperties(std::vector<ReflectionProperty>& properties);
+        virtual void addFunctions(std::vector<ReflectionFunction>& functions);
         void uploadInstancedProperties();
         std::string mesh_id;
     public:

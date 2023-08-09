@@ -1,4 +1,5 @@
 #include <App/Script/ScriptContext.hpp>
+#include <App/Script/Signal.hpp>
 #include <App/V8/World/World.hpp>
 #include <lualib.h>
 
@@ -54,6 +55,8 @@ namespace RNR::Lua
         registerBridge(v3b);
         InstanceBridge* ib = new InstanceBridge();
         registerBridge(ib);
+        SignalBridge* sb = new SignalBridge();
+        registerBridge(sb);
 
         ib->fromInstance(m_state, world->getDatamodel());
         lua_setglobal(m_state, "game");

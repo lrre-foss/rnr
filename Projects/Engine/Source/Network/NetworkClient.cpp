@@ -1,4 +1,5 @@
 #include <Network/NetworkClient.hpp>
+#include <Network/NetworkReplicator.hpp>
 #include <Network/ArkNet/Packets.hpp>
 
 namespace RNR
@@ -15,10 +16,13 @@ namespace RNR
         ArkNet::Packets::OpenConnectionRequestPacket request;
         request.playerName = "Player";
         m_peer->sendPacket(&request);
+
+        NetworkReplicator* replicator = new NetworkReplicator(m_peer);
+        replicator->setParent(this);
     }
 
     void NetworkClient::frame()
     {
-        
+        m_peer->clientPump();
     }
 }

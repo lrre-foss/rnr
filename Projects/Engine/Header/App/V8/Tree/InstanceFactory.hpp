@@ -12,6 +12,7 @@ namespace RNR
 
         bool registerInstance(std::string key, InstanceBuilder builder);
         Instance* build(std::string key);
+        std::vector<std::string> getBuilderNames() { return m_builderNames; };
 
         static InstanceFactory* singleton() { return m_singleton; };
 
@@ -21,6 +22,7 @@ namespace RNR
     private:
         static InstanceFactory* m_singleton;
         std::map<std::string, InstanceBuilder> m_builders;
+        std::vector<std::string> m_builderNames;
     };
 
 }

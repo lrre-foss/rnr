@@ -34,5 +34,6 @@ namespace ArkNet
     void ArkPacketFactory::registerPackets()
     {
         registerPacket(packetBuilder<Packets::OpenConnectionRequestPacket>);
+        registerPacket(packetBuilder<Packets::GamePacket>);
     }
 }

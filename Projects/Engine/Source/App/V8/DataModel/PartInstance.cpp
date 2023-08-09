@@ -257,4 +257,14 @@ namespace RNR
         PVInstance::addProperties(properties);
         properties.insert(properties.end(), _properties, _properties+(sizeof(_properties)/sizeof(ReflectionProperty)));
     }
+
+    void PartInstance::addFunctions(std::vector<ReflectionFunction>& functions)
+    {
+        ReflectionFunction _functions[] = {
+            
+        };
+
+        PVInstance::addFunctions(functions);
+        functions.insert(functions.end(), _functions, _functions+(sizeof(_functions)/sizeof(ReflectionFunction)));
+    }
 }

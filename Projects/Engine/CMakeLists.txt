@@ -33,6 +33,7 @@ add_library(Engine STATIC
     Header/App/Script/ReflectionProperty.hpp
     Header/App/Script/Script.hpp
     Header/App/Script/ScriptContext.hpp
+    Header/App/Script/Signal.hpp
     Header/App/Script/Plugin.hpp
     Header/App/GUI/GuiBase3d.hpp
     Header/App/GUI/InstanceAdornment.hpp
@@ -80,6 +81,7 @@ add_library(Engine STATIC
     Source/App/Script/ReflectionProperty.cpp
     Source/App/Script/Script.cpp
     Source/App/Script/ScriptContext.cpp
+    Source/App/Script/Signal.cpp
     Source/App/Script/Plugin.cpp
     Source/App/GUI/GuiBase3d.cpp
     Source/App/GUI/InstanceAdornment.cpp

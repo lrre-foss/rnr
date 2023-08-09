@@ -220,6 +220,9 @@ namespace RNR
         NetworkServer* server = dynamic_cast<NetworkServer*>(m_datamodel->findFirstChildOfType("NetworkServer"));
         if(server && server->getRunning())
             server->frame();
+        NetworkClient* client = dynamic_cast<NetworkClient*>(m_datamodel->findFirstChildOfType("NetworkClient"));
+        if(client)
+            client->frame();
     }
 
     double World::step(float timestep)

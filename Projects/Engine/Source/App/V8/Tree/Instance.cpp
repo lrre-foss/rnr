@@ -56,7 +56,10 @@ namespace RNR
     std::vector<ReflectionFunction> Instance::getFunctions()
     {
         ReflectionFunction functions[] = {
-            { "IsA", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); lua_pushboolean(l, instance->isA(lua_tostring(l, -1))); return 1; } }
+            { "IsA", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); lua_pushboolean(l, instance->isA(lua_tostring(l, -1))); return 1; } },
+            { "Clone", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); Lua::InstanceBridge::singleton()->fromInstance(l, instance->clone()); return 1; }},
+            { "Destroy", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); instance->setParent(NULL); return 0; }},
+            { "Remove", [](lua_State* l){ Instance* instance = Lua::InstanceBridge::singleton()->toInstance(l, 1); instance->setParent(NULL); return 0; }}
         };
 
         std::vector<ReflectionFunction> _functions(functions, functions+(sizeof(functions)/sizeof(ReflectionFunction)));
@@ -246,6 +249,12 @@ namespace RNR
             if(child->isA(type))
                 return child;
         }
+        return NULL;
+    }
+
+    Instance* Instance::clone()
+    {
+        // TODO
         return NULL;
     }
 }

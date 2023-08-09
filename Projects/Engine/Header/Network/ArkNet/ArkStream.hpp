@@ -34,6 +34,9 @@ namespace ArkNet
             return *ref;
         }
 
+        // # of bytes that have been written to/read from the stream
+        int size() { return m_dataOff; } 
+
         void writeString(std::string val);
         std::string readString();
     };

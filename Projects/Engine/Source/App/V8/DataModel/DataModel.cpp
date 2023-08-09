@@ -1,8 +1,12 @@
 #include <App/V8/DataModel/DataModel.hpp>
 #include <App/V8/Tree/InstanceFactory.hpp>
+#include <App/Script/Script.hpp>
+#include <Helpers/Strings.hpp>
 
 namespace RNR
 {
+    const char* DATAMODEL_NO_GUID = "?";
+
     DataModel::DataModel()
     {
 
@@ -28,5 +32,56 @@ namespace RNR
             }
         }
         return service;
+    }
+
+    void DataModel::addFunctions(std::vector<ReflectionFunction>& functions)
+    {
+        functions.push_back({"GetService",[](lua_State* l){DataModel* instance = (DataModel*)QUICK_GET_INSTANCE(l, 1); Lua::InstanceBridge::singleton()->fromInstance(l, instance->getService(lua_tostring(l, 2))); return 1; }});
+    }
+
+    Instance* DataModel::getInstanceByGuid(std::string guid)
+    {
+        auto it = m_guids.find(guid);
+        if(it != m_guids.end())
+            return it->second;
+        return NULL;
+    }
+
+    void DataModel::removeInstanceByGuid(std::string guid)
+    {
+        auto it = m_guids.find(guid);
+        if(it != m_guids.end())
+            m_guids.erase(it);
+    }
+
+    void DataModel::registerInstanceByGuid(Instance* instance, std::string guid)
+    {
+        m_guids[guid] = instance;
+    }
+
+    std::string DataModel::getGuidByInstance(Instance* instance)
+    {
+        for(auto it : m_guids)
+        {
+            if(it.second == instance)
+                return it.first;
+        }
+        return DATAMODEL_NO_GUID;
+    }
+
+    void DataModel::onDescendantAdded(Instance* childAdded)
+    {
+        if(getGuidByInstance(childAdded) == DATAMODEL_NO_GUID)
+        {
+            std::string guid = Strings::random_hex(8);
+            registerInstanceByGuid(childAdded, guid);
+        }
+    }
+
+    void DataModel::onDescendantRemoved(Instance* childRemoved)
+    {
+        std::string guid = getGuidByInstance(childRemoved);
+        if(guid != DATAMODEL_NO_GUID)
+            removeInstanceByGuid(guid);
     }
 } 

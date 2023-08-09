@@ -82,6 +82,8 @@ namespace RNR
             virtual void onDescendantRemoved(RNR::Instance* descendantRemoved); // make sure this is called in any derived versions of this
             virtual void onSetParent(RNR::Instance* newParent);
 
+            Instance* clone();
+
             Lock instanceLock;
     };
 }

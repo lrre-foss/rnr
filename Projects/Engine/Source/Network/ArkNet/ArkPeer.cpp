@@ -36,6 +36,12 @@ namespace ArkNet
         return m_socket->sendTo(&m_remote, bytes, data, flags);
     }
 
+    void ArkPeer::authorize()
+    {
+        printf("ArkPeer::authorize: authorized %s\n", m_remote.toString().c_str());
+        m_authorized = true;
+    }
+
     ArkPacket* ArkPeer::recvPacket(ArkAddress* remote)
     {        
         char packet_id;
@@ -65,8 +71,24 @@ namespace ArkNet
     void ArkPeer::sendPacket(ArkPacket* packet)
     {
         char* data = (char*)malloc(packet->readLength()+1);
-        data[0] = packet->packetId();
+        data[0] = (char)packet->packetId();
         packet->serialize(data+1,packet->readLength());
         sendTo(packet->readLength(),data,0);
+    }
+
+    void ArkPeer::clientPump()
+    {
+        if(m_socket->getSocketStatus() == ARKSOCKET_CONNECTED ||
+           m_socket->getSocketStatus() == ARKSOCKET_CONNECTING)
+        {            
+            ArkAddress remote_addr;
+            ArkPacket* in_packet = recvPacket(&remote_addr);
+            if(in_packet)
+            {
+                for(auto& listener : m_listeners)
+                    listener->onPacketReceiving(this, in_packet);
+                delete in_packet;
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace RNR
         bool ok = m_builders.insert(std::make_pair(key, builder)).second;        
         if(!ok)
             printf("InstanceFactory::registerInstance: could not register\n");
+        m_builderNames.push_back(key);
         return ok;
     }
 

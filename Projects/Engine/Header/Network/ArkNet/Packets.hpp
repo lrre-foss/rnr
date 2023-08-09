@@ -14,4 +14,18 @@ namespace ArkNet::Packets
 
         std::string playerName;
     };
+
+    const int GAME_PACKET_MAX_SIZE = 255;
+
+    class GamePacket : public ArkPacket
+    {
+    public:
+        virtual int packetId();
+        virtual int readLength();
+        virtual void serialize(char* output, int length);
+        virtual void deserialize(char* input, int length);
+
+        int dataPacketLength;
+        char dataPacket[GAME_PACKET_MAX_SIZE];
+    };
 };

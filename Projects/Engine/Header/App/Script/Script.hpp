@@ -5,6 +5,8 @@
 
 #include <lua.h>
 
+#define QUICK_GET_INSTANCE(l, i) Lua::InstanceBridge::singleton()->toInstance(l, i);
+
 namespace RNR::Lua
 {
     class ScriptContext;

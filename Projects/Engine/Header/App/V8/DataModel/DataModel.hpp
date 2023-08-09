@@ -5,12 +5,20 @@ namespace RNR
 {
     class DataModel : public Instance
     {
+        std::map<std::string, Instance*> m_guids;
     public:
-        DataModel();
-
+        DataModel();            
+        
         Instance* getService(std::string service_name);
         virtual std::string getClassName() { return "DataModel"; }
-    private:
+        virtual void onDescendantAdded(RNR::Instance* childAdded);
+        virtual void onDescendantRemoved(RNR::Instance* childRemoved);
 
+        Instance* getInstanceByGuid(std::string guid);
+        void removeInstanceByGuid(std::string guid);
+        void registerInstanceByGuid(Instance* instance, std::string guid);
+        std::string getGuidByInstance(Instance* instance);
+    private:
+        virtual void addFunctions(std::vector<ReflectionFunction>& functions);
     };
 }
