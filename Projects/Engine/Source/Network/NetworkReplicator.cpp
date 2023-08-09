@@ -60,7 +60,7 @@ namespace RNR
                         if(newinst)
                         {
                             datamodel->registerInstanceByGuid(newinst, dataStream.readString());
-                            printf("received %s\n", newinst->getClassName());
+                            printf("received %s (%s)\n", newinst->getClassName().c_str(), t_type.c_str());
                         }
                     }
                     break;
