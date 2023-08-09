@@ -44,6 +44,7 @@ namespace RNR
         auto it = m_guids.find(guid);
         if(it != m_guids.end())
             return it->second;
+        printf("DataModel::getInstanceByGuid: unknown guid '%s'\n", guid.c_str());
         return NULL;
     }
 
@@ -56,6 +57,7 @@ namespace RNR
 
     void DataModel::registerInstanceByGuid(Instance* instance, std::string guid)
     {
+        printf("DataModel::registerInstanceByGrid: %s -> %s\n", instance->getName().c_str(), guid.c_str());
         m_guids[guid] = instance;
     }
 
@@ -66,7 +68,11 @@ namespace RNR
             if(it.second == instance)
                 return it.first;
         }
-        return DATAMODEL_NO_GUID;
+        
+        std::string new_guid = Strings::random_hex(8); // gen a new one
+        m_guids[new_guid] = instance;
+        printf("DataModel::getGuidByInstance: unregistered instance %s (%s, new guid for this is %s)\n", instance->getName().c_str(), instance->getClassName().c_str(), new_guid.c_str());
+        return new_guid;
     }
 
     void DataModel::onDescendantAdded(Instance* childAdded)

@@ -14,7 +14,8 @@ namespace RNR
         ~NetworkReplicator();
 
         void sendInstance(Instance* instance);
-        void sendInstanceProp(Instance* instance, ReflectionProperty prop);
+        void sendReflectionProperty(ReflectionProperty prop);
+        void sendInstanceProps(Instance* instance);
         void sendDelInstance(Instance* instance);
 
         void sendMarker();

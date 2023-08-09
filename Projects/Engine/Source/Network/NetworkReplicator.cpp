@@ -34,11 +34,71 @@ namespace RNR
 
         i_packet.dataPacketLength = dataStream.size();
         m_peer->sendPacket(&i_packet);
+
+        sendInstanceProps(instance);
+    }
+
+    void NetworkReplicator::sendReflectionProperty(ReflectionProperty prop)
+    {
+        Instance* instance = (Instance*)prop.object();
+        if(instance)
+        {
+            DataModel* datamodel = world->getDatamodel();
+            std::string guid = datamodel->getGuidByInstance(instance);
+
+            ArkNet::Packets::GamePacket i_packet;
+            ArkNet::ArkStream dataStream(i_packet.dataPacket,ArkNet::Packets::GAME_PACKET_MAX_SIZE);
+    
+            dataStream.write<int>(3);
+            dataStream.writeString(guid);
+            dataStream.writeString(prop.name());
+            dataStream.write(prop.type());
+
+            switch(prop.type())
+            {
+            case PROPERTY_STD_STRING:
+                dataStream.writeString(*(std::string*)prop.rawGetter());
+                break;
+            case PROPERTY_BOOL:
+            case PROPERTY_BRICKCOLOR:
+            case PROPERTY_INTEGER:
+                dataStream.write(*(int*)prop.rawGetter());
+                break;
+            case PROPERTY_VECTOR3:
+                dataStream.write(*(Ogre::Vector3*)prop.rawGetter());
+                break;
+            case PROPERTY_INSTANCE:
+                {
+                    Instance* i = (Instance*)prop.rawGetter();
+                    dataStream.writeString(datamodel->getGuidByInstance(i));
+                }
+                break;
+            case PROPERTY_CFRAME:
+                dataStream.write(*(CoordinateFrame*)prop.rawGetter());
+                break;
+            case PROPERTY_FLOAT:
+                dataStream.write(*(float*)prop.rawGetter());
+                break;
+            default:
+                break;
+            }
+
+            i_packet.dataPacketLength = dataStream.size();
+            m_peer->sendPacket(&i_packet);
+        }
+    }
+
+    void NetworkReplicator::sendInstanceProps(Instance* instance)
+    {
+        std::vector<ReflectionProperty> props = instance->getProperties();
+        for(auto prop : props)
+            sendReflectionProperty(prop);
     }
 
     void NetworkReplicator::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
     {
         DataModel* datamodel = world->getDatamodel();
+        std::vector<ReflectionProperty> props;
         switch(packet->packetId())
         {
         case 0x07:
@@ -49,6 +109,7 @@ namespace RNR
                 switch(packet_type) // TODO: make this completely accurate
                 {
                 case 0:         // marker
+                    sendInstance(world->getWorkspace());
                     sendInstance(world->getWorkspace()->getCurrentCamera());
                     break;
                 case 1:         // new instance
@@ -56,29 +117,47 @@ namespace RNR
                         std::string i_guid = dataStream.readString();
                         Instance* newinst;
                         std::string t_type = dataStream.readString();
-                        newinst = InstanceFactory::singleton()->build(t_type);
-                        if(newinst)
+                        Instance* existinst = datamodel->findFirstChildOfType(t_type);
+                        if(existinst)
                         {
-                            datamodel->registerInstanceByGuid(newinst, dataStream.readString());
-                            printf("received %s (%s)\n", newinst->getClassName().c_str(), t_type.c_str());
+                            printf("NetworkReplicator::onPacketReceiving: reregistering %s guid\n", existinst->getName().c_str());
+                            datamodel->removeInstanceByGuid(datamodel->getGuidByInstance(existinst));
+                            newinst = existinst;
                         }
+                        else
+                        {
+                            newinst = InstanceFactory::singleton()->build(t_type);
+                            if(!newinst)
+                            {
+                                printf("NetworkReplicator::onPacketReceiving: newinst == NULL\n");
+                                break;
+                            }
+                        }
+                        datamodel->registerInstanceByGuid(newinst, i_guid);
+                        printf("receiving instance guid %s\n", i_guid.c_str());
                     }
                     break;
                 case 2:         // del instance
                     {
                         Instance* delinst = datamodel->getInstanceByGuid(dataStream.readString());
-                        delinst->setParent(NULL);
+                        if(delinst)
+                            delinst->setParent(NULL);
                     }
                     break;
                 case 3:         // update instance prop
                     {
                         std::string i_guid = dataStream.readString();
-                        Instance* instance = datamodel->getInstanceByGuid(dataStream.readString());
+                        Instance* instance = datamodel->getInstanceByGuid(i_guid);
+                        if(!instance)
+                        {
+                            printf("NetworkReplicator::onPacketReceiving: received bad Instance GUID '%s'\n", i_guid.c_str());
+                            break;
+                        }
                         std::string p_name = dataStream.readString();
                         ReflectionPropertyType p_type = dataStream.read<ReflectionPropertyType>();
-                        std::vector<ReflectionProperty> props = instance->getProperties();
+                        props = instance->getProperties();
                         ReflectionProperty* prop;
-                        for(auto _prop : props)
+                        for(auto& _prop : props)
                             if(_prop.name() == p_name && _prop.type() == p_type)
                                 prop = &_prop;
                         if(!prop)
@@ -89,6 +168,7 @@ namespace RNR
                         switch(p_type)
                         {
                         case PROPERTY_BOOL:
+                        case PROPERTY_BRICKCOLOR:
                         case PROPERTY_INTEGER:
                             {
                                 int v = dataStream.read<int>();
@@ -129,6 +209,7 @@ namespace RNR
                             printf("NetworkReplicator::onPacketReceiving: unknown ReflectionPropertyType %i\n", p_type);
                             break;
                         }
+                        printf("NetworkReplicator received %s (%i)\n", p_name.c_str(), p_type);
                     }
                     break;
                 case 4:         

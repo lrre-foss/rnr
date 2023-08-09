@@ -75,6 +75,7 @@ namespace RNR
         ReflectionPropertyType type() { return m_type; }
         ReflectionPropertyAccess accessLevel() { return m_access; }
         ReflectionPropertyOperation op() { return m_op; }
+        const void* object() { return m_object; }
 
         const void* rawGetter() { return m_getter(m_object); }
         void rawSetter(const void* value) { return m_setter((void*)m_object, value); }
