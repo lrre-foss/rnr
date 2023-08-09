@@ -63,11 +63,13 @@ namespace RNR
                             printf("received %s\n", newinst->getClassName());
                         }
                     }
+                    break;
                 case 2:         // del instance
                     {
                         Instance* delinst = datamodel->getInstanceByGuid(dataStream.readString());
                         delinst->setParent(NULL);
                     }
+                    break;
                 case 3:         // update instance prop
                     {
                         std::string i_guid = dataStream.readString();
