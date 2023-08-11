@@ -69,6 +69,7 @@ add_library(Engine STATIC
     Header/Network/GUID.hpp
     Header/Network/Player.hpp
     Header/Network/Players.hpp
+    Header/Network/Marker.hpp
     Header/Rendering/Adorn.hpp
 
     Source/Helpers/Name.cpp
@@ -117,6 +118,7 @@ add_library(Engine STATIC
     Source/Network/GUID.cpp
     Source/Network/Player.cpp
     Source/Network/Players.cpp
+    Source/Network/Marker.cpp
     Source/Rendering/Adorn.cpp
 )
 

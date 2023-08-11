@@ -112,6 +112,7 @@ namespace RNR::Lua
         std::string propname = lua_tostring(l, -1);
 
         bool foundprop = false;
+        int r = 0;
         for(auto property : properties)
         {
             if(property.name() == propname)
@@ -142,6 +143,7 @@ namespace RNR::Lua
                     break;
                 }
                 foundprop = true;
+                r = 1;
                 break;
             }
         }
@@ -158,12 +160,13 @@ namespace RNR::Lua
                     if(function.name() == propname)
                     {
                         lua_pushcfunction(l, function.function(), function.name().c_str());
+                        r = 1;
                     }
                 }
             }
         }
 
-        return 1;
+        return r;
     }
 
     int InstanceBridge::lua_new_index(lua_State* l)

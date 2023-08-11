@@ -1,6 +1,7 @@
 #include <Network/NetworkReplicator.hpp>
 #include <Network/NetworkServer.hpp>
 #include <Network/NetworkClient.hpp>
+#include <Network/Marker.hpp>
 #include <App/V8/Tree/InstanceFactory.hpp>
 #include <App/V8/World/World.hpp>
 #include <App/V8/DataModel/DataModel.hpp>
@@ -8,10 +9,11 @@
 
 namespace RNR
 {
-    NetworkReplicator::NetworkReplicator(ArkNet::ArkPeer* peer) : Instance()
+    NetworkReplicator::NetworkReplicator(ArkNet::ArkPeer* peer, bool serverReplicator) : Instance()
     {
         setName("NetworkReplicator");
         m_peer = peer;
+        m_serverReplicator = serverReplicator;
         m_peer->addListener(this);
     }
 
@@ -109,8 +111,16 @@ namespace RNR
                 switch(packet_type) // TODO: make this completely accurate
                 {
                 case 0:         // marker
-                    sendInstance(world->getWorkspace());
-                    sendInstance(world->getWorkspace()->getCurrentCamera());
+                    if(m_serverReplicator)
+                    {
+                        ArkNet::Packets::GamePacket response;
+                        ArkNet::ArkStream responseStream(response.dataPacket, sizeof(int));
+                        responseStream.write<int>(dataStream.read<int>());
+                        response.dataPacketLength = responseStream.size();
+                        peer->sendPacket(&response);
+                    }
+                    else
+                        processMarker(dataStream.read<int>());
                     break;
                 case 1:         // new instance
                     {
@@ -230,13 +240,31 @@ namespace RNR
         }
     } 
 
-    void NetworkReplicator::sendMarker()
+    Network::Marker* NetworkReplicator::sendMarker()
     {
         printf("NetworkReplicator::sendMarker: called\n");
+        Network::Marker* marker = new Network::Marker();
         ArkNet::Packets::GamePacket marker_gp;
         ArkNet::ArkStream stream(marker_gp.dataPacket, ArkNet::Packets::GAME_PACKET_MAX_SIZE);
         stream.write<int>(0); // Marker
+        stream.write(marker->getId());
         marker_gp.dataPacketLength = stream.size();
         m_peer->sendPacket(&marker_gp);
+        m_incomingMarkers.push_back(marker);
+        return marker;
+    }
+
+    void NetworkReplicator::processMarker(int id)
+    {
+        if(m_incomingMarkers.size() > 0)
+            if(id == m_incomingMarkers.back()->getId())
+            {
+                m_incomingMarkers.front()->fireReturned();
+                m_incomingMarkers.pop_back();
+            }
+            else
+                printf("NetworkReplicator::processMarker: rejected marker %i, not back incoming marker\n", id);
+        else
+            printf("NetworkReplicator::processMarker: rejected marker %i, m_incomingMarkers has no markers\n", id);
     }
 }

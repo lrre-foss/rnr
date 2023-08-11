@@ -30,7 +30,7 @@ namespace RNR
 
     void NetworkServer::onPeerAdding(ArkNet::ArkPeer* addingPeer)
     {
-        NetworkReplicator* peer_replicator = new NetworkReplicator(addingPeer);
+        NetworkReplicator* peer_replicator = new NetworkReplicator(addingPeer, true);
         peer_replicator->setParent(this);
     }
 
