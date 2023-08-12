@@ -80,6 +80,11 @@ namespace RNR
         const void* rawGetter() { return m_getter(m_object); }
         void rawSetter(const void* value) { return m_setter((void*)m_object, value); }
 
+        template<typename T>
+        void setterA(T value) { m_setter((void*)m_object, (const void*)&value); }
+        template<typename T>
+        T getterA() { return *(T*)m_getter(m_object); }
+
         std::string toString();
     };
 }
