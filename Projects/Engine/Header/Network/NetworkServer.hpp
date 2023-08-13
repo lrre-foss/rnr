@@ -8,7 +8,7 @@
 
 namespace RNR
 {
-    class NetworkServer : public NetworkPeer, ArkNet::IArkServerListener
+    class NetworkServer : public NetworkPeer, ArkNet::IArkServerListener, ArkNet::IArkPeerListener
     {
     protected:
         ArkNet::ArkServer* m_server;
@@ -21,6 +21,7 @@ namespace RNR
         virtual void onPeerAdding(ArkNet::ArkPeer* addingPeer);
         virtual void onPeerRemoving(ArkNet::ArkPeer* removingPeer);
         virtual bool onPeerConnectionRequest(ArkNet::ArkPeer* rqPeer, ArkNet::Packets::OpenConnectionRequestPacket* rq);
+        virtual void onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet);        
 
         void start(int port, int threadSleepTime = 20);
         void stop(int blockDuration = 1000);

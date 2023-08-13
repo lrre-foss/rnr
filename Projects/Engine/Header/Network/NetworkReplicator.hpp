@@ -20,6 +20,8 @@ namespace RNR
         NetworkReplicator(ArkNet::ArkPeer* peer, bool serverReplicator = false);
         ~NetworkReplicator();
 
+        void readDataPacket(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet);
+
         void sendInstance(Instance* instance);
         void sendReflectionProperty(ReflectionProperty prop);
         void sendInstanceProps(Instance* instance);

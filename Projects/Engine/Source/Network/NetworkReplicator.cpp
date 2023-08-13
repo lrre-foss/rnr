@@ -97,146 +97,144 @@ namespace RNR
             sendReflectionProperty(prop);
     }
 
-    void NetworkReplicator::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
-    {
+    void NetworkReplicator::readDataPacket(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    {        
         DataModel* datamodel = world->getDatamodel();
         std::vector<ReflectionProperty> props;
+        ArkNet::Packets::GamePacket* _packet = dynamic_cast<ArkNet::Packets::GamePacket*>(packet);
+        ArkNet::ArkStream dataStream(_packet->dataPacket + sizeof(int), _packet->dataPacketLength - sizeof(int)); // we need to skip the onPacketReceiving type
+        bool done = false;
+        do {
+            int packet_type = dataStream.read<int>();
+            switch(packet_type) // TODO: make this completely accurate
+            {
+            case 0:         // stop
+                done = true;
+                break;
+            case 1:         // del instance
+                {
+                    Instance* delinst = datamodel->getInstanceByGuid(dataStream.readString());
+                    if(delinst)
+                        delinst->setParent(NULL);
+                }
+                break;
+            case 2:         // new instance
+                {
+                    std::string i_guid = dataStream.readString();
+                    Instance* newinst;
+                    std::string t_type = dataStream.readString();
+                    Instance* existinst = datamodel->findFirstChildOfType(t_type);
+                    if(existinst)
+                    {
+                        printf("NetworkReplicator::readDataPacket: reregistering %s guid\n", existinst->getName().c_str());
+                        datamodel->removeInstanceByGuid(datamodel->getGuidByInstance(existinst));
+                        newinst = existinst;
+                    }
+                    else
+                    {
+                        newinst = InstanceFactory::singleton()->build(t_type);
+                        if(!newinst)
+                        {
+                            printf("NetworkReplicator::readDataPacket: newinst == NULL\n");
+                            break;
+                        }
+                    }
+                    datamodel->registerInstanceByGuid(newinst, i_guid);
+                }
+                break;
+            case 3:         // update instance prop
+                {
+                    std::string i_guid = dataStream.readString();
+                    Instance* instance = datamodel->getInstanceByGuid(i_guid);
+                    if(!instance)
+                    {
+                        printf("NetworkReplicator::readDataPacket: received bad Instance GUID '%s'\n", i_guid.c_str());
+                        break;
+                    }
+                    std::string p_name = dataStream.readString();
+                    ReflectionPropertyType p_type = dataStream.read<ReflectionPropertyType>();
+                    props = instance->getProperties();
+                    ReflectionProperty* prop;
+                    for(auto& _prop : props)
+                        if(_prop.name() == p_name && _prop.type() == p_type)
+                            prop = &_prop;
+                    if(!prop)
+                    {
+                        printf("NetworkReplicator::readDataPacket: received bad ReflectionProperty '%s' with type '%i'\n", p_name.c_str(), p_type);
+                        break;
+                    }
+                    switch(p_type)
+                    {
+                    case PROPERTY_BOOL:
+                    case PROPERTY_BRICKCOLOR:
+                    case PROPERTY_INTEGER:
+                        {
+                            int v = dataStream.read<int>();
+                            prop->rawSetter(&v);
+                        }
+                        break;
+                    case PROPERTY_CFRAME:
+                        {
+                            CoordinateFrame cframe = dataStream.read<CoordinateFrame>();
+                            prop->rawSetter(&cframe);
+                        } 
+                        break;
+                    case PROPERTY_STD_STRING:
+                        {
+                            std::string string = dataStream.readString();
+                            prop->rawSetter(&string);
+                        }
+                        break;
+                    case PROPERTY_VECTOR3:
+                        {
+                            Ogre::Vector3 vector = dataStream.read<Ogre::Vector3>();
+                            prop->rawSetter(&vector);
+                        }
+                        break;
+                    case PROPERTY_INSTANCE:
+                        {
+                            Instance* inst = datamodel->getInstanceByGuid(dataStream.readString());
+                            prop->rawSetter(inst);
+                        }
+                        break;
+                    case PROPERTY_FLOAT:
+                        {
+                            float v = dataStream.read<float>();
+                            prop->rawSetter(&v);
+                        }
+                        break;
+                    default:
+                        printf("NetworkReplicator::readDataPacket: unknown ReflectionPropertyType %i\n", p_type);
+                        break;
+                    }
+                }
+                break;
+            case 4:
+                processMarker(dataStream.read<int>());
+                break;
+            default:
+                printf("NetworkReplicator::readDataPacket: received unknown dp id %i\n", packet_type);
+                break;
+            }
+        } while(!done);
+    }
+
+    void NetworkReplicator::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    {
         switch(packet->packetId())
         {
         case 0x07:
             {
                 ArkNet::Packets::GamePacket* _packet = dynamic_cast<ArkNet::Packets::GamePacket*>(packet);
-                ArkNet::ArkStream dataStream(_packet->dataPacket, _packet->dataPacketLength);
-                int packet_type = dataStream.read<int>();
-                switch(packet_type) // TODO: make this completely accurate
+                ArkNet::ArkStream dataStream(_packet->dataPacket + sizeof(int), _packet->dataPacketLength - sizeof(int)); // we need to skip the onPacketReceiving type
+                switch(dataStream.read<int>())
                 {
-                case 0:         // marker
-                    if(m_serverReplicator)
-                    {
-                        ArkNet::Packets::GamePacket response;
-                        ArkNet::ArkStream responseStream(response.dataPacket, sizeof(int));
-                        responseStream.write<int>(dataStream.read<int>());
-                        response.dataPacketLength = responseStream.size();
-                        peer->sendPacket(&response);
-                    }
-                    else
-                        processMarker(dataStream.read<int>());
-                    break;
-                case 1:         // new instance
-                    {
-                        std::string i_guid = dataStream.readString();
-                        Instance* newinst;
-                        std::string t_type = dataStream.readString();
-                        Instance* existinst = datamodel->findFirstChildOfType(t_type);
-                        if(existinst)
-                        {
-                            printf("NetworkReplicator::onPacketReceiving: reregistering %s guid\n", existinst->getName().c_str());
-                            datamodel->removeInstanceByGuid(datamodel->getGuidByInstance(existinst));
-                            newinst = existinst;
-                        }
-                        else
-                        {
-                            newinst = InstanceFactory::singleton()->build(t_type);
-                            if(!newinst)
-                            {
-                                printf("NetworkReplicator::onPacketReceiving: newinst == NULL\n");
-                                break;
-                            }
-                        }
-                        datamodel->registerInstanceByGuid(newinst, i_guid);
-                        printf("receiving instance guid %s\n", i_guid.c_str());
-                    }
-                    break;
-                case 2:         // del instance
-                    {
-                        Instance* delinst = datamodel->getInstanceByGuid(dataStream.readString());
-                        if(delinst)
-                            delinst->setParent(NULL);
-                    }
-                    break;
-                case 3:         // update instance prop
-                    {
-                        std::string i_guid = dataStream.readString();
-                        Instance* instance = datamodel->getInstanceByGuid(i_guid);
-                        if(!instance)
-                        {
-                            printf("NetworkReplicator::onPacketReceiving: received bad Instance GUID '%s'\n", i_guid.c_str());
-                            break;
-                        }
-                        std::string p_name = dataStream.readString();
-                        ReflectionPropertyType p_type = dataStream.read<ReflectionPropertyType>();
-                        props = instance->getProperties();
-                        ReflectionProperty* prop;
-                        for(auto& _prop : props)
-                            if(_prop.name() == p_name && _prop.type() == p_type)
-                                prop = &_prop;
-                        if(!prop)
-                        {
-                            printf("NetworkReplicator::onPacketReceiving: received bad ReflectionProperty '%s' with type '%i'\n", p_name.c_str(), p_type);
-                            break;
-                        }
-                        switch(p_type)
-                        {
-                        case PROPERTY_BOOL:
-                        case PROPERTY_BRICKCOLOR:
-                        case PROPERTY_INTEGER:
-                            {
-                                int v = dataStream.read<int>();
-                                prop->rawSetter(&v);
-                            }
-                            break;
-                        case PROPERTY_CFRAME:
-                            {
-                                CoordinateFrame cframe = dataStream.read<CoordinateFrame>();
-                                prop->rawSetter(&cframe);
-                            } 
-                            break;
-                        case PROPERTY_STD_STRING:
-                            {
-                                std::string string = dataStream.readString();
-                                prop->rawSetter(&string);
-                            }
-                            break;
-                        case PROPERTY_VECTOR3:
-                            {
-                                Ogre::Vector3 vector = dataStream.read<Ogre::Vector3>();
-                                prop->rawSetter(&vector);
-                            }
-                            break;
-                        case PROPERTY_INSTANCE:
-                            {
-                                Instance* inst = datamodel->getInstanceByGuid(dataStream.readString());
-                                prop->rawSetter(inst);
-                            }
-                            break;
-                        case PROPERTY_FLOAT:
-                            {
-                                float v = dataStream.read<float>();
-                                prop->rawSetter(&v);
-                            }
-                            break;
-                        default:
-                            printf("NetworkReplicator::onPacketReceiving: unknown ReflectionPropertyType %i\n", p_type);
-                            break;
-                        }
-                        printf("NetworkReplicator received %s (%i)\n", p_name.c_str(), p_type);
-                    }
-                    break;
-                case 4:         
-                    break;
-                case 5:         // for now this will be chat message
-                    {
-                        std::string user = dataStream.readString();
-                        std::string msg = dataStream.readString();
-                        printf("NetworkReplicator::onPacketReceiving: chat: '%s: %s'\n", user.c_str(), msg.c_str());
-                    }
-                    break;
-                default:
-                    printf("NetworkReplicator::onPacketReceiving: received unknown dp id %i\n", packet_type);
+                case 0x59: // Data
+                    readDataPacket(peer, packet);
                     break;
                 }
             }
-            break;
+            break;        
         }
     } 
 

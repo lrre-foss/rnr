@@ -1,8 +1,10 @@
+#pragma once
 #include <Network/NetworkPeer.hpp>
+#include <Network/ArkNet/ArkPeer.hpp>
 
 namespace RNR
 {
-    class NetworkClient : public NetworkPeer
+    class NetworkClient : public NetworkPeer, public ArkNet::IArkPeerListener
     {
     public:
         NetworkClient();
@@ -11,5 +13,6 @@ namespace RNR
         void frame();
                 
         virtual std::string getClassName() { return "NetworkClient"; }
+        virtual void onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet);        
     };
 }

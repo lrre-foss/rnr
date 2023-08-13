@@ -9,6 +9,7 @@ namespace RNR
         setName("NetworkServer");
         m_server = new ArkNet::ArkServer(m_peer);
         m_server->setListener(this);
+        m_peer->addListener(this);
         m_running = false;
     }
 
@@ -74,6 +75,11 @@ namespace RNR
         printf("NetworkServer::start: network server running on port %i\n", port);
         m_running = true;
     }
+
+    void NetworkServer::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    {
+        
+    } 
 
     void NetworkServer::frame()
     {

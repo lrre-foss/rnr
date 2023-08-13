@@ -7,6 +7,7 @@ namespace RNR
     NetworkClient::NetworkClient()
     {
         setName("NetworkClient");
+        m_peer->addListener(this);
     }
 
     void NetworkClient::connect(char* ip, int port)
@@ -25,4 +26,9 @@ namespace RNR
     {
         m_peer->clientPump();
     }
+
+    void NetworkClient::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    {
+        
+    } 
 }

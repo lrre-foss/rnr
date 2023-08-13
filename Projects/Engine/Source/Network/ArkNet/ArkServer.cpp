@@ -55,7 +55,8 @@ namespace ArkNet
                     accept = m_serverListener->onPeerConnectionRequest(peer, _packet);
                 if(accept)
                 {
-                    peer->authorize();
+                    peer->authorize(); 
+                    // TODO: send an 'OpenConnectionReplyPacket'
                 }
             }
             break;
