@@ -45,7 +45,11 @@ namespace RNR
     class World
     {
         private:
+            static void globalInit();
+            static bool globInit;
+            static InstanceFactory* m_instanceFactory;
             bool m_runPhysics;
+            bool m_sceneHasRender;
             std::map<std::string, Instance*> m_refs;
             std::stack<WorldUndeserialized> m_undeserialized;
             btDiscreteDynamicsWorld* m_dynamicsWorld;
@@ -57,7 +61,6 @@ namespace RNR
             Ogre::Root* m_ogreRoot;
             Ogre::SceneManager* m_ogreSceneManager;
             TopMenuBar* m_tmb;
-            InstanceFactory* m_instanceFactory;
             IInputManager* m_inputManager;
             float m_lastDelta;
             ComPlicitNgine* m_ngine;
@@ -70,8 +73,11 @@ namespace RNR
         public:
             Instance* getRef(std::string ref) { return m_refs[ref]; }
 
-            World(Ogre::Root* ogre, Ogre::SceneManager* ogreScene);
+            World(Ogre::Root* ogre, Ogre::SceneManager* ogreScene, bool hasRender = false);
             ~World();
+
+            bool getHasRender() { return m_sceneHasRender; }
+            void setHasRender(bool doittho) { m_sceneHasRender = doittho; }
 
             void load(char* path, ILoadListener* loadListener = NULL);
             ILoadListener* getLoadListener() { return m_loadListener; }

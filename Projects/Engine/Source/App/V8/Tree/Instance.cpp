@@ -1,13 +1,15 @@
 #include <App/V8/Tree/Instance.hpp>
 #include <App/Script/Bridge.hpp>
+#include <App/V8/World/World.hpp>
+#include <Network/NetworkPeer.hpp>
+#include <Helpers/Strings.hpp>
 #include <lua.h>
 
 namespace RNR
 {
-    World* Instance::world = 0;
-
-    Instance::Instance()
+    Instance::Instance(World* world)
     {
+        this->world = world;
         m_node = 0;
         m_object = 0;
         m_parent = 0;
@@ -44,7 +46,7 @@ namespace RNR
             { this, std::string("Archivable"), std::string("This determines whether this Instance may be saved or replicated."), 
               ACCESS_NONE, OPERATION_READWRITE, PROPERTY_BOOL,         
               REFLECTION_GETTER(Instance* instance = (Instance*)object; return &instance->m_archivable; ), 
-              REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->m_archivable = *(bool*)value; ) },
+              REFLECTION_SETTER(Instance* instance = (Instance*)object; instance->m_archivable = *(bool*)value; instance->replicatorAddChangedProperty("Archivable"); ) },
         };
 
         std::vector<ReflectionProperty> _properties(properties, properties+(sizeof(properties)/sizeof(ReflectionProperty)));
@@ -130,6 +132,7 @@ namespace RNR
         if (name != this->m_name)
         {
             this->m_name = name;
+            replicatorAddChangedProperty("Name");
             // raise property changed
         }
     }
@@ -198,6 +201,27 @@ namespace RNR
         p->onDescendantRemoved(c);
     }
 
+    void Instance::replicatorAddChangedProperty(const char* name)
+    {
+        if(!world)
+            return;
+        Instance* dm = world->getDatamodel();
+        if(!dm)
+            return;
+        for(auto prop : getProperties())
+        {
+            if(prop.name() == name) 
+            {
+                NetworkPeer* s = dynamic_cast<NetworkPeer*>(dm->findFirstChildOfType("NetworkServer"));
+                if(s && canReplicate(true))
+                    s->addChangedProperty(&prop);
+                NetworkPeer* c = dynamic_cast<NetworkPeer*>(dm->findFirstChildOfType("NetworkClient"));
+                if(c && canReplicate(false))
+                    c->addChangedProperty(&prop);
+            }
+        }
+    }
+
     void Instance::onChildAdded(Instance* childAdded)
     {
         //
@@ -222,7 +246,7 @@ namespace RNR
 
     void Instance::onSetParent(Instance* newParent)
     {
-
+        replicatorAddChangedProperty("Parent");
     }
 
     bool Instance::isA(std::string type)
@@ -234,6 +258,7 @@ namespace RNR
 
     Instance* Instance::findFirstChild(std::string name)
     {
+        return NULL;
         for(auto& child : m_children)
         {
             if(child->getName() == name)
@@ -256,5 +281,15 @@ namespace RNR
     {
         // TODO
         return NULL;
+    }
+
+    void Instance::addReplicate(bool server)
+    {
+        if(canReplicate(server))
+        {
+            DataModel* dm = world->getDatamodel();
+            std::string new_guid = Strings::random_hex(8);
+            dm->registerInstanceByGuid(this, new_guid, true);
+        }
     }
 }

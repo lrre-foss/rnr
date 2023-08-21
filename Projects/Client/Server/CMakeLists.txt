@@ -7,7 +7,10 @@ if(WIN32)
     list(APPEND HEADER Resource/Windows/Script.rc)
 endif()
 
-add_executable(Server ${SOURCE} ${HEADER})
+add_executable(Server 
+    Header/ThumbnailGenerator.hpp
+    Source/ThumbnailGenerator.cpp
+    ${SOURCE} ${HEADER})
 
 target_include_directories(Server PRIVATE Header)
 target_link_libraries(Server PRIVATE Engine)

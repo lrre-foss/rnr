@@ -1,7 +1,6 @@
 #pragma once
 #include <Network/ArkNet/ArkPeer.hpp>
 #include <Network/ArkNet/ArkServer.hpp>
-#include <Network/ArkNet/Packets.hpp>
 #include <Network/NetworkPeer.hpp>
 #include <Network/NetworkReplicator.hpp>
 #include <App/V8/Tree/Instance.hpp>
@@ -20,7 +19,7 @@ namespace RNR
 
         virtual void onPeerAdding(ArkNet::ArkPeer* addingPeer);
         virtual void onPeerRemoving(ArkNet::ArkPeer* removingPeer);
-        virtual bool onPeerConnectionRequest(ArkNet::ArkPeer* rqPeer, ArkNet::Packets::OpenConnectionRequestPacket* rq);
+        virtual bool onPeerConnectionRequest(ArkNet::ArkPeer* rqPeer, ArkNet::ArkPacket* rq);
         virtual void onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet);        
 
         void start(int port, int threadSleepTime = 20);

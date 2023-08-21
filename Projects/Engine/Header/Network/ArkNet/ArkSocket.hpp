@@ -34,6 +34,7 @@ namespace ArkNet
         void tryConnect(char* ip, int port);
         // call on a onConnectionAccepted type event
         void markConnected() { m_socketStatus = ARKSOCKET_CONNECTED; }
+        void markDisconnected() { m_socketStatus = ARKSOCKET_DISCONNECTED; }
 
         int recvFrom(ArkAddress* remote, size_t bytes, char* output, int flags = 0);
         int sendTo(ArkAddress* remote, size_t bytes, char* input, int flags = 0);

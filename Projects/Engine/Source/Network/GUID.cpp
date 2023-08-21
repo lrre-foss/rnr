@@ -4,17 +4,15 @@ namespace RNR
 {
     GUID::GUID()
     {
-
     }
 
-    void GUID::compare(GUID* a, GUID* b)
+    void GUID::compare(GUID *a, GUID *b)
     {
-
     }
 
     std::string GUID::generateGUID()
     {
         return "";
-        //return "RBX" + Strings::generateRandomString(16);
+        // return "RBX" + Strings::generateRandomString(16);
     }
 }

@@ -67,6 +67,8 @@ namespace RNR
         std::string mesh_id;
     public:
         PartInstance();
+        virtual void lateInit();
+        virtual void lateDeInit();
         ~PartInstance();
 
         void updateMatrix();

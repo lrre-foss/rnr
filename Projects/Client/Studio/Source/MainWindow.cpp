@@ -185,9 +185,9 @@ void MainWindow::joinClient()
 {
     RNR::NetworkClient* client = (RNR::NetworkClient*)ogreWidget->world->getDatamodel()->getService("NetworkClient");
     client->connect("127.0.0.1", 53640);
-    RNR::NetworkReplicator* replicator = dynamic_cast<RNR::NetworkReplicator*>(client->findFirstChild("NetworkReplicator"));
-    if(replicator)
-        replicator->sendMarker();
+    //RNR::NetworkReplicator* replicator = dynamic_cast<RNR::NetworkReplicator*>(client->findFirstChild("NetworkReplicator"));
+    //if(replicator)
+    //    replicator->sendMarker();
 }
 
 void MainWindow::run()

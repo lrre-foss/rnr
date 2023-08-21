@@ -17,12 +17,35 @@ namespace RNR
         //if(isWelded(a, b))
         //    return NULL;
         Snap* snap = new Snap();
+        snap->setParent(this);
         snap->setBodies(a, b);
         CoordinateFrame contactFrame;
         contactFrame.setPosition(contact);
-        snap->setC0(a->getCFrame().inverse() * contactFrame);
-        snap->setC1(b->getCFrame().inverse() * contactFrame);
-        snap->setParent(this);
+
+        btVector3 p_axis(1.f,0.f,0.f);
+        btVector3 c_axis(0.f,0.f,1.f);
+        btVector3 anchor(0.f,0.f,0.f);
+
+        btVector3 z_axis = p_axis.normalize();
+        btVector3 y_axis = c_axis.normalize();
+        btVector3 x_axis = y_axis.cross(z_axis);
+
+        btTransform frame_in;
+        frame_in.setIdentity();
+        frame_in.getBasis().setValue(
+            x_axis[0], y_axis[0], z_axis[0],
+            x_axis[1], y_axis[1], z_axis[1],
+            x_axis[2], y_axis[2], z_axis[2]
+        );
+        frame_in.setOrigin(anchor);
+
+        ComPlicitNgine* ngine = world->getComPlicitNgine();
+
+        btTransform frame_inA = ngine->getBody(a)->getCenterOfMassTransform().inverse() * frame_in;
+        btTransform frame_inB = ngine->getBody(b)->getCenterOfMassTransform().inverse() * frame_in;
+
+        snap->setC0(Bullet::tfToCoordinateFrame(frame_inA));
+        snap->setC1(Bullet::tfToCoordinateFrame(frame_inB));
         return snap;
     }
 

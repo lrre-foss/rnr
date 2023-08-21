@@ -17,48 +17,52 @@ namespace RNR
     {
         stop();
     }
-        
-    NetworkReplicator* NetworkServer::getReplicatorForPeer(ArkNet::ArkPeer* peer)
+
+    NetworkReplicator *NetworkServer::getReplicatorForPeer(ArkNet::ArkPeer *peer)
     {
-        for(auto& child : *getChildren())
+        for (auto &child : *getChildren())
         {
-            NetworkReplicator* replicator = dynamic_cast<NetworkReplicator*>(child);
-            if(replicator && replicator->getPeer() == peer)
+            NetworkReplicator *replicator = dynamic_cast<NetworkReplicator *>(child);
+            if (replicator && replicator->getPeer() == peer)
                 return replicator;
         }
         return NULL;
     }
 
-    void NetworkServer::onPeerAdding(ArkNet::ArkPeer* addingPeer)
+    void NetworkServer::onPeerAdding(ArkNet::ArkPeer *addingPeer)
     {
-        NetworkReplicator* peer_replicator = new NetworkReplicator(addingPeer, true);
+        NetworkReplicator *peer_replicator = new NetworkReplicator(addingPeer, true);
         peer_replicator->setParent(this);
     }
 
-    void NetworkServer::onPeerRemoving(ArkNet::ArkPeer* removingPeer)
+    void NetworkServer::onPeerRemoving(ArkNet::ArkPeer *removingPeer)
     {
-        for(auto& child : *getChildren())
+        for (auto &child : *getChildren())
         {
-            NetworkReplicator* replicator = dynamic_cast<NetworkReplicator*>(child);
-            if(replicator)
+            NetworkReplicator *replicator = dynamic_cast<NetworkReplicator *>(child);
+            if (replicator)
             {
                 replicator->setParent(NULL);
                 delete replicator;
             }
         }
     }
-        
-    bool NetworkServer::onPeerConnectionRequest(ArkNet::ArkPeer* rqPeer, ArkNet::Packets::OpenConnectionRequestPacket* rq)
+
+    bool NetworkServer::onPeerConnectionRequest(ArkNet::ArkPeer *rqPeer, ArkNet::ArkPacket *rq)
     {
-        if(rq->playerName == "FuzzyPickles")
+        ArkNet::ArkStream stream(rq);
+        std::string playerName = stream.readString();
+
+        if (playerName == "FuzzyPickles")
             return false;
 
-        // ok, create player stuff
-        Player* player = new Player();
-        player->setName(rq->playerName.c_str());
-        player->setParent(world->getDatamodel()->getService("Players"));
+        NetworkReplicator *replicator = getReplicatorForPeer(rqPeer);
 
-        NetworkReplicator* replicator = getReplicatorForPeer(rqPeer);
+        // ok, create player stuff
+        Player *player = new Player();
+        player->setParent(world->getDatamodel()->getService("Players"));
+        player->setName(playerName.c_str());
+
         replicator->setPlayer(player);
 
         printf("NetworkServer::onPeerConnectionRequest: new player %s\n", player->getName().c_str());
@@ -76,15 +80,17 @@ namespace RNR
         m_running = true;
     }
 
-    void NetworkServer::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    void NetworkServer::onPacketReceiving(ArkNet::ArkPeer *peer, ArkNet::ArkPacket *packet)
     {
-        
-    } 
+    }
 
     void NetworkServer::frame()
     {
-        if(m_running)
+        if (m_running)
+        {
+            sendPendingReplicates();
             m_server->frame();
+        }
     }
 
     void NetworkServer::stop(int timeout)

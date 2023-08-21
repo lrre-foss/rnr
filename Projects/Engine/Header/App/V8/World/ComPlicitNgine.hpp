@@ -20,6 +20,7 @@ namespace RNR
         World* m_world;
         std::map<PartInstance*, btRigidBody*> m_physicsParts;
 
+        int m_physicsTicks;
         int m_sleepingObjects;
         int m_activeObjects;
 
@@ -43,5 +44,6 @@ namespace RNR
 
         int getSleepingObjects() { return m_sleepingObjects; }
         int getActiveObjects() { return m_activeObjects; }
+        int getPhysicsTicks() { return m_physicsTicks; };
     };
 }

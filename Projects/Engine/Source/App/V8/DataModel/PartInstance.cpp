@@ -41,11 +41,7 @@ namespace RNR
         m_color = Ogre::Vector4(0.63, 0.64, 0.63, 1.0);
         m_transparency = 0.0;
         m_reflectance = 0.0;
-
-        setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
-        getNode()->attachObject(getObject());
-
+        
         for(int i = 0; i < __NORM_COUNT; i++)
         {
             NormalId n = (NormalId)i;
@@ -65,8 +61,20 @@ namespace RNR
             m_surfaces[i].part = this;
             m_surfaceNode[i] = 0;
         }
+    }
+
+    void PartInstance::lateInit()
+    {        
+        setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
+        setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
+        getNode()->attachObject(getObject());
 
         updateMatrix();
+    }
+
+    void PartInstance::lateDeInit()
+    {
+
     }
 
     PartInstance::~PartInstance()
@@ -171,24 +179,28 @@ namespace RNR
                 surf.surf->detachFromParent();
                 delete surf.surf;
             }
-            Ogre::SceneNode* surfaceNode = m_surfaceNode[i];
-            if(!surfaceNode)
-            {
-                surfaceNode = getNode()->createChildSceneNode();
-                m_surfaceNode[i] = surfaceNode;
-            }  
-            Ogre::Vector3 f = normalIdToVector3(surf.face);
-            switch(surf.type)
-            {
-            case SURFACE_STUDS:
-                //surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
-                //surfaceNode->attachObject(surf.surf);
-                //surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
 
-                //surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
-                break;
-            default:
-                break;
+            if(world && world->getHasRender())
+            {
+                Ogre::SceneNode* surfaceNode = m_surfaceNode[i];
+                if(!surfaceNode)
+                {
+                    surfaceNode = getNode()->createChildSceneNode();
+                    m_surfaceNode[i] = surfaceNode;
+                }  
+                Ogre::Vector3 f = normalIdToVector3(surf.face);
+                switch(surf.type)
+                {
+                case SURFACE_STUDS:
+                    //surf.surf = world->getOgreSceneManager()->createEntity("meshes/Stud.mesh");
+                    //surfaceNode->attachObject(surf.surf);
+                    //surfaceNode->setDirection(f, Ogre::Node::TS_PARENT);
+
+                    //surfaceNode->setScale(Ogre::Vector3(surf.size.x / 2.f, surf.size.y / 2.f, 1));
+                    break;
+                default:
+                    break;
+                }
             }
         }
 

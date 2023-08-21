@@ -24,6 +24,7 @@ namespace RNR
         friend class TopMenuBar;
     public:
         Workspace();
+        virtual void lateInit();
 
         WorkspaceBatchingMode getBatchMode() { return m_batchMode; }
         virtual std::string getClassName() { return "Workspace"; }

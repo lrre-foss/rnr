@@ -34,6 +34,11 @@ namespace RNR
         m_paused = true;
     }
 
+    void RunService::unpause()
+    {
+        m_paused = false;
+    }
+
     void RunService::addProperties(std::vector<ReflectionProperty>& properties)
     {
         ReflectionProperty _properties[]  = {

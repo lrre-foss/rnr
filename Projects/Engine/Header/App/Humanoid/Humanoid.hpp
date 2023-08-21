@@ -13,6 +13,7 @@ namespace RNR
     {
         public:
             Humanoid();
+            virtual void lateInit();
             ~Humanoid();
 
             virtual std::string getClassName() { return "Humanoid"; }

@@ -15,8 +15,8 @@ namespace RNR
         virtual void onDescendantRemoved(RNR::Instance* childRemoved);
 
         Instance* getInstanceByGuid(std::string guid);
-        void removeInstanceByGuid(std::string guid);
-        void registerInstanceByGuid(Instance* instance, std::string guid);
+        void removeInstanceByGuid(std::string guid, bool replicate = false);
+        void registerInstanceByGuid(Instance* instance, std::string guid, bool replicate = false);
         std::string getGuidByInstance(Instance* instance);
     private:
         virtual void addFunctions(std::vector<ReflectionFunction>& functions);

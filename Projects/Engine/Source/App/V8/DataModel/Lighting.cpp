@@ -14,6 +14,10 @@ namespace RNR
         setSpotLight(Ogre::Vector3(191.f/255.f,191.f/255.f,191.f/255.f));
         m_timeOfDay = "14:00:00";
         m_geographicLatitude = 41.7332993f;
+    }
+
+    void Lighting::lateInit()
+    {
         Ogre::BillboardSet* sunAndMoonSet = world->getOgreSceneManager()->createBillboardSet("sun&moon");
         sunAndMoonSet->getMaterial()->getTechnique(0)->getPass(0)->setDepthCheckEnabled(false);
         sunAndMoonSet->getMaterial()->getTechnique(0)->getPass(0)->setDepthWriteEnabled(false);

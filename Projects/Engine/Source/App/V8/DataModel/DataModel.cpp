@@ -1,6 +1,7 @@
 #include <App/V8/DataModel/DataModel.hpp>
 #include <App/V8/Tree/InstanceFactory.hpp>
 #include <App/Script/Script.hpp>
+#include <Network/NetworkPeer.hpp>
 #include <Helpers/Strings.hpp>
 
 namespace RNR
@@ -48,17 +49,42 @@ namespace RNR
         return NULL;
     }
 
-    void DataModel::removeInstanceByGuid(std::string guid)
+    void DataModel::removeInstanceByGuid(std::string guid, bool replicate)
     {
         auto it = m_guids.find(guid);
         if(it != m_guids.end())
-            m_guids.erase(it);
+        {
+            if(replicate)
+            {
+                NetworkPeer* s = dynamic_cast<NetworkPeer*>(findFirstChildOfType("NetworkServer"));
+                if(s && it->second->canReplicate(true))
+                    s->addDelInstance(this);
+                NetworkPeer* c = dynamic_cast<NetworkPeer*>(findFirstChildOfType("NetworkClient"));
+                if(c && it->second->canReplicate())
+                    c->addDelInstance(this);        
+            }
+
+            m_guids.erase(it);            
+        }
     }
 
-    void DataModel::registerInstanceByGuid(Instance* instance, std::string guid)
+    void DataModel::registerInstanceByGuid(Instance* instance, std::string guid, bool replicate)
     {
-        printf("DataModel::registerInstanceByGrid: %s -> %s\n", instance->getName().c_str(), guid.c_str());
+        auto it = m_guids.find(guid);
+        if(it != m_guids.end())
+            printf("DataModel::registerInstanceByGuid: overwriting guid!\n");
+
         m_guids[guid] = instance;
+
+        if(replicate)
+        {
+            NetworkPeer* s = dynamic_cast<NetworkPeer*>(findFirstChildOfType("NetworkServer"));
+            if(s && instance->canReplicate(true))
+                s->addNewInstance(instance);
+            NetworkPeer* c = dynamic_cast<NetworkPeer*>(findFirstChildOfType("NetworkClient"));
+            if(c && instance->canReplicate())
+                c->addNewInstance(instance);
+        }
     }
 
     std::string DataModel::getGuidByInstance(Instance* instance)
@@ -69,25 +95,28 @@ namespace RNR
                 return it.first;
         }
         
-        std::string new_guid = Strings::random_hex(8); // gen a new one
-        m_guids[new_guid] = instance;
-        printf("DataModel::getGuidByInstance: unregistered instance %s (%s, new guid for this is %s)\n", instance->getName().c_str(), instance->getClassName().c_str(), new_guid.c_str());
-        return new_guid;
+        //std::string new_guid = Strings::random_hex(8); // gen a new one
+        //registerInstanceByGuid(instance, new_guid, true);
+        return DATAMODEL_NO_GUID;
     }
 
     void DataModel::onDescendantAdded(Instance* childAdded)
     {
+        childAdded->setWorld(world);
+        childAdded->lateInit();
         if(getGuidByInstance(childAdded) == DATAMODEL_NO_GUID)
         {
             std::string guid = Strings::random_hex(8);
-            registerInstanceByGuid(childAdded, guid);
+            registerInstanceByGuid(childAdded, guid, true);
         }
     }
 
     void DataModel::onDescendantRemoved(Instance* childRemoved)
     {
+        childRemoved->lateDeInit();
+        childRemoved->setWorld(NULL);
         std::string guid = getGuidByInstance(childRemoved);
         if(guid != DATAMODEL_NO_GUID)
-            removeInstanceByGuid(guid);
+            removeInstanceByGuid(guid, true);
     }
 } 

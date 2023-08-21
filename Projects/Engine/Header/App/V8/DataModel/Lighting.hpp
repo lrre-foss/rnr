@@ -26,6 +26,7 @@ namespace RNR
         virtual void deserializeProperty(char* prop_name, pugi::xml_node prop);
     public:
         Lighting();
+        virtual void lateInit();
 
         void setSunOrigin(Ogre::Vector3 vec);
         void setMinutesAfterMidnight(int m);

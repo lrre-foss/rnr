@@ -13,6 +13,7 @@ namespace RNR::Lua
         RunService* m_runService;
     public:
         ScriptContext();
+        virtual void lateInit();
 
         void addScript(Script* script);
         void removeScript(Script* script);

@@ -14,6 +14,7 @@ namespace ArkNet
         virtual void onPacketReceiving(ArkPeer* peer, ArkPacket* packet) = 0;
 
         virtual void onConnectionAccepted(ArkPeer* peer) {};
+        virtual void onDisconnected(ArkPeer* peer) {};
     };
 
     class ArkPeer
@@ -29,6 +30,8 @@ namespace ArkNet
         ArkPeer(ArkSocket* socket);
         ArkPeer(ArkAddress remote, ArkSocket* socket);
         ~ArkPeer();
+
+        void disconnect(std::string reason, bool silent = false); // set silent to true if the client is responding to a server disconnect
 
         void setRemote(ArkAddress remote) { m_remote = remote; };
         void addListener(IArkPeerListener* listener) { m_listeners.push_back(listener); }

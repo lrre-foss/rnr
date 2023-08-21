@@ -4,19 +4,18 @@ namespace ArkNet
 {
     ArkUserData::ArkUserData()
     {
-
     }
 
-    void ArkUserData::writeToStream(ArkStream* stream)
+    void ArkUserData::writeToStream(ArkStream *stream)
     {
         stream->write<unsigned short>(m_userProperties.size());
-        for(auto&[key, entry] : m_userProperties)
+        for (auto &[key, entry] : m_userProperties)
         {
-            if(!entry.replicate)
+            if (!entry.replicate)
                 continue;
             stream->write<ArkUserDataType>(entry.type);
             stream->writeString(key);
-            switch(entry.type)
+            switch (entry.type)
             {
             case ARKUSERDATA_STRING:
                 stream->writeString(entry.string);
@@ -31,17 +30,17 @@ namespace ArkNet
         }
     }
 
-    void ArkUserData::readFromStream(ArkStream* stream)
+    void ArkUserData::readFromStream(ArkStream *stream)
     {
         int prop_read = stream->read<unsigned short>();
-        for(int i = 0; i < prop_read; i++)
+        for (int i = 0; i < prop_read; i++)
         {
             ArkUserDataType type = stream->read<ArkUserDataType>();
             ArkUserDataEntry entry;
             entry.type = type;
             entry.replicate = true;
             std::string prop_name = stream->readString();
-            switch(type)
+            switch (type)
             {
             case ARKUSERDATA_STRING:
                 entry.string = stream->readString();

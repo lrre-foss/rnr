@@ -2,13 +2,17 @@
 
 namespace ArkNet
 {
-    class ArkPacket
+    struct ArkPacket
     {
-    public:
-        virtual int packetId() = 0;
-        virtual int readLength() = 0;
-        virtual void serialize(char* output, int length) = 0;        
-        virtual void deserialize(char* input, int length) = 0;
+        ArkPacket* owner;
+        char* data;
+        int dataSz;
+
+        ArkPacket();
+        ArkPacket(int sz);
+        ~ArkPacket();
+
+        ArkPacket sub(int start, int sz);
     };
 
 }

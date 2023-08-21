@@ -21,7 +21,7 @@ namespace RNR
     class Instance
     {
         protected:
-            static World* world;
+            World* world;
             virtual void deserializeProperty(char* prop_name, pugi::xml_node prop) {};
             virtual void addProperties(std::vector<ReflectionProperty>& properties) {};
             virtual void addFunctions(std::vector<ReflectionFunction>& functions) {};
@@ -36,9 +36,12 @@ namespace RNR
 
             void descendantAddedChildren(Instance* p, Instance* c);
             void descendantRemovedChildren(Instance* p, Instance* c);
+            void replicatorAddChangedProperty(const char* name); // call this in setters that replicate
         
         public:
-            Instance();
+            Instance(World* world = NULL);
+            virtual void lateInit() {}; // called when the Instance gets added to a World
+            virtual void lateDeInit() {}; // called before the Instance gets removed from a World
             virtual ~Instance();
             
             virtual std::vector<ReflectionProperty> getProperties();
@@ -52,8 +55,8 @@ namespace RNR
             Instance* findFirstChild(std::string name);
             Instance* findFirstChildOfType(std::string type);
             
-            static World* getWorld() { return Instance::world; }
-            static void setWorld(World* world) { Instance::world = world; }
+            World* getWorld() { return world; }
+            void setWorld(World* world) { this->world = world; }
 
             virtual bool askSetParent(RNR::Instance* instance); // derive this
             bool canSetParent(RNR::Instance* instance);
@@ -61,7 +64,7 @@ namespace RNR
             bool canAddChild(RNR::Instance* instance);
 
             RNR::Instance* createChild(const RNR::Name *className);
-            
+
             RNR::Instance* getParent() { return this->m_parent; };
             std::string getName() { return this->m_name; };
             virtual std::string getClassName() { return "Instance"; }
@@ -81,6 +84,9 @@ namespace RNR
             virtual void onChildRemoved(RNR::Instance* childRemoved);
             virtual void onDescendantRemoved(RNR::Instance* descendantRemoved); // make sure this is called in any derived versions of this
             virtual void onSetParent(RNR::Instance* newParent);
+
+            virtual bool canReplicate(bool server = false) { return server; };
+            void addReplicate(bool server = false);
 
             Instance* clone();
 

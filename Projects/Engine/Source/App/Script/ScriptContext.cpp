@@ -31,7 +31,10 @@ namespace RNR::Lua
     ScriptContext::ScriptContext()
     {
         setName("Script Context");
+    }
 
+    void ScriptContext::lateInit()
+    {
         m_state = lua_newstate(lua_allocator, this);
 
         int libs = luaopen_base(m_state);
@@ -97,6 +100,9 @@ namespace RNR::Lua
 
     void ScriptContext::update()
     {
+        if(!world)
+            return;
+            
         if(m_pendingScripts.size() != 0)
         {
             printf("ScriptContext::update: compiling %i new scripts\n", m_pendingScripts.size());
@@ -107,6 +113,7 @@ namespace RNR::Lua
                 lua_setglobal(thread, "script");
                 script->setScriptThread(thread);
                 script->compile();
+                script->setWorld(world);
                 script->load(thread);
                 m_scripts.push_back(script);
             }

@@ -13,6 +13,7 @@ namespace RNR
         int m_jointsDone;
     public:
         JointsService();
+
         virtual std::string getClassName() { return "JointsService"; }
         Snap* snap(PartInstance* a, PartInstance* b, Ogre::Vector3 contact);
 

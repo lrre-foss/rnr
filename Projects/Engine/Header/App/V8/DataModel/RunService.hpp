@@ -25,5 +25,6 @@ namespace RNR
         void run();
         void pause();
         void reset();
+        void unpause();
     };
 }

@@ -14,7 +14,10 @@ namespace RNR
 
         m_maxHealth = 100.f;
         m_health = 100.f;
-        
+    }
+
+    void Humanoid::lateInit()
+    {
         btBoxShape* playerShape = new btBoxShape(btVector3(1,2,0.5));
         m_playerGhostObject = new btPairCachingGhostObject();
         world->getDynamicsWorld()->getBroadphase()->getOverlappingPairCache()->setInternalGhostPairCallback(new btGhostPairCallback());
@@ -63,6 +66,10 @@ namespace RNR
 
     void Humanoid::createHealthBar()
     {
+        if(!world)
+            return;
+        if(!world->getHasRender())
+            return;
         if(!getHead())
         {
             printf("Humanoid::createHealthBar: no head\n");

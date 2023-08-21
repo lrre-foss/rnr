@@ -245,8 +245,8 @@ namespace RNR::Lua
     {        
         InstanceBridge* bridge = (InstanceBridge*)IBridge::bridges["Instance"];
         Instance* new_instance = InstanceFactory::singleton()->build(lua_tostring(l, -1));
+        new_instance->addReplicate(true);
         bridge->fromInstance(l, new_instance);
-
         return 1;
     }
 

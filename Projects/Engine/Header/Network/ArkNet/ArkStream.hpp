@@ -1,4 +1,5 @@
 #pragma once
+#include <Network/ArkNet/ArkPacket.hpp>
 #include <stdexcept>
 #include <string.h>
 #include <string>
@@ -12,13 +13,14 @@ namespace ArkNet
         int m_dataSize;
     public:
         ArkStream(char* data, int data_size);
+        ArkStream(ArkPacket* packet);
 
         template<typename T>
         void write(T val)
         {
             size_t val_size = sizeof(val);
             if((m_dataOff + val_size) > m_dataSize)
-                throw new std::runtime_error("Overflow");
+                throw std::runtime_error("Overflow");
             memcpy(m_data + m_dataOff, &val, val_size);
             m_dataOff += val_size;            
         }
@@ -28,11 +30,13 @@ namespace ArkNet
         {
             size_t val_size = sizeof(T);
             if((m_dataOff - val_size) < 0)
-                throw new std::runtime_error("Underflow");
+                throw std::runtime_error("Underflow");
             T* ref = (T*)(m_data + m_dataOff);
             m_dataOff += val_size;
             return *ref;
         }
+
+        ArkPacket readPacket(int sz);
 
         // # of bytes that have been written to/read from the stream
         int size() { return m_dataOff; } 

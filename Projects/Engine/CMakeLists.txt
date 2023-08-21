@@ -5,10 +5,8 @@ add_library(Engine STATIC
     Header/Network/ArkNet/ArkServer.hpp
     Header/Network/ArkNet/ArkAddress.hpp
     Header/Network/ArkNet/ArkPacket.hpp
-    Header/Network/ArkNet/ArkPacketFactory.hpp
     Header/Network/ArkNet/ArkPeer.hpp
     Header/Network/ArkNet/ArkUserData.hpp
-    Header/Network/ArkNet/Packets.hpp
     Header/Network/ArkNet/PlatformNeutralSockets.hpp
 
     Source/Network/ArkNet/ArkStream.cpp
@@ -16,10 +14,8 @@ add_library(Engine STATIC
     Source/Network/ArkNet/ArkServer.cpp
     Source/Network/ArkNet/ArkAddress.cpp
     Source/Network/ArkNet/ArkPacket.cpp
-    Source/Network/ArkNet/ArkPacketFactory.cpp
     Source/Network/ArkNet/ArkPeer.cpp
     Source/Network/ArkNet/ArkUserData.cpp
-    Source/Network/ArkNet/Packets.cpp
 
     # Engine
     Header/Helpers/Name.hpp

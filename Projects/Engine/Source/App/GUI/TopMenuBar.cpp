@@ -140,9 +140,11 @@ namespace RNR
                 break;
         }
         char camerainfo[64];
-        Ogre::Vector3 cam_pos = camera->getCFrame().getPosition();
         if(camera)
+        {
+            Ogre::Vector3 cam_pos = camera->getCFrame().getPosition();
             snprintf(camerainfo,64,"%f,%f,%f y:%fdeg p:%fdeg",cam_pos.x,cam_pos.y,cam_pos.z,camera->getYaw().valueDegrees(),camera->getPitch().valueDegrees());
+        }
         else
             snprintf(camerainfo,64,"I have no camera");
         snprintf(debugtext, 512, "Render\nLast DT = %f\nCam '%s'\n%s\n\nPhysics\nDT = %f\n%i objects (%i active, %i sleeping), %i constraints\nRunService: running = %s, paused = %s",

@@ -17,25 +17,21 @@
 
 namespace RNR
 {
-    World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager)
+    InstanceFactory* World::m_instanceFactory = 0;
+    bool World::globInit = false;
+
+    void World::globalInit()
     {
-        Instance::setWorld(this);
-
-        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
-        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
-        m_dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
-        m_dynamicsWorld->setGravity(btVector3(0, -64, 0));
-
-        m_inputManager = 0;
-        m_loadListener = 0;
-
+        if(!globInit)
+            globInit = true;
+        else
+            return;
+            
         m_instanceFactory = new InstanceFactory();
 
         m_instanceFactory->registerInstance("Camera",        InstanceFactory::instanceBuilder<Camera>);
         m_instanceFactory->registerInstance("Model",         InstanceFactory::instanceBuilder<ModelInstance>);
-        m_instanceFactory->registerInstance("SelectionBox",  InstanceFactory::instanceBuilder<SelectionBox>);
+        // m_instanceFactory->registerInstance("SelectionBox",  InstanceFactory::instanceBuilder<SelectionBox>);
         m_instanceFactory->registerInstance("Part",          InstanceFactory::instanceBuilder<PartInstance>);
         m_instanceFactory->registerInstance("Workspace",     InstanceFactory::instanceBuilder<Workspace>);
         m_instanceFactory->registerInstance("Humanoid",      InstanceFactory::instanceBuilder<Humanoid>);
@@ -48,10 +44,31 @@ namespace RNR
         m_instanceFactory->registerInstance("NetworkServer", InstanceFactory::instanceBuilder<NetworkServer>);
         m_instanceFactory->registerInstance("Script",        InstanceFactory::instanceBuilder<Lua::Script>);
         m_instanceFactory->registerInstance("ScriptContext", InstanceFactory::instanceBuilder<Lua::ScriptContext>);
+        m_instanceFactory->registerInstance("Weld",          InstanceFactory::instanceBuilder<Weld>);
+        m_instanceFactory->registerInstance("Snap",          InstanceFactory::instanceBuilder<Snap>);
+    }
+
+    World::World(Ogre::Root* ogre, Ogre::SceneManager* ogreSceneManager, bool hasRender)
+    {
+        globalInit();
+        m_sceneHasRender = hasRender;
+
+        btDefaultCollisionConfiguration* collisionConfiguration = new btDefaultCollisionConfiguration();
+        btCollisionDispatcher* dispatcher = new btCollisionDispatcher(collisionConfiguration);
+        btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
+        btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
+        m_dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, overlappingPairCache, solver, collisionConfiguration);
+        m_dynamicsWorld->setGravity(btVector3(0, -64, 0));
+
+        m_inputManager = 0;
+        m_loadListener = 0;
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
+
+        m_datamodel = 0; // the ctor of DataModel requires this to be 0, so replicatorAddChangedProperty doesnt update too early
         m_datamodel = new DataModel();
+        m_datamodel->setWorld(this);
         m_datamodel->setName("DataModel");
         m_workspace = (Workspace*)m_datamodel->getService("Workspace");
         m_runService = (RunService*)m_datamodel->getService("RunService");
@@ -64,20 +81,15 @@ namespace RNR
 
         m_runPhysics = true;
         m_ngine = new ComPlicitNgine(this);
-        m_tmb = new TopMenuBar(this);
+
+        if(hasRender)
+            m_tmb = new TopMenuBar(this);
 
         Camera* start_cam = new Camera();
         start_cam->setParent(m_workspace);
         m_workspace->setCurrentCamera(start_cam);
 
-        PartInstance* baseplate = new PartInstance();
-        baseplate->setName("Baseplate");
-        baseplate->getCFrame().setPosition(Ogre::Vector3(5, -64, 5));
-        baseplate->setSize(Ogre::Vector3(512, 1, 512));
-        baseplate->setBrickColor(2);
-        baseplate->setAnchored(true);
-        baseplate->updateSurfaces();
-        baseplate->setParent(m_workspace);
+        m_loadState = LOADING_FINISHED;
     }
 
     World::~World()
@@ -90,7 +102,7 @@ namespace RNR
     {
         pugi::xml_attribute class_attr = node.attribute("class");
 
-        Instance* instance;
+        Instance* instance = 0;
 
         try{
             if(parent == m_datamodel && m_datamodel->findFirstChildOfType(class_attr.as_string()))
@@ -99,6 +111,10 @@ namespace RNR
             {
                 std::string class_name = class_attr.value();
                 instance = m_instanceFactory->build(class_name);
+
+                NetworkServer* server = dynamic_cast<NetworkServer*>(m_datamodel->findFirstChildOfType("NetworkServer"));
+                if(server && instance->canReplicate(true))
+                    server->addNewInstance(instance);
             }
         }
         catch(std::runtime_error e)
@@ -122,6 +138,8 @@ namespace RNR
 
     void World::load(char* path, ILoadListener* loadListener)
     {
+        m_runService->pause();
+
         m_loadState = LOADING_DATAMODEL;
         m_loadListener = loadListener;
         m_refs.clear();
@@ -194,11 +212,13 @@ namespace RNR
             m_loadListener = 0;
         }        
         m_workspace->build();
-        m_loadState = LOADING_MAKEJOINTS;
-        m_workspace->makeJoints();
+        //m_loadState = LOADING_MAKEJOINTS;
+        //m_workspace->makeJoints();
         m_loadState = LOADING_FINISHED;
         m_loadListener->updateWorldLoad();
         m_loadListener = 0;
+
+        m_runService->unpause();
     }
 
     void World::preRender(float timestep)
@@ -217,12 +237,7 @@ namespace RNR
 
     void World::preStep()
     {
-        NetworkServer* server = dynamic_cast<NetworkServer*>(m_datamodel->findFirstChildOfType("NetworkServer"));
-        if(server && server->getRunning())
-            server->frame();
-        NetworkClient* client = dynamic_cast<NetworkClient*>(m_datamodel->findFirstChildOfType("NetworkClient"));
-        if(client)
-            client->frame();
+
     }
 
     double World::step(float timestep)
@@ -244,5 +259,12 @@ namespace RNR
         if(lighting && camera)
             lighting->setSunOrigin(camera->getCFrame().getPosition());
         m_workspace->buildGeom();
+
+        NetworkServer* server = dynamic_cast<NetworkServer*>(m_datamodel->findFirstChildOfType("NetworkServer"));
+        if(server && server->getRunning())
+            server->frame();
+        NetworkClient* client = dynamic_cast<NetworkClient*>(m_datamodel->findFirstChildOfType("NetworkClient"));
+        if(client)
+            client->frame();
     }
 }

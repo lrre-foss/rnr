@@ -26,6 +26,8 @@ namespace RNR
                 joints->fixWelds();
                 m_world->preStep();
                 m_world->step(delta);
+
+                m_physicsTicks++;
             }
             updateTree();
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.7.0)
 
 project(RNR)
 
@@ -7,6 +7,7 @@ include(CMake/CreateResources.cmake)
 option(COMPILE_PLAYER "Compile the RNR player" ON)
 option(COMPILE_STUDIO "Compile the RNR studio" ON)
 option(COMPILE_SERVER "Compile the RNR server" ON)
+option(COMPILE_UTEST "Compile the RNR UTest system" ON)
 
 set(DEPENDENCIES_DIR ${CMAKE_SOURCE_DIR}/Dependencies)
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR}/dist)

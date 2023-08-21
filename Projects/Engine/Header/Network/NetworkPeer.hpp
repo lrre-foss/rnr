@@ -16,6 +16,13 @@ namespace RNR
 
         void authorize();
         
+        void addChangedProperty(ReflectionProperty* property);
+        void addNewInstance(Instance* instance);
+        void addDelInstance(Instance* instance);
+
+        void sendPendingReplicates();
+        
         virtual std::string getClassName() { return "NetworkPeer"; }
+        virtual bool canReplicate(bool server = false) { return false; };
     };
 }

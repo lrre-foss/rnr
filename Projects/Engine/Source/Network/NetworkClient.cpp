@@ -1,6 +1,5 @@
 #include <Network/NetworkClient.hpp>
 #include <Network/NetworkReplicator.hpp>
-#include <Network/ArkNet/Packets.hpp>
 
 namespace RNR
 {
@@ -10,25 +9,32 @@ namespace RNR
         m_peer->addListener(this);
     }
 
-    void NetworkClient::connect(char* ip, int port)
+    void NetworkClient::connect(char *ip, int port)
     {
         m_socket->tryConnect(ip, port);
 
-        ArkNet::Packets::OpenConnectionRequestPacket request;
-        request.playerName = "Player";
+        ArkNet::ArkPacket request(64);
+        ArkNet::ArkStream stream(&request);
+        stream.write<char>(0x0);
+        stream.writeString("Player");
         m_peer->sendPacket(&request);
 
-        NetworkReplicator* replicator = new NetworkReplicator(m_peer);
+        NetworkReplicator *replicator = new NetworkReplicator(m_peer);
         replicator->setParent(this);
+    }
+
+    void NetworkClient::disconnect()
+    {
+        
     }
 
     void NetworkClient::frame()
     {
         m_peer->clientPump();
+        sendPendingReplicates();
     }
 
-    void NetworkClient::onPacketReceiving(ArkNet::ArkPeer* peer, ArkNet::ArkPacket* packet)
+    void NetworkClient::onPacketReceiving(ArkNet::ArkPeer *peer, ArkNet::ArkPacket *packet)
     {
-        
-    } 
+    }
 }

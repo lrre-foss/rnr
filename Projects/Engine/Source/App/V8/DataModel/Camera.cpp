@@ -32,6 +32,9 @@ namespace RNR
 
     void Camera::cameraFrame(float xd, float yd, bool movement_disable)
     {
+        if(!world)
+            return;
+            
         Ogre::Radian pitch = Ogre::Radian(yd);
         Ogre::Radian yaw = Ogre::Radian(xd);
         Ogre::Radian old_pitch;

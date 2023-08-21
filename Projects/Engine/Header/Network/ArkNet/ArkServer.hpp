@@ -1,6 +1,5 @@
 #pragma once
 #include <Network/ArkNet/ArkPeer.hpp>
-#include <Network/ArkNet/Packets.hpp>
 #include <map>
 
 namespace ArkNet
@@ -10,7 +9,7 @@ namespace ArkNet
     public:
         virtual void onPeerAdding(ArkPeer* addingPeer) {};
         virtual void onPeerRemoving(ArkPeer* removingPeer) {};
-        virtual bool onPeerConnectionRequest(ArkPeer* rqPeer, Packets::OpenConnectionRequestPacket* rq) { return true; } // returns if connection is accepted;
+        virtual bool onPeerConnectionRequest(ArkPeer* rqPeer, ArkPacket* rq) { return true; } // returns if connection is accepted;
     };
 
     class ArkServer : IArkPeerListener
