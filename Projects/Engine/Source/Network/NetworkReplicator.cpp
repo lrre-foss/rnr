@@ -19,6 +19,9 @@ namespace RNR
 
     void NetworkReplicator::lateInit()
     {
+        m_pSentTotal = 0;
+        m_pAddedTotal = 0;
+
         if(m_serverReplicator)
         {
             // client-side, there should be no instances in the tree yet
@@ -524,7 +527,7 @@ namespace RNR
         {
             m_peer->sendPacket(&dataPacket);
             m_pSentTotal += p_sent;
-            printf("NetworkReplicator::sendPending: sent %i entries in datapacket (%0.2f%% done, %i left)\n", p_sent, (m_pSentTotal / m_pAddedTotal) * 100.f, p_left);
+            printf("NetworkReplicator::sendPending: sent %i entries in datapacket (%0.2f%% done, %i left)\n", p_sent, (m_pSentTotal / m_pAddedTotal) * 100.f, p_left - p_sent);
         }
     }
 }
