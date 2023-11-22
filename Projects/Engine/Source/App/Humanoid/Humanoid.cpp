@@ -14,6 +14,7 @@ namespace RNR
 
         m_maxHealth = 100.f;
         m_health = 100.f;
+        m_walkSpeed = 16.f;
     }
 
     void Humanoid::lateInit()
@@ -36,22 +37,6 @@ namespace RNR
     bool Humanoid::canSit()
     {
         return true;
-    }
-
-    void Humanoid::buildJoints()
-    {
-        if(getTorso())
-        {
-            btTransform ghostTransform;
-            ghostTransform.setIdentity();
-            ghostTransform.setOrigin(Bullet::v3ToBullet(getTorso()->getPosition()));
-            ghostTransform.setRotation(Bullet::qtToBullet(getTorso()->getRotation()));
-            Ogre::Vector3 localInertia;
-            m_playerGhostObject->setWorldTransform(ghostTransform);
-
-            world->getDynamicsWorld()->addCollisionObject(m_playerGhostObject, btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter|btBroadphaseProxy::DefaultFilter);
-            world->getDynamicsWorld()->addAction(m_characterController);
-        }
     }
 
     void Humanoid::checkForJointDeath()
@@ -126,32 +111,24 @@ namespace RNR
     void Humanoid::inputFrame(float dx, float dy)
     {
         IInputManager* inputManager = world->getInputManager();
-        PartInstance* torso = getTorso();
         Camera* camera = world->getWorkspace()->getCurrentCamera();
-        if(!torso)
-        {
-            printf("Humanoid::inputFrame: no torso\n");
-            return;
-        }
         if(inputManager)
         {
             Ogre::Matrix3 camera_rotation;
             camera_rotation.FromEulerAnglesYXZ(camera->getYaw(), Ogre::Radian(0), Ogre::Radian(0)); // we only want yaw because otherwise the movement target will go through the ground/in the air
-            Ogre::Quaternion direction = torso->getRotation();
-            Ogre::Quaternion new_direction = direction;
             float forward = 0;
+            Ogre::Vector3 move = Ogre::Vector3(0,0,0);
 
             if(inputManager->isKeyDown('W'))
-            {
-                new_direction = Ogre::Quaternion::nlerp(0.5f, direction, camera_rotation);
-                forward = 16;
-            }
+                move += Ogre::Vector3(0, 0, m_walkSpeed);
+            if(inputManager->isKeyDown('S'))
+                move += Ogre::Vector3(0, 0, -m_walkSpeed);
+            if(inputManager->isKeyDown('A'))
+                move += Ogre::Vector3(m_walkSpeed, 0, 0);
+            if(inputManager->isKeyDown('D'))
+                move += Ogre::Vector3(-m_walkSpeed, 0, 0);
 
-            Ogre::Vector3 move = Ogre::Vector3(forward, 0, 0);
-            move = direction * move;
-            m_characterController->setLinearVelocity(Bullet::v3ToBullet(move));
-
-            m_playerGhostObject->getWorldTransform().setRotation(Bullet::qtToBullet(direction));
+            m_characterController->setWalkDirection(Bullet::v3ToBullet(move));
 
             if(getTorso())
             {
@@ -159,7 +136,14 @@ namespace RNR
                 getTorso()->updateMatrix();
             }
 
-            camera->getCFrame().setPosition(camera->getCFrame().getPosition() + move);
+            if(getHead() && camera)
+            {
+                CoordinateFrame focus_cframe = getHead()->getCFrame();
+
+                camera->setSubject(getHead());
+                camera->setFocus(focus_cframe);
+                camera->cameraFrame(dx, dy, true);
+            }
         }
     }
 

@@ -13,12 +13,6 @@ namespace RNR
     {
         m_socket->tryConnect(ip, port);
 
-        ArkNet::ArkPacket request(64);
-        ArkNet::ArkStream stream(&request);
-        stream.write<char>(0x0);
-        stream.writeString("Player");
-        m_peer->sendPacket(&request);
-
         NetworkReplicator *replicator = new NetworkReplicator(m_peer);
         replicator->setParent(this);
     }

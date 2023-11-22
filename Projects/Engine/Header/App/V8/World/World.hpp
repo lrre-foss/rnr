@@ -42,7 +42,7 @@ namespace RNR
         virtual void updateWorldLoad() = 0;
     };
 
-    class World
+    class World : Ogre::RenderSystem::Listener
     {
         private:
             static void globalInit();
@@ -108,7 +108,7 @@ namespace RNR
             void setMaxLoadProgress(int p) { m_maxLoadProgress = p; }
             int getLoadProgress() { return m_loadProgress; }
             void setLoadProgress(int p) { m_loadProgress = p; }
-
+            virtual void eventOccurred(const Ogre::String &eventName, const Ogre::NameValuePairList* parameters);
             Lock dynamicWorldLock;
     };
 }

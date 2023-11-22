@@ -31,8 +31,17 @@ namespace RNR
 
     void NetworkServer::onPeerAdding(ArkNet::ArkPeer *addingPeer)
     {
-        NetworkReplicator *peer_replicator = new NetworkReplicator(addingPeer, true);
-        peer_replicator->setParent(this);
+        NetworkReplicator *replicator = new NetworkReplicator(addingPeer, true);
+        replicator->setParent(this);
+
+        // ok, create player stuff
+        Player *player = new Player();
+        player->setParent(world->getDatamodel()->getService("Players"));
+        player->setName("Player");
+
+        replicator->setPlayer(player);
+
+        printf("NetworkServer::onPeerConnectionRequest: new player %s\n", getReplicatorForPeer(addingPeer)->getPlayer()->getName().c_str());
     }
 
     void NetworkServer::onPeerRemoving(ArkNet::ArkPeer *removingPeer)
@@ -50,23 +59,9 @@ namespace RNR
 
     bool NetworkServer::onPeerConnectionRequest(ArkNet::ArkPeer *rqPeer, ArkNet::ArkPacket *rq)
     {
-        ArkNet::ArkStream stream(rq);
-        std::string playerName = stream.readString();
-
-        if (playerName == "FuzzyPickles")
+        Players* players = (Players*)world->getDatamodel()->getService("Players");
+        if(players->getChildren()->size() + 1 > players->getMaxPlayers())
             return false;
-
-        NetworkReplicator *replicator = getReplicatorForPeer(rqPeer);
-
-        // ok, create player stuff
-        Player *player = new Player();
-        player->setParent(world->getDatamodel()->getService("Players"));
-        player->setName(playerName.c_str());
-
-        replicator->setPlayer(player);
-
-        printf("NetworkServer::onPeerConnectionRequest: new player %s\n", player->getName().c_str());
-
         return true;
     }
 

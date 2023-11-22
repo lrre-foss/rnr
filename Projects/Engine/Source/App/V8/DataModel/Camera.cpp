@@ -33,7 +33,12 @@ namespace RNR
     void Camera::cameraFrame(float xd, float yd, bool movement_disable)
     {
         if(!world)
+        {
+            if(getParent())
+                this->world = getParent()->getWorld();
+            printf("Camera::cameraFrame: i have no world!?!?!\n");
             return;
+        }
             
         Ogre::Radian pitch = Ogre::Radian(yd);
         Ogre::Radian yaw = Ogre::Radian(xd);

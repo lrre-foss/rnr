@@ -2,7 +2,7 @@
 
 namespace ArkNet
 {
-    ArkStream::ArkStream(char *data, int data_size)
+    ArkStream::ArkStream(unsigned char *data, int data_size)
     {
         m_data = data;
         m_dataSize = data_size;
@@ -35,11 +35,24 @@ namespace ArkNet
     ArkPacket ArkStream::readPacket(int sz)
     {
         ArkPacket p;
-        if ((m_dataOff - sz) < 0)
+        if((m_dataOff + sz) > m_dataSize)
             throw std::runtime_error("Underflow");
         p.data = (m_data + m_dataOff);
         p.dataSz = sz;
+        p.owner = (ArkPacket*)-1; // so ~ArkPacket doesnt deallocate it
         m_dataOff += sz;
         return p;
+    }
+
+    bool ArkStream::readMagic()
+    {
+        char magic2[sizeof(OFFLINE_MAGIC)+1] = {0};
+        char magic[sizeof(OFFLINE_MAGIC)+1] = {0};
+        for(int i = 0; i < sizeof(OFFLINE_MAGIC); i++)
+        {
+            magic2[i] = OFFLINE_MAGIC[i];            
+            magic[i] = read<char>();
+        }
+        return (strncmp(magic, magic2, sizeof(OFFLINE_MAGIC)+1) == 1);
     }
 }

@@ -38,6 +38,7 @@ namespace RNR
             float m_health;
             float m_maxHealth;
             float m_walkRotationalVelocity;
+            float m_walkSpeed;
             btKinematicCharacterController* m_characterController;
             btPairCachingGhostObject* m_playerGhostObject; 
     };

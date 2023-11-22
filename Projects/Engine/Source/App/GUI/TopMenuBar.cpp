@@ -1,5 +1,7 @@
 #include <App/GUI/TopMenuBar.hpp>
 #include <App/V8/World/World.hpp>
+#include <Network/NetworkClient.hpp>
+#include <Network/NetworkReplicator.hpp>
 
 namespace RNR
 {
@@ -101,6 +103,24 @@ namespace RNR
         m_playerPanel->setDimensions(100, 20);
         m_playerPanel->setMaterial(material);
         
+        m_connectionPanel = static_cast<Ogre::OverlayContainer*>(m_overlayManager->createOverlayElement("Panel", "ConnectionStatusPanel"));
+        m_connectionPanel->setMetricsMode(Ogre::GMM_RELATIVE);
+        m_connectionPanel->setDimensions(0.8, 1.0/3.0);
+        m_connectionPanel->setPosition(0.1, 1.0/3.0);
+        m_connectionPanel->setMaterial(material);
+
+        m_connectionText = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "ConnectionTextArea"));
+        m_connectionText->setMetricsMode(Ogre::GMM_RELATIVE);
+        m_connectionText->setPosition(0, 0);
+        m_connectionText->setDimensions(1, 0.9);
+        m_connectionText->setAlignment(Ogre::TextAreaOverlayElement::Center);
+        m_connectionText->setHorizontalAlignment(Ogre::GHA_CENTER);
+        m_connectionText->setVerticalAlignment(Ogre::GVA_CENTER);
+        m_connectionText->setCaption("");
+        m_connectionText->setCharHeight(0.05);
+        m_connectionText->setFontName("ComicSans");
+        m_connectionText->setColour(Ogre::ColourValue(1.0f,1.0f,1.0f));
+
         m_playerList = static_cast<Ogre::TextAreaOverlayElement*>(m_overlayManager->createOverlayElement("TextArea", "PlayerListTextArea"));
         m_playerList->setMetricsMode(Ogre::GMM_PIXELS);
         m_playerList->setPosition(0, 0);
@@ -113,9 +133,13 @@ namespace RNR
         m_playerPanel->addChild(m_playerList);
         m_playerPanel->setVisible(false);
 
+        m_connectionPanel->addChild(m_connectionText);
+        m_connectionPanel->setVisible(false);
+
         Ogre::Overlay* overlay = m_overlayManager->create("TopMenuBarOverlay");
         overlay->add2D(panel);
         overlay->add2D(m_playerPanel);
+        overlay->add2D(m_connectionPanel);
         overlay->setZOrder(500);
 
         overlay->show();
@@ -174,6 +198,33 @@ namespace RNR
             }            
             m_playerList->setCaption(player_list_text);
             m_playerPanel->setDimensions(100, 20 * (player_list->size() + 1));
+        }
+
+        m_connectionPanel->setVisible(false);
+        NetworkClient* client = (NetworkClient*)m_world->getDatamodel()->findFirstChildOfType("NetworkClient");
+        if(client)
+        {
+            NetworkReplicator* replicator = (NetworkReplicator*)client->findFirstChildOfType("NetworkReplicator");
+            ArkNet::ArkPeer* clientPeer = client->getPeer();
+            char cstatustext[255];
+            memset(cstatustext, 0, 255);
+            if(clientPeer->getSocket()->getSocketStatus() == ArkNet::ARKSOCKET_CONNECTING)
+            {
+                m_connectionPanel->setVisible(true);
+                int cstage = clientPeer->getConnectionStage();
+                if(cstage == 0)
+                    snprintf(cstatustext,255,"Connecting to the server (attempt %i)", clientPeer->getConnectionAttempts());
+                else if(cstage == 1)
+                    snprintf(cstatustext,255,"Waiting for connection reply 2 to be received");
+            }
+
+            if(clientPeer->getSocket()->getSocketStatus() == ArkNet::ARKSOCKET_CONNECTED && !replicator->getPlayer())
+            {
+                m_connectionPanel->setVisible(true);
+                snprintf(cstatustext,255,"Waiting for local player");
+            }
+
+            m_connectionText->setCaption(cstatustext);
         }
     }
 }

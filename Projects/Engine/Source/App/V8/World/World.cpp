@@ -65,6 +65,7 @@ namespace RNR
 
         m_ogreRoot = ogre;
         m_ogreSceneManager = ogreSceneManager;
+        m_ogreSceneManager->getDestinationRenderSystem()->addListener(this);
 
         m_datamodel = 0; // the ctor of DataModel requires this to be 0, so replicatorAddChangedProperty doesnt update too early
         m_datamodel = new DataModel();
@@ -212,8 +213,8 @@ namespace RNR
             m_loadListener = 0;
         }        
         m_workspace->build();
-        //m_loadState = LOADING_MAKEJOINTS;
-        //m_workspace->makeJoints();
+        m_loadState = LOADING_MAKEJOINTS;
+        m_workspace->makeJoints();
         m_loadState = LOADING_FINISHED;
         m_loadListener->updateWorldLoad();
         m_loadListener = 0;
@@ -266,5 +267,10 @@ namespace RNR
         NetworkClient* client = dynamic_cast<NetworkClient*>(m_datamodel->findFirstChildOfType("NetworkClient"));
         if(client)
             client->frame();
+    }
+
+    void World::eventOccurred(const Ogre::String &eventName, const Ogre::NameValuePairList* parameters)
+    {
+        printf("%s\n",eventName.c_str());
     }
 }

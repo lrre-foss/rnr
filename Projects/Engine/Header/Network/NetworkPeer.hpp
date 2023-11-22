@@ -20,6 +20,9 @@ namespace RNR
         void addNewInstance(Instance* instance);
         void addDelInstance(Instance* instance);
 
+        ArkNet::ArkPeer* getPeer() { return m_peer; }
+        ArkNet::ArkSocket* getSocket() { return m_socket; }
+
         void sendPendingReplicates();
         
         virtual std::string getClassName() { return "NetworkPeer"; }

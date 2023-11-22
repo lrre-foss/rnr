@@ -15,7 +15,9 @@ namespace RNR
     {
         Ogre::TextAreaOverlayElement* m_debugText;
         Ogre::TextAreaOverlayElement* m_playerList;
+        Ogre::TextAreaOverlayElement* m_connectionText;
         Ogre::OverlayContainer* m_playerPanel;
+        Ogre::OverlayContainer* m_connectionPanel;
         Ogre::OverlayManager* m_overlayManager;
         World* m_world;
     public:

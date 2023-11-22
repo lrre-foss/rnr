@@ -258,7 +258,6 @@ namespace RNR
 
     Instance* Instance::findFirstChild(std::string name)
     {
-        return NULL;
         for(auto& child : m_children)
         {
             if(child->getName() == name)

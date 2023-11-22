@@ -65,9 +65,12 @@ namespace RNR
 
     void PartInstance::lateInit()
     {        
-        setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
-        setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
-        getNode()->attachObject(getObject());
+        if(world->getWorkspace()->getBatchMode() == BATCH_DONT)
+        {
+            setNode(world->getOgreSceneManager()->getRootSceneNode()->createChildSceneNode());
+            setObject(world->getOgreSceneManager()->createEntity("meshes/Cube.mesh"));
+            getNode()->attachObject(getObject());
+        }
 
         updateMatrix();
     }
@@ -90,6 +93,12 @@ namespace RNR
 
             Ogre::Vector3 brickColor = BrickColor::color(getBrickColor());
             object->setCustomParam(0, Ogre::Vector4f(brickColor.x, brickColor.y, brickColor.z, 1.0-getTransparency()));
+        }
+
+        if(getObject() && dynamic_cast<Ogre::Entity*>(getObject()))
+        {
+            Ogre::Entity* object = (Ogre::Entity*)getObject();
+            
         }
     }
 

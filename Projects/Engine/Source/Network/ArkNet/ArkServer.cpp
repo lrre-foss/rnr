@@ -27,18 +27,23 @@ namespace ArkNet
                     peer = new ArkPeer(remote_addr, m_peer->getSocket());
                     printf("ArkServer::frame: new ArkPeer %s incoming\n", remote_addr.toString().c_str());
                     m_peers[remote_addr.toString()] = peer;
-                    if (m_serverListener)
-                        m_serverListener->onPeerAdding(peer);
                 }
                 else
                     peer = m_peers[remote_addr.toString()];
 
-                for (auto &listener : m_peer->m_listeners)
-                    listener->onPacketReceiving(peer, in_packet);
-                for (auto &listener : peer->m_listeners)
-                    listener->onPacketReceiving(peer, in_packet);
+                if(!peer->pumpReadPacket(in_packet))
+                {
+                    for (auto &listener : m_peer->m_listeners)
+                        listener->onPacketReceiving(peer, in_packet);
+                    for (auto &listener : peer->m_listeners)
+                        listener->onPacketReceiving(peer, in_packet);
+                }
                 delete in_packet;
             }
+            
+            for(auto peer : m_peers)
+                peer.second->frame();
+            m_peer->frame();
         }
     }
 
@@ -46,21 +51,43 @@ namespace ArkNet
     {
         ArkStream dataStream(packet->data, packet->dataSz);
         ArkPacket psub = packet->sub(1, packet->dataSz - 1);
-        switch (dataStream.read<char>())
+        switch (dataStream.read<unsigned char>())
         {
-        case 0x0: // connection request
+        case 0x05: // connection request 1
         {
             printf("ArkServer::onPacketReceiving: received a connection request\n");
             bool accept = true;
+            if (!dataStream.readMagic())
+            {
+                printf("ArkServer::onPacketReceiving: received bad magic from peer\n");
+            }
+            peer->m_peerMTU = packet->dataSz;
+            printf("ArkServer::onPacketReceiving: new clients MTU is %i\n", peer->m_peerMTU);
+            ArkPacket connReply(32);
+            ArkStream connStream(&connReply);
+            connStream.write<char>(0x06);
+            connStream.write<unsigned short>(peer->getMTU());
+            peer->sendPacket(&connReply);
+        }
+            break;
+        case 0x07: // connection request 2
+        {
+            bool accept = true;
+            printf("ArkServer::onPacketReceiving: received a connection request 2\n");
             if (m_serverListener)
                 accept = m_serverListener->onPeerConnectionRequest(peer, &psub);
-            if (accept)
+            if(accept)
             {
+                if (m_serverListener)
+                    m_serverListener->onPeerAdding(peer);
                 peer->authorize();
-                // TODO: send an 'OpenConnectionReplyPacket'
+                ArkPacket connReply(32);
+                ArkStream connStream(&connReply);
+                connStream.write<char>(0x08);
+                peer->sendPacket(&connReply);
             }
         }
-        break;
+            break;
         default:
             break;
         }

@@ -31,13 +31,13 @@ namespace RNR
     {
         m_character = new ModelInstance();
         m_character->setName(getName());
+        m_character->setWorld(world);
 
         PartInstance *head = new PartInstance();
         head->setName("Head");
         head->setSize(Ogre::Vector3(2, 1, 1));
         head->setBrickColor(24);
         head->getCFrame().setPosition(Ogre::Vector3(0, 1.5, 0));
-        head->updateMatrix();
         head->setParent(m_character);
 
         PartInstance *torso = new PartInstance();
@@ -45,18 +45,17 @@ namespace RNR
         torso->setSize(Ogre::Vector3(2, 2, 1));
         torso->setBrickColor(23);
         torso->getCFrame().setPosition(Ogre::Vector3(0, 0, 0));
-        torso->updateMatrix();
         torso->setParent(m_character);
         torso->setAnchored(true);
 
         Humanoid *character_humanoid = new Humanoid();
         character_humanoid->setParent(m_character);
-        m_character->makeJoints();
-        character_humanoid->buildJoints();
 
         m_character->setParent(world->getWorkspace());
+        m_character->makeJoints();
 
         Camera *player_camera = world->getWorkspace()->getCurrentCamera();
         player_camera->setCFrame(CoordinateFrame());
+        player_camera->setSubject(head);
     }
 }

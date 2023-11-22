@@ -98,7 +98,7 @@ namespace ArkNet
         printf("ArkSocket::tryConnect: connecting to %s:%i\n", ip, port);
     }
 
-    int ArkSocket::recvFrom(ArkAddress *remote, size_t bytes, char *output, int flags)
+    int ArkSocket::recvFrom(ArkAddress *remote, size_t bytes, unsigned char *output, int flags)
     {
         char data_buf[65535];
         sockaddr *addr = remote ? (sockaddr *)&(remote->address) : NULL;
@@ -110,7 +110,7 @@ namespace ArkNet
         return m;
     }
 
-    int ArkSocket::sendTo(ArkAddress *remote, size_t bytes, char *input, int flags)
+    int ArkSocket::sendTo(ArkAddress *remote, size_t bytes, unsigned char *input, int flags)
     {
         int m = sendto(m_sockFd, input, bytes, MSG_DONTWAIT | flags, (sockaddr *)&remote->address, (socklen_t)sizeof(remote->address));
         if (m == -1)

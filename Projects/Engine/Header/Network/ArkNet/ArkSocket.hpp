@@ -36,8 +36,8 @@ namespace ArkNet
         void markConnected() { m_socketStatus = ARKSOCKET_CONNECTED; }
         void markDisconnected() { m_socketStatus = ARKSOCKET_DISCONNECTED; }
 
-        int recvFrom(ArkAddress* remote, size_t bytes, char* output, int flags = 0);
-        int sendTo(ArkAddress* remote, size_t bytes, char* input, int flags = 0);
+        int recvFrom(ArkAddress* remote, size_t bytes, unsigned char* output, int flags = 0);
+        int sendTo(ArkAddress* remote, size_t bytes, unsigned char* input, int flags = 0);
 
         void closeSocket();
         

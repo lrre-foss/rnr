@@ -318,7 +318,7 @@ namespace RNR
     void NetworkReplicator::onPacketReceiving(ArkNet::ArkPeer *peer, ArkNet::ArkPacket *packet)
     {
         ArkNet::ArkStream packetStream(packet);
-        if(packetStream.read<char>() == 0x08)
+        if(packetStream.read<unsigned char>() == 0x08)
         {
             ArkNet::ArkPacket dataPacket = packet->sub(1, packet->dataSz-1);
             ArkNet::ArkStream dataStream(&dataPacket); // we need to skip the onPacketReceiving type
@@ -477,13 +477,19 @@ namespace RNR
             return;
     
         int p_sent = 0;
-        int p_max = 16;
+        int p_max = 64;
         int p_left = m_deletingInstances.size() + m_pendingInstances.size() + m_pendingProperties.size();
-        ArkNet::ArkPacket dataPacket(1024);
+        ArkNet::ArkPacket dataPacket(m_peer->getGamePacketMTU());
         ArkNet::ArkStream dataStream(&dataPacket);
 
-        dataStream.write<char>(0x08);
+        dataStream.write<unsigned char>(0x08);
         dataStream.write<int>(0x59);
+
+        // TODO: if sendPending writes too many bytes to the datastream
+        // it will break the entire datapacket and not transmit any of the data,
+        // causing the tree on the client to be screwed up. this could be fixed by
+        // having dataPacket be a vector<char> rather then a char* but i havent gotten around
+        // to that yet
 
         while(p_sent < p_max)
         {
@@ -525,9 +531,9 @@ namespace RNR
         
         if(p_sent != 0)
         {
-            m_peer->sendPacket(&dataPacket);
+            m_peer->sendReliablePacket(&dataPacket, ArkNet::RELIABLE_ORD_ACK);
             m_pSentTotal += p_sent;
-            printf("NetworkReplicator::sendPending: sent %i entries in datapacket (%0.2f%% done, %i left)\n", p_sent, (m_pSentTotal / m_pAddedTotal) * 100.f, p_left - p_sent);
+            printf("NetworkReplicator::sendPending: sent %i entries (%i bytes) in datapacket (%0.2f%% done, %i left)\n", p_sent, dataStream.size(), (m_pSentTotal / m_pAddedTotal) * 100.f, p_left - p_sent);
         }
     }
 }

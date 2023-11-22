@@ -202,15 +202,16 @@ void MainWindow::pause()
 
 void MainWindow::playSolo()
 {
-    this->ogreWidget->world->getRunService()->run();
 
     RNR::Players* players = (RNR::Players*)this->ogreWidget->world->getDatamodel()->getService("Players");
     RNR::Player* player = players->createLocalPlayer(0);
     if(!player) 
         return;
+    player->setParent(players);
     player->setName(QInputDialog::getText(this, "Player Name", "Enter your player name").toLocal8Bit().data());
     player->loadCharacter();
 
+    this->ogreWidget->world->getRunService()->run();
     updateTree(ogreWidget->world->getDatamodel());
 }
 

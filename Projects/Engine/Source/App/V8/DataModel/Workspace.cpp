@@ -83,6 +83,8 @@ namespace RNR
             }
             world->getComPlicitNgine()->registerPhysicsPart(part);
         }
+
+        ModelInstance::onDescendantAdded(childAdded);
     }
 
     void Workspace::buildGeomInstance(Instance* instance)
@@ -111,6 +113,8 @@ namespace RNR
             world->getComPlicitNgine()->deletePhysicsPart(part);
         }
         m_geomDirty = true;        
+
+        Instance::onDescendantRemoved(childRemoved);
     }
 
     Camera* Workspace::getCurrentCamera() const
