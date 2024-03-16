@@ -66,4 +66,6 @@ int main(int argc, char **argv) {
   }
 
   DEV_LOGMSGF("goodbye");
+
+  return 0;
 }

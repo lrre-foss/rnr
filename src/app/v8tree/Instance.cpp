@@ -2,16 +2,16 @@
 #include <Logger.hpp>
 
 namespace RNR {
-REFLECTION_BEGIN(Instance);
-REFLECTION_PROPERTY(Instance, "Parent", Reflection::PT_VARIANT, parent);
-REFLECTION_PROPERTY(Instance, "Name", Reflection::PT_STRING, name);
-REFLECTION_END();
-
 Instance::Instance() {
   name = getType();
   parent = nullptr;
   datamodel = nullptr;
 }
+
+REFLECTION_BEGIN(Instance);
+REFLECTION_PROPERTY(Instance, "Parent", Reflection::PT_VARIANT, parent);
+REFLECTION_PROPERTY(Instance, "Name", Reflection::PT_STRING, name);
+REFLECTION_END();
 
 void Instance::setParent(Instance *new_parent) {
   if (!new_parent) {
