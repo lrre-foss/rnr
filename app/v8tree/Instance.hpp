@@ -1,9 +1,15 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <functional>
+#include <map>
+
+#include <reflection/Variant.hpp>
 
 namespace RNR {
-class Instance {
+class Instance : public Variant {
+  VARIANT_DEFINE(Instance)
+
   Instance* parent;
   std::vector<std::unique_ptr<Instance>> children;
 
@@ -32,5 +38,13 @@ public:
    * @param new_child 
    */
   void addChild(std::unique_ptr<Instance> new_child);
+};
+
+typedef std::function<Instance* ()> InstanceConstructor;
+
+class InstanceFactory {
+  static std::map<std::string, InstanceConstructor> constructors;
+public:
+  static std::unique_ptr<Instance> create(std::string type);
 };
 } // namespace RNR

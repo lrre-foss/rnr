@@ -1,4 +1,5 @@
-#include <v8tree/Instance.hpp>
+#include "Instance.hpp"
+#include <Logger.hpp>
 
 namespace RNR {
   Instance::Instance() {
@@ -28,5 +29,16 @@ namespace RNR {
   void Instance::addChild(std::unique_ptr<Instance> new_child) {
     children.push_back(std::move(new_child));
     new_child->parent = this;
+  }
+
+  std::map<std::string, InstanceConstructor> InstanceFactory::constructors;
+  std::unique_ptr<Instance> InstanceFactory::create(std::string type) {
+    auto it = constructors.find(type);
+    if(it != constructors.end()) {
+      Instance* ins = constructors[type]();
+      return std::unique_ptr<Instance>(ins);
+    } else {
+      throw std::runtime_error("Attempt to create invalid instance type");
+    }
   }
 }
