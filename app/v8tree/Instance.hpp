@@ -21,6 +21,7 @@ class Instance : public Reflection::Variant {
 
 public:
   Instance();
+  virtual ~Instance() = default;
 
   /**
    * @brief this will set the parent of Instance to newparent

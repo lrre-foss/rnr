@@ -12,7 +12,7 @@ void Script::compile() {
     free(bytecode);
   bytecode =
       luau_compile(content.c_str(), content.size(), NULL, &bytecode_size);
-  DEV_LOGMSGF("Compiled script (%i bytes)", bytecode_size);
+  DEV_LOGMSGF("Compiled script (%zu bytes)", bytecode_size);
 }
 
 void Script::load(lua_State *L) {

@@ -1,10 +1,17 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.5)
 
 set(CMAKE_CXX_STANDARD 20)
 
 project(rnr)
 
+if(WIN32)
+	add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
+endif()
+
 find_package(SDL2 REQUIRED)
+
+set(LUAU_BUILD_CLI OFF CACHE BOOL "" FORCE)
+set(LUAU_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(ext/luau)
 add_subdirectory(ext/glad)
