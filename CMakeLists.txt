@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.14)
 
-add_subdirectory(ext/luau)
-add_subdirectory(ext/glad)
-
 set(CMAKE_CXX_STANDARD 20)
+
+project(rnr)
 
 find_package(SDL2 REQUIRED)
 
-project(rnr)
+add_subdirectory(ext/luau)
+add_subdirectory(ext/glad)
 
 add_library(rnr-app OBJECT
 	app/reflection/Method.cpp
