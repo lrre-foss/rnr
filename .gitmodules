@@ -1,0 +1,3 @@
+[submodule "ext/luau"]
+	path = ext/luau
+	url = https://github.com/luau-lang/luau

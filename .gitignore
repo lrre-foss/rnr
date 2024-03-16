@@ -1,0 +1,6 @@
+rbxnu.workspace
+rbxnu.project
+.ctagsd
+.codelite
+build
+cmake-build-*
