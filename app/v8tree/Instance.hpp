@@ -13,8 +13,8 @@ class Instance : public Reflection::Variant {
   HAS_REFLECTION_TABLE;
   VARIANT_DEFINE(Instance)
 
-  Instance* parent;
   DataModel* datamodel;
+  Instance* parent;
   std::string name;
   std::vector<std::unique_ptr<Instance>> children;
 

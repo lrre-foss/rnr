@@ -44,6 +44,14 @@ int main(int argc, char **argv) {
   RNR::Instance *i = new RNR::Instance();
   for (RNR::Reflection::Property *p : RNR::Reflection::properties(i)) {
     DEV_LOGMSGF("'%s' -> %p", p->getName().c_str(), p->getData<RNR::Instance>(i));
+    if(p->getType() == RNR::Reflection::PT_STRING) {
+      DEV_LOGMSGF("%s", p->getData<std::string>(i)->c_str());
+    }
+    else {
+      RNR::Reflection::Variant* v = p->getData<RNR::Reflection::Variant>(i);
+      if(v)
+        DEV_LOGMSGF("%p %s", v, v->getType());
+    }
   }
 
   bool running = true;

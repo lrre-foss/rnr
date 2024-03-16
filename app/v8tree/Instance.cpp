@@ -8,6 +8,7 @@ REFLECTION_PROPERTY(Instance, "Name", Reflection::PT_STRING, name);
 REFLECTION_END();
 
 Instance::Instance() {
+  name = getType();
   parent = nullptr;
   datamodel = nullptr;
 }

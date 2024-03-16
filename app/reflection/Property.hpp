@@ -12,20 +12,27 @@ enum PropertyType {
   PT_VARIANT,
 };
 
-class Property {
+struct BaseProperty {
   std::string name;
   PropertyType type;
-  std::size_t offset;
-
-public:
-  // use offsetof to get the value for offset, ex offsetof(YourClass, your_property)
-  Property(std::string name, PropertyType type, std::size_t offset);
 
   std::string getName() { return name; }; 
   PropertyType getType() { return type; };
+};
 
-  // please determine proper template to use by checking getType
-  template<typename T> T* getData(Variant* v) {
+template<typename C, typename T>
+class Property : public BaseProperty {
+  T* C::* offset;
+
+public:
+  // use offsetof to get the value for offset, ex offsetof(YourClass, your_property)
+  Property(std::string name, PropertyType type, T* C::* offset) {
+    this->name = name;
+    this->type = type;
+    this->offset = offset;
+  }
+
+  T* getData(Variant* v) {
     T* p = (T*)v + offset;
     return p;
   }

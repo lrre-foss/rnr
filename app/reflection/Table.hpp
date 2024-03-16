@@ -20,13 +20,13 @@ private:
 // c is class, n is name, t is PropertyType, p is property
 #define REFLECTION_PROPERTY(c, n, t, p)                                        \
   RNR::Reflection::__addNewTableProperty(                                      \
-      _t, new RNR::Reflection::Property(n, t, offsetof(c, p)));
+      _t, new RNR::Reflection::Property<c, t>(n, t, &c::p));
 
 namespace RNR::Reflection {
-void __addNewTableProperty(std::string type, Property *p);
+void __addNewTableProperty(std::string type, BaseProperty *p);
 void __addNewTableMethod(std::string type, BaseMethod* m);
-Property *property(Variant *v, std::string name);
-std::vector<Property *> properties(Variant *v);
+BaseProperty *property(Variant *v, std::string name);
+std::vector<BaseProperty *> properties(Variant *v);
 
 template <typename T> class InitTable {
 public:
