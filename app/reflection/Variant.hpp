@@ -1,14 +1,16 @@
 #pragma once
+#include <reflection/Table.hpp>
 
 #define VARIANT_DEFINE(x)                                                      \
 public:                                                                        \
-  virtual const char *getType() { return #x; };                                \
+  virtual const char *getType() const { return #x; };                          \
+  static const char *getTypeStatic() { return #x; }                            \
                                                                                \
 private:
 
-namespace RNR {
+namespace RNR::Reflection {
 class Variant {
-public:
-  virtual const char *getType() { return "Variant"; };
+  HAS_REFLECTION_TABLE;
+  VARIANT_DEFINE(Variant)
 };
-} // namespace RNR
+} // namespace RNR::Reflection

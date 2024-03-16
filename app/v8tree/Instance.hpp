@@ -7,10 +7,15 @@
 #include <reflection/Variant.hpp>
 
 namespace RNR {
-class Instance : public Variant {
+class DataModel;
+
+class Instance : public Reflection::Variant {
+  HAS_REFLECTION_TABLE;
   VARIANT_DEFINE(Instance)
 
   Instance* parent;
+  DataModel* datamodel;
+  std::string name;
   std::vector<std::unique_ptr<Instance>> children;
 
 public:
@@ -33,7 +38,7 @@ public:
   std::unique_ptr<Instance> removeChild(Instance* child);
 
   /**
-   * @brief adds a new child 
+   * @brief adds a new child this will snatch ownership
    * 
    * @param new_child 
    */

@@ -40,7 +40,11 @@ int main(int argc, char **argv) {
   DEV_LOGMSGF("opengl vendor: %s", glGetString(GL_VENDOR));
   DEV_LOGMSGF("opengl shading language version: %s",
               glGetString(GL_SHADING_LANGUAGE_VERSION));
-  DEV_LOGMSGF("opengl extensions: %s", glGetString(GL_EXTENSIONS));
+
+  RNR::Instance *i = new RNR::Instance();
+  for (RNR::Reflection::Property *p : RNR::Reflection::properties(i)) {
+    DEV_LOGMSGF("'%s' -> %p", p->getName().c_str(), p->getData<RNR::Instance>(i));
+  }
 
   bool running = true;
   while (running) {

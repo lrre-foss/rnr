@@ -10,6 +10,16 @@ find_package(SDL2 REQUIRED)
 project(rnr)
 
 add_library(rnr-app OBJECT
+	app/reflection/Property.cpp
+	app/reflection/Property.hpp
+	app/reflection/Table.cpp
+	app/reflection/Table.hpp 
+	app/reflection/Variant.cpp
+	app/reflection/Variant.hpp
+	app/script/Script.cpp
+	app/script/Script.hpp
+	app/script/ScriptContext.cpp
+	app/script/ScriptContext.hpp
 	app/v8datamodel/DataModel.cpp
 	app/v8datamodel/DataModel.hpp
 	app/v8tree/Instance.hpp

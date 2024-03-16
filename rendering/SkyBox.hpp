@@ -1,7 +1,5 @@
 #pragma once
 
 namespace RNR::Rendering {
-  class SkyBox {
-    
-  }
-};
+class SkyBox {};
+} // namespace RNR::Rendering
