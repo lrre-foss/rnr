@@ -4,3 +4,4 @@ rbxnu.project
 .codelite
 build
 cmake-build-*
+.vscode
