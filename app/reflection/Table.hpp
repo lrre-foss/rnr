@@ -1,5 +1,6 @@
 #pragma once
 #include <reflection/Property.hpp>
+#include <reflection/Method.hpp>
 #include <vector>
 
 // do not ever call addTableEntries as it will be automagically called for you
@@ -23,6 +24,7 @@ private:
 
 namespace RNR::Reflection {
 void __addNewTableProperty(std::string type, Property *p);
+void __addNewTableMethod(std::string type, BaseMethod* m);
 Property *property(Variant *v, std::string name);
 std::vector<Property *> properties(Variant *v);
 

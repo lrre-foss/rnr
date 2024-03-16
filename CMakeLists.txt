@@ -10,6 +10,8 @@ find_package(SDL2 REQUIRED)
 project(rnr)
 
 add_library(rnr-app OBJECT
+	app/reflection/Method.cpp
+	app/reflection/Method.hpp
 	app/reflection/Property.cpp
 	app/reflection/Property.hpp
 	app/reflection/Table.cpp
