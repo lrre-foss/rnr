@@ -1,6 +1,9 @@
 #include <Logger.hpp>
 #include <v8tree/Instance.hpp>
 
+#include <v8datamodel/DataModel.hpp>
+#include <pipeline/View.hpp>
+
 #include <SDL2/SDL.h>
 #include <glad/glad.h>
 #include <stdio.h>
@@ -35,24 +38,15 @@ int main(int argc, char **argv) {
     return -1;
   }
 
+  RNR::DataModel* datamodel = new RNR::DataModel();
+  RNR::Rendering::View* view = new RNR::Rendering::View();
+  view->setModel(datamodel);
+
   DEV_LOGMSGF("opengl version: %s", glGetString(GL_VERSION));
   DEV_LOGMSGF("opengl renderer: %s", glGetString(GL_RENDERER));
   DEV_LOGMSGF("opengl vendor: %s", glGetString(GL_VENDOR));
   DEV_LOGMSGF("opengl shading language version: %s",
               glGetString(GL_SHADING_LANGUAGE_VERSION));
-
-  RNR::Instance *i = new RNR::Instance();
-  for (RNR::Reflection::Property *p : RNR::Reflection::properties(i)) {
-    DEV_LOGMSGF("'%s' -> %p", p->getName().c_str(), p->getData<RNR::Instance>(i));
-    if(p->getType() == RNR::Reflection::PT_STRING) {
-      DEV_LOGMSGF("%s", p->getData<std::string>(i)->c_str());
-    }
-    else {
-      RNR::Reflection::Variant* v = p->getData<RNR::Reflection::Variant>(i);
-      if(v)
-        DEV_LOGMSGF("%p %s", v, v->getType());
-    }
-  }
 
   bool running = true;
   while (running) {
@@ -62,6 +56,7 @@ int main(int argc, char **argv) {
         running = false;
     }
 
+    view->frame();
     SDL_GL_SwapWindow(window);
   }
 

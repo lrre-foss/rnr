@@ -4,6 +4,7 @@
     "version": "1.0.0",
     "builtin-baseline": "345ac44ab8d6a16239d3af55df9608bf725e7a48",
     "dependencies": [
-        "sdl2"
+        "sdl2",
+        "glm"
     ]
 }

@@ -1,9 +1,9 @@
 #pragma once
-#include <v8tree/Instance.hpp>
+#include <v8datamodel/Model.hpp>
 
 namespace RNR {
-  class DataModel : public Instance {
+  class DataModel : public Model {
   public:
-    
+    DataModel();
   };
 }

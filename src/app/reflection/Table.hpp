@@ -1,35 +1,38 @@
 #pragma once
-#include <reflection/Property.hpp>
+#include <map>
+#include <memory>
 #include <reflection/Method.hpp>
+#include <reflection/Property.hpp>
+#include <string>
 #include <vector>
 
-// do not ever call addTableEntries as it will be automagically called for you
-#define HAS_REFLECTION_TABLE                                                   \
-public:                                                                        \
-  static void addTableEntries();                                               \
-                                                                               \
+#define HAS_REFLECTION_TABLE                                                                           \
+protected:                                                                                             \
+  virtual std::map<std::string, std::unique_ptr<RNR::Reflection::Property>> getStaticInitProperties(); \
+                                                                                                       \
 private:
 
-#define REFLECTION_BEGIN(c)                                                    \
-  static RNR::Reflection::InitTable<c> __initTable__##c;                       \
-  void c::addTableEntries() {                                                  \
-    std::string _t = c::getTypeStatic();
+// c is class name, i is class c inherits from
+#define REFLECTION_BEGIN(c, i)                                                                                      \
+  std::map<std::string, std::unique_ptr<RNR::Reflection::Property>>                                                 \
+  c::getStaticInitProperties() {                                                                                    \
+    std::map<std::string, std::unique_ptr<RNR::Reflection::Property>> table_entries = i::getStaticInitProperties(); \
+    ;
+#define REFLECTION_BEGIN2(c)                                        \
+  std::map<std::string, std::unique_ptr<RNR::Reflection::Property>> \
+  c::getStaticInitProperties() {                                    \
+    std::map<std::string, std::unique_ptr<RNR::Reflection::Property>> table_entries;
 // lol
-#define REFLECTION_END() }
+#define REFLECTION_END() \
+  return table_entries;  \
+  }
 
-// c is class, n is name, t is PropertyType, p is property
-#define REFLECTION_PROPERTY(c, n, t, p)                                        \
-  RNR::Reflection::__addNewTableProperty(                                      \
-      _t, new RNR::Reflection::Property<c, t>(n, t, &c::p));
+// n is name, t is PropertyType, , p is property
+#define REFLECTION_PROPERTY(n, t, p) table_entries[n] = std::unique_ptr<RNR::Reflection::Property>(new RNR::Reflection::Property(n, t, &p));
 
 namespace RNR::Reflection {
-void __addNewTableProperty(std::string type, BaseProperty *p);
-void __addNewTableMethod(std::string type, BaseMethod* m);
-BaseProperty *property(Variant *v, std::string name);
-std::vector<BaseProperty *> properties(Variant *v);
-
-template <typename T> class InitTable {
-public:
-  InitTable() { T::addTableEntries(); }
-};
+void __addNewTableProperty(std::string type, Property *p);
+void __addNewTableMethod(std::string type, BaseMethod *m);
+Property *property(Variant *v, std::string name);
+std::vector<Property *> properties(Variant *v);
 } // namespace RNR::Reflection

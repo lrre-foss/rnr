@@ -12,29 +12,25 @@ enum PropertyType {
   PT_VARIANT,
 };
 
-struct BaseProperty {
+class Property {
   std::string name;
   PropertyType type;
 
-  std::string getName() { return name; }; 
-  PropertyType getType() { return type; };
-};
-
-template<typename C, typename T>
-class Property : public BaseProperty {
-  T* C::* offset;
+  void *offset;
 
 public:
-  // use offsetof to get the value for offset, ex offsetof(YourClass, your_property)
-  Property(std::string name, PropertyType type, T* C::* offset) {
+  // use offsetof to get the value for offset, ex offsetof(YourClass,
+  // your_property)
+  Property(std::string name, PropertyType type, void *offset) {
     this->name = name;
     this->type = type;
     this->offset = offset;
   }
 
-  T* getData(Variant* v) {
-    T* p = (T*)v + offset;
-    return p;
-  }
+  std::string getName() { return name; };
+  PropertyType getType() { return type; };
+
+  template <typename T>
+  T *getData() { return (T *)offset; }
 };
-};
+}; // namespace RNR::Reflection
