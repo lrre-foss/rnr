@@ -38,6 +38,8 @@ add_library(rnr-app OBJECT
 	src/app/v8datamodel/DataModel.hpp
 	src/app/v8datamodel/Model.cpp
 	src/app/v8datamodel/Model.hpp
+	src/app/v8datamodel/PVInstance.cpp
+	src/app/v8datamodel/PVInstance.hpp
 	src/app/v8tree/Instance.hpp
 	src/app/v8tree/Instance.cpp
 	src/app/Logger.hpp

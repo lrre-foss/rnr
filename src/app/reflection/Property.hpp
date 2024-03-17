@@ -10,6 +10,8 @@ enum PropertyType {
   PT_INTEGER, // must be int64 OR ELSE YOU DIE
   PT_NUMBER,
   PT_VARIANT,
+  PT_VECTOR3,
+  PT_MATRIX3X3,
 };
 
 class Property {
