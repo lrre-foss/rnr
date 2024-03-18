@@ -4,7 +4,7 @@
 namespace RNR {
   class Model : public Instance {
     HAS_REFLECTION_TABLE;
-    VARIANT_DEFINE(Model);
+    VARIANT_DEFINE(Model, Instance);
 
     Instance* primary_part;
 

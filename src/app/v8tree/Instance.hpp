@@ -5,6 +5,7 @@
 #include <functional>
 #include <map>
 
+#include <utility/Signal.hpp>
 #include <reflection/Variant.hpp>
 
 namespace RNR {
@@ -12,7 +13,7 @@ class DataModel;
 
 class Instance : public Reflection::Variant {
   HAS_REFLECTION_TABLE;
-  VARIANT_DEFINE(Instance)
+  VARIANT_DEFINE(Instance, Reflection::Variant)
 
   DataModel* datamodel;
   Instance* parent;
@@ -22,6 +23,11 @@ class Instance : public Reflection::Variant {
 public:
   Instance();
   virtual ~Instance() = default;
+
+  void onDescendantRemoved(Instance* instance);
+  Signal<Instance*> sig_onDescendantRemoved;
+  void onDescendantAdded(Instance* instance);
+  Signal<Instance*> sig_onDescendantAdded;
 
   /**
    * @brief this will set the parent of Instance to newparent
@@ -44,6 +50,8 @@ public:
    * @param new_child 
    */
   void addChild(Instance* new_child);
+
+  std::vector<Instance*> getChildren() { return children; }
 };
 
 typedef std::function<Instance* ()> InstanceConstructor;

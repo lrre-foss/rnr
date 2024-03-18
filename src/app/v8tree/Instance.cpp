@@ -15,6 +15,18 @@ REFLECTION_END();
 
 INSTANCE(Instance);
 
+void Instance::onDescendantAdded(Instance* instance) {
+  if(parent)
+    parent->onDescendantAdded(instance);
+  sig_onDescendantAdded.fire(instance);
+}
+
+void Instance::onDescendantRemoved(Instance* instance) {
+  if(parent)
+    parent->onDescendantRemoved(instance);
+  sig_onDescendantRemoved.fire(instance);  
+}
+
 void Instance::setParent(Instance *new_parent) {
   if(parent)
     parent->removeChild(this);

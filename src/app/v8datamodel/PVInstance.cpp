@@ -1,5 +1,8 @@
 #include "PVInstance.hpp"
 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 namespace RNR {
   PVInstance::PVInstance() : Instance() {
 
@@ -11,4 +14,12 @@ namespace RNR {
   REFLECTION_END();
 
   INSTANCE(PVInstance);
+
+
+  glm::mat4 PVInstance::makeTransform() {
+    glm::mat4 t = glm::mat4(1.0);
+    t *= glm::mat4(coordinate_frame);
+    t = glm::translate(t, position);
+    return t;
+  }
 }

@@ -32,6 +32,7 @@ add_library(rnr-app OBJECT
 	src/app/script/Script.hpp
 	src/app/script/ScriptContext.cpp
 	src/app/script/ScriptContext.hpp
+	src/app/utility/Signal.hpp
 	src/app/v8datamodel/BasePart.cpp
 	src/app/v8datamodel/BasePart.hpp
 	src/app/v8datamodel/DataModel.cpp
@@ -40,6 +41,8 @@ add_library(rnr-app OBJECT
 	src/app/v8datamodel/Model.hpp
 	src/app/v8datamodel/PVInstance.cpp
 	src/app/v8datamodel/PVInstance.hpp
+	src/app/v8datamodel/RunService.cpp
+	src/app/v8datamodel/RunService.hpp
 	src/app/v8tree/Instance.hpp
 	src/app/v8tree/Instance.cpp
 	src/app/Logger.hpp
@@ -49,6 +52,13 @@ add_library(rnr-app OBJECT
 add_library(rnr-rendering OBJECT
 	src/rendering/pipeline/View.cpp
 	src/rendering/pipeline/View.hpp
+	src/rendering/pipeline/BrickMongler.cpp
+	src/rendering/pipeline/BrickMongler.hpp
+	src/rendering/utility/Mesh.cpp
+	src/rendering/utility/Mesh.hpp
+	src/rendering/utility/Shader.cpp
+	src/rendering/utility/Shader.hpp
+
 	src/rendering/SkyBox.cpp
 	src/rendering/SkyBox.hpp
 )
